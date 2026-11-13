@@ -16,9 +16,9 @@ The **code** in this repository is MIT-licensed (see `LICENSE`). **Data** is lic
 |---|---|---|
 | UAE daily weather | Open-Meteo Historical Weather API (ERA5) | CC BY 4.0, free for non-commercial use |
 | Food storage times (shelf life) | USDA FSIS FoodKeeper | CC0 1.0 |
-| Transport emission factors | UK DESNZ, *Greenhouse gas reporting: conversion factors 2025* | UK Open Government Licence (to confirm in Part 1) |
-| Food emission factors | Poore and Nemecek (2018), *Science* 360(6392) | Cited figures only |
-| UAE festival dates | Official UAE announcements (cited per date in `uae_calendar.csv`) | Facts, cited |
+| Transport emission factors | UK DESNZ, *Greenhouse gas reporting: conversion factors 2025* | UK Open Government Licence v3.0 (confirmed on the publication page) |
+| Food emission factors | Poore and Nemecek (2018), *Science* 360(6392), via Our World in Data | Data CC BY 4.0 (OWID); the paper is cited |
+| UAE festival dates | timeanddate.com (secondary) and WAM (official), cited per event in `uae_calendar.csv` | Facts, cited |
 
 ## Derived artefacts committed in this repository
 

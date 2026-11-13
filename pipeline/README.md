@@ -39,16 +39,19 @@ python -m pytest pipeline
 
 | Module | Part | Purpose |
 |---|---|---|
-| `config.py` | Phase 4 | Load `config.yaml`; repository paths |
-| `contracts.py` | Phase 4 | Validate artefacts against `docs/contracts/*.schema.json` |
-| `ingest.py`, `clean.py` | Part 1 | Read the raw data; cleaning rules C1–C14 (`docs/03-data-inspection.md` §6) |
-| `calibrate.py` | Part 1 | Write `data/processed/calibration.json` |
-| `calendar_uae.py`, `weather.py` | Part 1 | Build `data/external/*`, `calendar.json` and `weather.json` |
+| `config.py` | Phase 4 ✅ | Load `config.yaml`; repository paths |
+| `contracts.py` | Phase 4 ✅ | Validate artefacts against `docs/contracts/*.schema.json` |
+| `sources.py` | Part 1 ✅ | Registry of every cited source; feeds `meta.json` |
+| `artefacts.py` | Part 1 ✅ | Write `web/public/data/*` with the standard header, validated against the contracts; `write_meta()` |
+| `ingest.py`, `clean.py` | Part 1 ✅ | Read the raw data; cleaning rules C1–C14 (`docs/03-data-inspection.md` §6) |
+| `calibrate.py` | Part 1 ✅ | Write `data/processed/calibration.json` |
+| `calendar_uae.py`, `weather.py` | Part 1 ✅ | Build `calendar.json` and `weather.json` from `data/external/*` |
+| `geography.py`, `reference.py` | Part 1 ✅ | Places, the 8 fictional supplier routes and `routes.json`; emission factors and shelf lives |
 | `generate.py`, `simulate.py` | Part 2 | Generate the synthetic UAE world; run the hourly P0 baseline simulation; produce the fidelity report |
 | `recover.py`, `forecast.py`, `spikes.py` | Part 3 | Demand recovery, quantile forecasts, spike detection, the masking test and the ablation |
 | `optimise.py`, `mcdm.py`, `backtest.py`, `impact.py` | Part 4 | Replenishment policy, the surge planner, AHP/entropy/TOPSIS, Monte Carlo backtests, impact |
 | `export.py`, `engine_reference.py` | Part 4 | Write the `web/public/data/*` artefacts and the golden test cases |
-| `run.py` (CLI) | Part 1 onward | `python pipeline/run.py --step {clean,calibrate,generate,train,backtest,export,all}` |
+| `run.py` (CLI) | Part 1 ✅, extended later | `python pipeline/run.py --step {clean,calibrate,calendar,weather,routes,meta,part1}`. Later parts add generate, train, backtest and export. |
 
 ## Rules
 

@@ -48,6 +48,11 @@
 
 **Track A = Python pipeline. Track B = web app.** Each task's definition of done (DoD) and file ownership are in `implementation-plan.md` §10.
 
+**Dependencies:**
+- A dependency of **"Kit approved"** is met once §2 shows Phase 4 ✅.
+- Any other dependency is met when the task it names is ✅.
+- A task marked "use fixtures until …" can start before that task is done.
+
 ### Phase 4: setup and kit (done)
 
 | ID | Task | Owner | Status | Branch / PR | Notes |

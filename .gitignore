@@ -1,0 +1,48 @@
+# ---------------------------------------------------------------------------
+# Fresh Control Tower: repository ignore rules
+# ---------------------------------------------------------------------------
+
+# Raw datasets: never committed (licences and size; see DATA_LICENSES.md and README.md)
+/Datasets/
+
+# Generated data (rebuilt from code and the committed calibration)
+/data/interim/
+/data/synthetic/
+
+# Local-only session prompts: the lead shares these privately (decision D-08)
+/MASTER_PROMPT.md
+/COLLABORATOR_PROMPT.md
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Node (web/ also has its own .gitignore)
+node_modules/
+
+# LaTeX build artefacts (compile on Overleaf, or locally with latexmk)
+report/*.aux
+report/*.bbl
+report/*.bcf
+report/*.blg
+report/*.fdb_latexmk
+report/*.fls
+report/*.log
+report/*.out
+report/*.run.xml
+report/*.toc
+report/*.synctex.gz
+report/main.pdf
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Claude Code local settings (personal; the shared launch.json is committed)
+.claude/settings.local.json

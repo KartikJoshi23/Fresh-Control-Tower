@@ -1,0 +1,16 @@
+# Normalise every text file to LF so Windows and macOS teammates never fight over line endings.
+* text=auto eol=lf
+
+# Binary files
+*.parquet binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.pdf binary
+*.woff2 binary
+
+# PROGRESS.md is edited by everyone (own rows and own log section only). The union driver keeps
+# both sides of concurrent appends instead of producing conflict markers. If a row ever appears
+# twice after a merge, keep the newer one (see the rules at the top of PROGRESS.md).
+PROGRESS.md merge=union

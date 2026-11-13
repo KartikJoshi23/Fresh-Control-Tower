@@ -1,0 +1,67 @@
+/*
+ * Design tokens: implementation-plan.md §6.4 and docs/design-system.md.
+ * FROZEN from Phase 4. Changes need a change request in docs/decisions/.
+ *
+ * Dark-only by design ("night-shift control tower").
+ * The categorical, status and ink values were validated with the dataviz palette validator
+ * on 13 Nov 2026 against chart surfaces #101822 to #191e26 (all checks pass).
+ */
+:root {
+  color-scheme: dark;
+
+  /* Planes and surfaces */
+  --plane: #0a1018;
+  --surface: #111923; /* validated chart surface */
+  --glass-chart: rgba(17, 25, 35, 0.88); /* chart panels: composites to #101822-#121c28 */
+  --glass-deco: rgba(255, 255, 255, 0.06); /* decorative glass only, never behind data */
+  --hairline: rgba(255, 255, 255, 0.1);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+
+  /* Ink (text) */
+  --ink-primary: #f0efec; /* 15.4:1 on surface */
+  --ink-secondary: #c3c2b7; /* 9.9:1 */
+  --ink-muted: #898781; /* 4.9:1 */
+
+  /* UI chrome accent: focus rings, active nav, toggles. NEVER used in charts. */
+  --accent: #4cc9e0;
+
+  /* Categorical data colours: fixed order, never cycled.
+     Entity mapping (app-wide): 1 = AI / recommended, 2 = baseline / legacy / recorded sales,
+     3 = true demand (synthetic ground truth); other series take slots 4+ in order. */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #e66767;
+
+  /* Status: reserved meaning, always shown with an icon and a label */
+  --status-good: #0ca30c; /* In stock */
+  --status-warning: #fab219; /* At risk */
+  --status-serious: #ec835a; /* Expiring */
+  --status-critical: #d03b3b; /* Stockout */
+
+  /* Sequential (blue, magnitude) */
+  --seq-100: #cde2fb;
+  --seq-200: #9ec5f4;
+  --seq-300: #6da7ec;
+  --seq-400: #3987e5;
+  --seq-500: #256abf;
+  --seq-600: #184f95;
+  --seq-700: #0d366b;
+
+  /* Diverging (cover vs target): blue = surplus/waste risk, red = shortage risk, grey midpoint */
+  --div-surplus: #3987e5;
+  --div-mid: #383835;
+  --div-shortage: #e66767;
+
+  /* Chart chrome */
+  --gridline: #2c2c2a;
+  --axis: #383835;
+
+  /* Layout */
+  --nav-height: 64px;
+  --radius-panel: 16px;
+}

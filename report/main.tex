@@ -1,0 +1,98 @@
+% =============================================================================
+% Fresh Control Tower: boardroom report
+% The single source document for the NotebookLM deck.
+%
+% Main sections 1-9 map one-to-one to slides 1-9 (implementation-plan.md §11-12).
+% Each section opens with a one-sentence slide headline and a "Key numbers" box, so
+% NotebookLM can find the slide boundaries.
+%
+% Compile: pdfLaTeX + Biber (Overleaf: Menu > Compiler = pdfLaTeX; Biber runs automatically).
+% Locally: latexmk -pdf main.tex
+% Content is written in Phase 6, one section at a time.
+% =============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{csquotes}
+\usepackage[british]{babel}
+\usepackage[backend=biber,style=authoryear,maxcitenames=2,uniquename=false,uniquelist=false,dashed=false]{biblatex}
+\usepackage[hidelinks]{hyperref}
+
+\addbibresource{references.bib}
+\graphicspath{{figures/}{../screenshots/}}
+
+% Harvard (author-date) presentation. The exact variant SP Jain expects is open question Q6.
+\DefineBibliographyStrings{british}{urlseen = {accessed}}
+
+% ---- Report conventions ------------------------------------------------------
+% One-sentence slide headline under each section title.
+\newcommand{\slideheadline}[1]{\noindent\textit{#1}\par\medskip}
+% "Key numbers" box: the figures a slide may use (every figure states its provenance).
+\newcommand{\keynumbers}[1]{%
+  \par\noindent\fcolorbox{black!35}{black!4}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{\textbf{Key numbers}\par\smallskip #1}}%
+  \par\medskip}
+% Marks text still to be written in Phase 6. None may remain in the final PDF.
+\newcommand{\todophase}[1]{\textcolor{black!55}{[To be written in Phase 6: #1]}}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  {\Large SP Jain School of Global Management\par}
+  \vspace{0.4cm}
+  {\large Masters in AI with Business (MAIB)\par}
+  \vspace{2.5cm}
+  {\Huge\bfseries Fresh Control Tower\par}
+  \vspace{0.5cm}
+  {\Large AI for Inventory Management:\\ letting AI see the demand your shelves hide\par}
+  \vspace{2.5cm}
+  \begin{tabular}{rl}
+    Course:     & \textit{[Course name and code]} \\
+    Instructor: & \textit{[Instructor name]} \\
+    Group:      & Group 1 \\
+    Members:    & \textit{[Member 1]}, \textit{[Member 2]}, \textit{[Member 3]}, \textit{[Member 4]} \\
+    Date:       & \textit{[Submission date]} \\
+  \end{tabular}
+  \vfill
+  {\small A boardroom simulation for an academic course. The operator is fictional, and synthetic
+  data is labelled wherever it appears.\par}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\section*{Executive summary}
+\addcontentsline{toc}{section}{Executive summary}
+\todophase{one page: the recommendation, the key numbers and the decision requested}
+
+\input{sections/01-recommendation}
+\input{sections/02-problem}
+\input{sections/03-context-2026}
+\input{sections/04-solution-data}
+\input{sections/05-prototype}
+\input{sections/06-findings}
+\input{sections/07-sourcing}
+\input{sections/08-business-model}
+\input{sections/09-roadmap-risks}
+
+\clearpage
+\appendix
+\input{appendices/a-data-provenance}
+\input{appendices/b-model-validation}
+\input{appendices/c-calculation-verification}
+\input{appendices/d-traceability}
+\input{appendices/e-glossary}
+
+\clearpage
+\printbibliography[heading=bibintoc,title={References}]
+
+\end{document}

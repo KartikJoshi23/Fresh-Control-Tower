@@ -16,9 +16,9 @@
 | Field | Value |
 |---|---|
 | **Current phase** | Phase 5: development. **Part 1 (data foundation) done and merged into `main`.** |
-| **Gate** | ⏸ Waiting for the lead's **"continue"** to start Part 2 |
+| **Gate** | ▶ "continue" given for Part 2 (2026-11-13). Next stop: after Part 2 |
 | **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass; CI green on the branch (run 43463725418) |
-| **Exact next step** | After "continue": **Part 2** (P2-01 synthetic UAE world generator), reading `data/processed/calibration.json`. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
+| **Exact next step** | Build **Part 2** (P2-01…P2-03: synthetic UAE world, P0 baseline simulation, fidelity report) on `feat/P2-synthetic-world`. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
 | **Last integrated commit on `main`** | `ff47bb7` (merge of Part 1; earlier commits are listed in §9) |
 | **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
@@ -31,7 +31,7 @@
 | 2 Dataset | ✅ Complete | Lead confirmed the datasets are in the root folder | 2026-11-13 |
 | 3 Inspection and plan | ✅ Approved (v1.1 after audit) | "Plan approved, begin setup" (given with the repository link) | 2026-11-13 |
 | 4 Repository setup and kit | ✅ Approved | "Kit approved" | 2026-11-13 |
-| 5 Development (Parts 1–9) | 🟢 Open (Part 1 ✅ merged; Part 2 waits for "continue") | "continue" after **each** part | 2026-11-13 |
+| 5 Development (Parts 1–9) | 🟢 Open (Part 1 ✅ merged; Part 2 in progress) | "continue" after **each** part | 2026-11-13 |
 | 6 Screenshots and report | 🔒 | "continue" after **each** section | — |
 | 7 NotebookLM prompt | 🔒 | Lead's review | — |
 
@@ -94,9 +94,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | — | ⬜ | | Plan §3.4 |
-| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | — | ⬜ | | Invariant tests |
-| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | — | ⬜ | | Every band must pass |
+| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik | 🟨 | feat/P2-synthetic-world | Plan §3.4 |
+| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik | 🟨 | feat/P2-synthetic-world | Invariant tests |
+| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik | 🟨 | feat/P2-synthetic-world | Every band must pass |
 
 ### Phase 5, Part 3: models (Track A)
 
@@ -256,5 +256,7 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-13 · P1-01…P1-07 · branch feat/P1-data-foundation · Part 1 built and verified: 70 pytest pass; cleaning counts and calibration reproduce docs/03; real calendar, weather and routes artefacts pass both contracts · next: merge, then wait for "continue" (Part 2)
 
 - 2026-11-13 · P1-01…P1-07 · branch main · last commit ff47bb7 (merge of feat/P1-data-foundation, 8 commits bdbec98…350a293) · Part 1 merged with --no-ff after branch CI passed; rows set to ✅ · next: wait for "continue", then Part 2 on feat/P2-synthetic-world
+
+- 2026-11-13 · Part 2 gate · branch main · last commit 950917d · "continue" given by the lead; P2-01…P2-03 claimed · next: build Part 2 on feat/P2-synthetic-world
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->

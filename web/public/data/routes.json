@@ -1,24 +1,198 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
+  "generatedAt": "2026-11-13T20:26:44+04:00",
+  "generator": "freshpipe 0.1.0",
   "seed": null,
-  "isFixture": true,
+  "isFixture": false,
   "provenance": "REAL",
-  "sources": ["fixture-placeholder"],
+  "sources": [
+    "fathallah2024-atlantic-council",
+    "sohail2026-gulf-business"
+  ],
   "places": [
-    { "id": "uae-dubai", "name": "Dubai (Jebel Ali)", "kind": "hub", "lat": 25.01, "lon": 55.06 },
-    { "id": "hormuz", "name": "Strait of Hormuz", "kind": "chokepoint", "lat": 26.57, "lon": 56.25 },
-    { "id": "bab-el-mandeb", "name": "Bab el-Mandeb", "kind": "chokepoint", "lat": 12.58, "lon": 43.33 },
-    { "id": "origin-mumbai", "name": "Mumbai (Nhava Sheva)", "kind": "port", "lat": 18.95, "lon": 72.95 },
-    { "id": "origin-muscat", "name": "Muscat", "kind": "origin", "lat": 23.59, "lon": 58.41 },
-    { "id": "origin-nairobi", "name": "Nairobi (air cargo)", "kind": "origin", "lat": -1.32, "lon": 36.93 },
-    { "id": "origin-dubai-farm", "name": "UAE vertical farm (fictional location)", "kind": "origin", "lat": 24.95, "lon": 55.2 }
+    {
+      "id": "uae-dubai",
+      "name": "Dubai (Jebel Ali)",
+      "kind": "hub",
+      "lat": 25.01,
+      "lon": 55.06
+    },
+    {
+      "id": "uae-dxb",
+      "name": "Dubai International Airport (cargo)",
+      "kind": "hub",
+      "lat": 25.25,
+      "lon": 55.36
+    },
+    {
+      "id": "uae-khor-fakkan",
+      "name": "Khor Fakkan port (Gulf of Oman)",
+      "kind": "port",
+      "lat": 25.35,
+      "lon": 56.36
+    },
+    {
+      "id": "hormuz",
+      "name": "Strait of Hormuz",
+      "kind": "chokepoint",
+      "lat": 26.57,
+      "lon": 56.25
+    },
+    {
+      "id": "bab-el-mandeb",
+      "name": "Bab el-Mandeb",
+      "kind": "chokepoint",
+      "lat": 12.58,
+      "lon": 43.33
+    },
+    {
+      "id": "suez",
+      "name": "Suez Canal",
+      "kind": "chokepoint",
+      "lat": 30.42,
+      "lon": 32.35
+    },
+    {
+      "id": "origin-dubai-farm",
+      "name": "UAE vertical farm (fictional site)",
+      "kind": "origin",
+      "lat": 24.95,
+      "lon": 55.2
+    },
+    {
+      "id": "origin-muscat",
+      "name": "Muscat, Oman",
+      "kind": "origin",
+      "lat": 23.59,
+      "lon": 58.41
+    },
+    {
+      "id": "origin-al-kharj",
+      "name": "Al Kharj, Saudi Arabia",
+      "kind": "origin",
+      "lat": 24.15,
+      "lon": 47.31
+    },
+    {
+      "id": "origin-nhava-sheva",
+      "name": "Nhava Sheva (JNPT), India",
+      "kind": "port",
+      "lat": 18.95,
+      "lon": 72.95
+    },
+    {
+      "id": "origin-rotterdam",
+      "name": "Rotterdam, Netherlands",
+      "kind": "port",
+      "lat": 51.95,
+      "lon": 4.14
+    },
+    {
+      "id": "origin-nairobi",
+      "name": "Nairobi (air cargo), Kenya",
+      "kind": "origin",
+      "lat": -1.32,
+      "lon": 36.93
+    },
+    {
+      "id": "origin-amsterdam",
+      "name": "Amsterdam (air cargo), Netherlands",
+      "kind": "origin",
+      "lat": 52.31,
+      "lon": 4.76
+    }
   ],
   "routes": [
-    { "id": "route-local-farm", "supplierId": "sup-local-farm", "mode": "local_truck", "placeIds": ["origin-dubai-farm", "uae-dubai"], "chokepointIds": [] },
-    { "id": "route-gcc-truck", "supplierId": "sup-gcc-truck", "mode": "truck", "placeIds": ["origin-muscat", "uae-dubai"], "chokepointIds": [] },
-    { "id": "route-sea-import", "supplierId": "sup-sea-import", "mode": "sea", "placeIds": ["origin-mumbai", "hormuz", "uae-dubai"], "chokepointIds": ["hormuz"] },
-    { "id": "route-air-import", "supplierId": "sup-air-import", "mode": "air", "placeIds": ["origin-nairobi", "uae-dubai"], "chokepointIds": [] }
+    {
+      "id": "route-local-farm",
+      "supplierId": "sup-local-farm",
+      "mode": "local_truck",
+      "placeIds": [
+        "origin-dubai-farm",
+        "uae-dubai"
+      ],
+      "chokepointIds": []
+    },
+    {
+      "id": "route-gcc-truck",
+      "supplierId": "sup-gcc-truck",
+      "mode": "truck",
+      "placeIds": [
+        "origin-muscat",
+        "uae-dubai"
+      ],
+      "chokepointIds": []
+    },
+    {
+      "id": "route-gcc-ksa",
+      "supplierId": "sup-gcc-ksa",
+      "mode": "truck",
+      "placeIds": [
+        "origin-al-kharj",
+        "uae-dubai"
+      ],
+      "chokepointIds": []
+    },
+    {
+      "id": "route-sea-import",
+      "supplierId": "sup-sea-import",
+      "mode": "sea",
+      "placeIds": [
+        "origin-nhava-sheva",
+        "hormuz",
+        "uae-dubai"
+      ],
+      "chokepointIds": [
+        "hormuz"
+      ]
+    },
+    {
+      "id": "route-sea-khorfakkan",
+      "supplierId": "sup-sea-khorfakkan",
+      "mode": "sea",
+      "placeIds": [
+        "origin-nhava-sheva",
+        "uae-khor-fakkan",
+        "uae-dubai"
+      ],
+      "chokepointIds": []
+    },
+    {
+      "id": "route-sea-europe",
+      "supplierId": "sup-sea-europe",
+      "mode": "sea",
+      "placeIds": [
+        "origin-rotterdam",
+        "suez",
+        "bab-el-mandeb",
+        "hormuz",
+        "uae-dubai"
+      ],
+      "chokepointIds": [
+        "suez",
+        "bab-el-mandeb",
+        "hormuz"
+      ]
+    },
+    {
+      "id": "route-air-import",
+      "supplierId": "sup-air-import",
+      "mode": "air",
+      "placeIds": [
+        "origin-nairobi",
+        "uae-dxb"
+      ],
+      "chokepointIds": []
+    },
+    {
+      "id": "route-air-europe",
+      "supplierId": "sup-air-europe",
+      "mode": "air",
+      "placeIds": [
+        "origin-amsterdam",
+        "uae-dxb"
+      ],
+      "chokepointIds": []
+    }
   ]
 }

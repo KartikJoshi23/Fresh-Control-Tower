@@ -134,7 +134,7 @@ These rules are implemented and unit-tested in Phase 5, Part 1.
 | C7 | LT | Select columns by name, harmonise dtypes, reindex each series to a daily grid, and mark missing days as missing, not zero. |
 | C8 | FRN | Process in row-group batches with downcast dtypes. Cache tidy tables to `data/interim/` (gitignored). |
 | C9 | Kaggle | Normalise whitespace in category names (the non-breaking space). Key on item code, not name. |
-| C10 | Kaggle | Net the 461 returns against sales on the same day and item. Drop the 132 rows with unparseable time stamps from the hourly analysis only. |
+| C10 | Kaggle | Net the 461 returns against sales on the same day and item. Parse times in two formats. *Update (Part 1): the 132 "unparseable" stamps are valid times without milliseconds; with the second format all of them parse.* |
 | C11 | Kaggle | Cap the quantity of a single line at the item's p99.9 for calibration (the 160 kg outlier). |
 | C12 | Kaggle | Mark the 10 zero-sale days as **closures**. |
 | C13 | Kaggle | Flag item-days sold below wholesale as clearance and exclude them from the markup calibration. |

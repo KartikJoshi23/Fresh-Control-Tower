@@ -1,0 +1,13 @@
+category_id,foodkeeper_id,foodkeeper_name,storage,min_value,max_value,metric,planning_days,basis,note
+leafy-greens,291,"Lettuce (leaf, spinach)",refrigerator from date of purchase,3,7,Days,4,foodkeeper,Planning value sits inside the FoodKeeper range; herbs (ID 288) are 7-10 days
+leafy-greens,290,"Lettuce (iceberg, romaine)",refrigerator from date of purchase,1,2,Weeks,,foodkeeper,Reference only
+berries,481,Strawberries,refrigerator from date of purchase,2,3,Days,3,foodkeeper,Blueberries (ID 254) are 1-2 weeks
+stone-fruit,266,"Peaches, nectarines, plums, pears, sapote",refrigerator when ripe,3,5,Days,4,foodkeeper,
+salad-vegetables,283,Cucumbers,refrigerator from date of purchase,4,6,Days,5,foodkeeper,Peppers (ID 296) are 4-14 days; tomatoes (ID 306) are stored at room temperature when ripe
+dairy,33,Yogurt,refrigerator from date of purchase,1,2,Weeks,10,foodkeeper,Buttermilk (ID 2) is also 1-2 weeks and is the closest FoodKeeper match for laban; fresh milk (ID 27) follows the package use-by date
+bakery,461,"Whole wheat bread (commercially baked)",pantry,3,5,Days,3,foodkeeper,FoodKeeper advises against refrigerating bread
+poultry,117,"Chicken parts (breast halves, boneless)",refrigerator from date of purchase,1,2,Days,3,assumption,FoodKeeper gives 1-2 days for consumers after purchase; retail planning uses 3 days from receipt (assumption; tunable)
+dates,260,Dates,refrigerator from date of purchase,12,12,Months,30,assumption,FoodKeeper (12 months) applies to dried dates; fresh (rutab) dates are far more perishable; 30-day planning value is an assumption
+bananas,251,Bananas,refrigerator when ripe,3,3,Days,5,assumption,FoodKeeper covers ripe fruit; retail planning uses 5 days to allow for ripening (assumption)
+apples,248,Apples,refrigerator from date of purchase,4,6,Weeks,28,foodkeeper,
+citrus,256,"Citrus fruit (lemon, lime, orange, grapefruit, tangerine, clementine)",refrigerator from date of purchase,10,21,Days,14,foodkeeper,

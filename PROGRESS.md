@@ -15,10 +15,10 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 5: development. **Part 1 (data foundation) in progress.** |
-| **Gate** | None until Part 1 is complete. Then ⏸ wait for the lead's "continue". |
-| **Last completed step** | Kit approved by the lead (2026-11-13) |
-| **Exact next step** | Finish P1-01…P1-07 on `feat/P1-data-foundation`, then report Part 1 and stop. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
+| **Current phase** | Phase 5: development. **Part 1 (data foundation) complete; in review.** |
+| **Gate** | ⏸ Waiting for the lead's **"continue"** to start Part 2 |
+| **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass |
+| **Exact next step** | After "continue": **Part 2** (P2-01 synthetic UAE world generator), reading `data/processed/calibration.json`. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
 | **Last integrated commit on `main`** | `0f12d2b` (Phase 4 setup; later commits are listed in §9) |
 | **Branch** | `main` (initial setup); all Phase 5 work happens on `feat/P<part>-<slug>` branches |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
@@ -82,13 +82,13 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P1-01 | `ingest.py` + `clean.py`: cleaning rules C1–C14, each with a unit test | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | `docs/03` §6 |
-| P1-02 | `calibrate.py` → `data/processed/calibration.json` | P1-01 | Kartik | 🟨 | feat/P1-data-foundation | Targets: `docs/03` §7 |
-| P1-03 | `calendar_uae.py`: festival dates 2023–2026 with an official source per date → `calendar.json` | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | No date without a source |
-| P1-04 | `weather.py`: Open-Meteo daily weather for Dubai, Sharjah and Abu Dhabi → `weather.json` | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | CC BY 4.0 attribution |
-| P1-05 | Reference factors: DESNZ 2025 transport, FoodKeeper shelf life, Poore and Nemecek 2018 food CO2e (verify the ⚠ items) | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | `data/external/` |
-| P1-06 | Places and routes (origins, ports, chokepoints) → `routes.json` | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | |
-| P1-07 | `run.py` CLI (steps: clean, calibrate) | P1-01 | Kartik | 🟨 | feat/P1-data-foundation | Extended in later parts |
+| P1-01 | `ingest.py` + `clean.py`: cleaning rules C1–C14, each with a unit test | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | C1-C14 + 15 unit tests; 0 stock-flag mismatches on 12.4M rows |
+| P1-02 | `calibrate.py` → `data/processed/calibration.json` | P1-01 | Kartik | 🟦 | feat/P1-data-foundation | Reproduces docs/03 numbers (golden tests) |
+| P1-03 | `calendar_uae.py`: festival dates 2023–2026 with an official source per date → `calendar.json` | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | 31 sourced events; 1,400 days; school windows unverified (KI-7) |
+| P1-04 | `weather.py`: Open-Meteo daily weather for Dubai, Sharjah and Abu Dhabi → `weather.json` | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | 4,200 real rows (Open-Meteo ERA5) |
+| P1-05 | Reference factors: DESNZ 2025 transport, FoodKeeper shelf life, Poore and Nemecek 2018 food CO2e (verify the ⚠ items) | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | DESNZ 2025 IDs, FoodKeeper IDs, OWID; ⚠ items verified (KI-4) |
+| P1-06 | Places and routes (origins, ports, chokepoints) → `routes.json` | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | 8 fictional suppliers on real routes; 3 chokepoints |
+| P1-07 | `run.py` CLI (steps: clean, calibrate) | P1-01 | Kartik | 🟦 | feat/P1-data-foundation | `--step` clean, calibrate, calendar, weather, routes, meta or part1 |
 
 ### Phase 5, Part 2: synthetic UAE world (Track A)
 
@@ -179,6 +179,12 @@
 | D-12 | 2026-11-13 | Plan audit v1.1: 22 fixes | Lead's request | plan §17 |
 | D-13 | 2026-11-13 | `PROGRESS.md` uses union merge plus per-person log sections; claim commits go straight to `main` | Fewer merge conflicts; claims become visible at once | .gitattributes |
 | D-14 | 2026-11-13 | Every planned web dependency installed and pinned during Phase 4 | Stops parallel parts from editing `package.json` and the lockfile | web/package.json |
+| D-15 | 2026-11-13 | CI runs on every branch push (not only `main` and pull requests) | Work is checked before merging, with or without a pull request | .github/workflows/ci.yml |
+| D-16 | 2026-11-13 | UAE calendar from timeanddate.com (secondary) plus WAM (official) where found; every row cites its source | No date without a source; official confirmation exists for Ramadan 2026 | data/external/uae_calendar.csv |
+| D-17 | 2026-11-13 | Planning shelf lives from USDA FoodKeeper; poultry, dates and bananas are labelled assumptions | FoodKeeper gives consumer storage times; retail receipt-to-expiry differs for these three | data/external/shelf_life.csv |
+| D-18 | 2026-11-13 | 8 fictional suppliers on real routes (local, GCC road, sea via Hormuz, Khor Fakkan or Suez, air) | Covers all four archetypes and the three chokepoints in the evidence | pipeline/freshpipe/geography.py |
+| D-19 | 2026-11-13 | Vegetable time stamps are parsed in two formats | The 132 "unparseable" stamps are valid times without milliseconds | docs/03 §6 C10 |
+| D-20 | 2026-11-13 | The Hormuz shock is modelled through availability and lead times, not prices | Goharbakhsh et al. (2026) find food-price effects statistically insignificant (p > 0.05) | calibration.json anchors |
 
 ## 5. Open questions and blockers
 
@@ -198,9 +204,12 @@
 | KI-1 | `npm audit` lists moderate advisories in **dev-only** tooling (for example, the eslint 9 deprecation). Production dependencies: 0 vulnerabilities. | None for users | Review in P9-03 |
 | KI-2 | Every file in `web/public/data` is a **fixture** (`isFixture: true`) | Must never appear as results | P5-02 banner; P4-06 replaces them; R-00 guard |
 | KI-3 | CI cannot see the raw data, so data tests skip there | CI covers fixtures and logic only | Data part owners run `python -m pytest pipeline` locally and log the result |
-| KI-4 | Sources still to verify: *Sustainability* (2026) authors and figures, DESNZ licence, Poore and Nemecek DOI, Ma (2024) initials, AED 6 bn food-waste figure | Must not be cited until checked | P1-05 and Phase 6 |
+| KI-4 | ✅ Verified in Part 1: *Sustainability* (2026) authors (Goharbakhsh, Rahbari, Aghabayk) and the −95.1% figure (abstract via Crossref); DESNZ OGL v3.0; Poore and Nemecek DOI; Ma (2024) = Mingpu Ma; AED 6 bn = 2022 statement by the UAE minister (Khaleej Times) | Resolved | — |
 | KI-5 | `realdata.json` holds Phase 3 inspection numbers; the masking fields are null | None (it is a fixture) | Regenerated in P3-02 |
-| KI-6 | `biber --validate-datamodel` warns about 2 undated web sources | None (Harvard "n.d." is intended) | — |
+| KI-6 | `biber --validate-datamodel` warns about 4 undated web sources | None (Harvard "n.d." is intended) | — |
+| KI-7 | School summer-break windows (2023–2026) come from news reports (`verified = false`) | Timing of a synthetic demand pattern only | Check against MoE calendars before the report cites them |
+| KI-8 | FoodKeeper's server refuses scripted downloads (HTTP 403) | Shelf-life values were read in a browser and recorded with product IDs | Re-check by hand if FoodKeeper updates |
+| KI-9 | No pull request for Part 1: the `gh` CLI token is invalid | The merge is a local `--no-ff` merge after green CI | Lead: run `gh auth login` to enable pull requests |
 
 ## 7. File ownership map
 
@@ -243,5 +252,7 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-13 · Phases 1–4 (K-01…K-11) · branch main · last commit 0f12d2b (7 setup commits, 446c4d2…0f12d2b) · Problem selected (A); datasets chosen and verified; inspection; plan v1.1 (audited); repository scaffold, contracts, fixtures, CI, docs; prompts local-only · next: lead reviews the kit, then "Kit approved, begin development"
 
 - 2026-11-13 · Phase 5 gate · branch main · last commit 206ddee · Kit approved by the lead; P1-01…P1-07 claimed · next: build Part 1 on feat/P1-data-foundation
+
+- 2026-11-13 · P1-01…P1-07 · branch feat/P1-data-foundation · Part 1 built and verified: 70 pytest pass; cleaning counts and calibration reproduce docs/03; real calendar, weather and routes artefacts pass both contracts · next: merge, then wait for "continue" (Part 2)
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->

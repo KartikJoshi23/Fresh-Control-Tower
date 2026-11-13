@@ -1,9 +1,9 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
+  "generatedAt": "2026-11-13T20:26:44+04:00",
+  "generator": "freshpipe 0.1.0",
   "seed": null,
-  "isFixture": true,
+  "isFixture": false,
   "provenance": "PRECOMPUTED",
   "sources": [],
   "project": "Fresh Control Tower",
@@ -11,25 +11,223 @@
   "operatorIsFictional": true,
   "timezone": "Asia/Dubai",
   "currency": "AED",
-  "horizon": { "start": "2023-01-01", "end": "2026-10-31" },
-  "testWindow": { "start": "2026-01-01", "end": "2026-10-31" },
+  "horizon": {
+    "start": "2023-01-01",
+    "end": "2026-10-31"
+  },
+  "testWindow": {
+    "start": "2026-01-01",
+    "end": "2026-10-31"
+  },
   "sourcesCatalog": [
-    { "id": "wang2025-freshretailnet", "citation": "Wang et al. (2025)", "url": "https://arxiv.org/abs/2505.16319", "licence": "CC BY 4.0", "accessed": "2026-11-13", "verified": true },
-    { "id": "dingdong2025-frn50k", "citation": "Dingdong-Inc (2025)", "url": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K", "licence": "CC BY 4.0", "accessed": "2026-11-13", "verified": true },
-    { "id": "dingdong2026-frnlt", "citation": "Dingdong-Inc (2026)", "url": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-LT", "licence": "CC BY 4.0", "accessed": "2026-11-13", "verified": true },
-    { "id": "yapwh2023-vegetables", "citation": "YapWH (2023)", "url": "https://www.kaggle.com/datasets/yapwh1208/supermarket-sales-data", "licence": "CC BY-NC-SA 4.0", "accessed": "2026-11-13", "verified": true },
-    { "id": "unep2024-food-waste", "citation": "UNEP (2024)", "url": "https://wedocs.unep.org/bitstream/handle/20.500.11822/45275/Food-Waste-Index-2024-key-messages.pdf", "licence": "Cited (UNEP)", "accessed": "2026-11-13", "verified": true },
-    { "id": "sohail2026-gulf-business", "citation": "Sohail (2026)", "url": "https://gulfbusiness.com/en/2026/logistics/higher-costs-tighter-margins-how-hormuz-disruptions-are-testing-uae-food-supplies/", "licence": "Cited (Gulf Business)", "accessed": "2026-11-13", "verified": true },
-    { "id": "fathallah2024-atlantic-council", "citation": "Fathallah (2024)", "url": "https://www.atlanticcouncil.org/blogs/menasource/uae-food-security", "licence": "Cited (Atlantic Council)", "accessed": "2026-11-13", "verified": true },
-    { "id": "communicate2026-nielseniq", "citation": "Communicate Online (2026)", "url": "https://communicateonline.me/news/ramadan-fuels-double-digit-fmcg-growth-boosts-tech-sales-across-mena/", "licence": "Cited (Communicate; NielsenIQ data)", "accessed": "2026-11-13", "verified": true },
-    { "id": "rana2026-worldpanel", "citation": "Rana (2026)", "url": "https://worldpanelbynumerator.com/insights/uae-fmcg-demand-q1-2026-ramadan-consumption-trends", "licence": "Cited (Worldpanel by Numerator)", "accessed": "2026-11-13", "verified": true },
-    { "id": "sustainability2026-hormuz", "citation": "Sustainability (2026)", "url": "https://www.mdpi.com/2071-1050/18/18/9534", "licence": "To confirm (MDPI)", "accessed": "2026-11-13", "verified": false },
-    { "id": "ihl2025-distortion", "citation": "IHL Group (2025)", "url": "https://www.ihlservices.com/news/analyst-corner/2025/09/retail-inventory-crisis-persists-despite-172-billion-in-improvements", "licence": "Cited (vendor estimate)", "accessed": "2026-11-13", "verified": true },
-    { "id": "open-meteo", "citation": "Open-Meteo (n.d.)", "url": "https://open-meteo.com/en/docs/historical-weather-api", "licence": "CC BY 4.0", "accessed": "2026-11-13", "verified": true },
-    { "id": "desnz2025-ghg-factors", "citation": "DESNZ (2025)", "url": "https://www.gov.uk/government/collections/government-conversion-factors-for-company-reporting", "licence": "To confirm (Open Government Licence)", "accessed": "2026-11-13", "verified": false },
-    { "id": "usda-foodkeeper", "citation": "USDA FSIS (n.d.)", "url": "https://catalog.data.gov/dataset/fsis-foodkeeper-data", "licence": "CC0 1.0", "accessed": "2026-11-13", "verified": true },
-    { "id": "poore-nemecek2018", "citation": "Poore and Nemecek (2018)", "url": "https://doi.org/10.1126/science.aaq0216", "licence": "Cited (Science)", "accessed": "2026-11-13", "verified": false },
-    { "id": "fixture-placeholder", "citation": "Phase 4 placeholder (no external source)", "url": null, "licence": "n/a", "accessed": "2026-11-13", "verified": true }
+    {
+      "id": "wang2025-freshretailnet",
+      "citation": "Wang et al. (2025)",
+      "url": "https://arxiv.org/abs/2505.16319",
+      "licence": "CC BY 4.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "dingdong2025-frn50k",
+      "citation": "Dingdong-Inc (2025)",
+      "url": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-50K",
+      "licence": "CC BY 4.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "dingdong2026-frnlt",
+      "citation": "Dingdong-Inc (2026)",
+      "url": "https://huggingface.co/datasets/Dingdong-Inc/FreshRetailNet-LT",
+      "licence": "CC BY 4.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "yapwh2023-vegetables",
+      "citation": "YapWH (2023)",
+      "url": "https://www.kaggle.com/datasets/yapwh1208/supermarket-sales-data",
+      "licence": "CC BY-NC-SA 4.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "ma2024-cumcm",
+      "citation": "Ma (2024)",
+      "url": "https://arxiv.org/abs/2409.09065",
+      "licence": "arXiv preprint (cited)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "unep2024-food-waste",
+      "citation": "UNEP (2024)",
+      "url": "https://wedocs.unep.org/bitstream/handle/20.500.11822/45275/Food-Waste-Index-2024-key-messages.pdf",
+      "licence": "Cited (UNEP)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "sohail2026-gulf-business",
+      "citation": "Sohail (2026)",
+      "url": "https://gulfbusiness.com/en/2026/logistics/higher-costs-tighter-margins-how-hormuz-disruptions-are-testing-uae-food-supplies/",
+      "licence": "Cited (Gulf Business)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "fathallah2024-atlantic-council",
+      "citation": "Fathallah (2024)",
+      "url": "https://www.atlanticcouncil.org/blogs/menasource/uae-food-security",
+      "licence": "Cited (Atlantic Council)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "communicate2026-nielseniq",
+      "citation": "Communicate Online (2026)",
+      "url": "https://communicateonline.me/news/ramadan-fuels-double-digit-fmcg-growth-boosts-tech-sales-across-mena/",
+      "licence": "Cited (Communicate; NielsenIQ data)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "rana2026-worldpanel",
+      "citation": "Rana (2026)",
+      "url": "https://worldpanelbynumerator.com/insights/uae-fmcg-demand-q1-2026-ramadan-consumption-trends",
+      "licence": "Cited (Worldpanel by Numerator)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "goharbakhsh2026-hormuz",
+      "citation": "Goharbakhsh, Rahbari and Aghabayk (2026)",
+      "url": "https://doi.org/10.3390/su18189534",
+      "licence": "CC BY 4.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "ihl2025-distortion",
+      "citation": "IHL Group (2025)",
+      "url": "https://www.ihlservices.com/news/analyst-corner/2025/09/retail-inventory-crisis-persists-despite-172-billion-in-improvements",
+      "licence": "Cited (vendor estimate)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "sebugwaawo2022-khaleej-times",
+      "citation": "Sebugwaawo (2022)",
+      "url": "https://www.khaleejtimes.com/uae/uae-dh6-billion-worth-of-food-wasted-annually-says-minister",
+      "licence": "Cited (Khaleej Times)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "open-meteo",
+      "citation": "Open-Meteo (n.d.)",
+      "url": "https://open-meteo.com/en/docs/historical-weather-api",
+      "licence": "CC BY 4.0 (non-commercial use)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "desnz2025-ghg-factors",
+      "citation": "DESNZ (2025)",
+      "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+      "licence": "Open Government Licence v3.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "usda-foodkeeper",
+      "citation": "USDA FSIS (2025)",
+      "url": "https://catalog.data.gov/dataset/fsis-foodkeeper-data",
+      "licence": "CC0 1.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "poore-nemecek2018",
+      "citation": "Poore and Nemecek (2018)",
+      "url": "https://doi.org/10.1126/science.aaq0216",
+      "licence": "Cited (Science)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "owid-ghg-per-kg",
+      "citation": "Our World in Data (n.d.)",
+      "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+      "licence": "CC BY 4.0",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "timeanddate-uae-holidays",
+      "citation": "timeanddate.com (n.d.)",
+      "url": "https://www.timeanddate.com/holidays/united-arab-emirates/",
+      "licence": "Cited (secondary aggregator)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "wam2026-ramadan-start",
+      "citation": "WAM (2026)",
+      "url": "https://www.wam.ae/en/article/bysbidd-breaking-wednesday-first-day-ramadan-uae",
+      "licence": "Cited (official)",
+      "verified": true,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "wam2025-school-calendar",
+      "citation": "WAM (2025)",
+      "url": "https://www.wam.ae/en/article/bkttnt6-ministry-education-unveils-new-school-calendar-for",
+      "licence": "Cited (official)",
+      "verified": false,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "news-school-calendar-2023",
+      "citation": "ProPakistani (2023)",
+      "url": "https://propakistani.pk/2023/07/31/dates-revealed-for-the-new-school-term-in-uae/",
+      "licence": "Cited (news)",
+      "verified": false,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "news-school-calendar-2024",
+      "citation": "Emirates 24|7 (2024)",
+      "url": "https://www.emirates247.com/uae/uae-school-year-wrap-up-students-last-day-june-14-teachers-summer-break-begins-july-15-2024-05-01-1.731965",
+      "licence": "Cited (news)",
+      "verified": false,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "news-school-calendar-2025",
+      "citation": "The National (2024)",
+      "url": "https://www.thenationalnews.com/uae/education/2024/07/04/uae-school-calendar-2024-25-holidays",
+      "licence": "Cited (news)",
+      "verified": false,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "news-school-calendar-2026",
+      "citation": "Gulf News (2026)",
+      "url": "https://gulfnews.com/living-in-uae/education/uae-school-calendar-2026-27-when-do-schools-reopen-after-summer-break-1.500596274",
+      "licence": "Cited (news)",
+      "verified": false,
+      "accessed": "2026-11-13"
+    },
+    {
+      "id": "fixture-placeholder",
+      "citation": "Phase 4 placeholder (no external source)",
+      "url": null,
+      "licence": "n/a",
+      "verified": true,
+      "accessed": "2026-11-13"
+    }
   ],
   "provenanceLegend": {
     "REAL": "Unmodified real data; the source is cited.",

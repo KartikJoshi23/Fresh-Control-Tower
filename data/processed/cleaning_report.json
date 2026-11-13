@@ -1,0 +1,36 @@
+{
+  "frn50k": {
+    "stock_flag_mismatch_rows": 0,
+    "rows": 4500000,
+    "transition_hours": 772426,
+    "all_day_outages": 181791,
+    "discount_zero_to_missing": 16039,
+    "discount_capped_at_one": 34,
+    "flagged_weekend_workdays": 50000,
+    "series": 50000,
+    "series_with_gaps": 0,
+    "missing_days_inside_windows": 0
+  },
+  "frnlt": {
+    "stock_flag_mismatch_rows": 0,
+    "rows": 7869549,
+    "transition_hours": 2092764,
+    "all_day_outages": 429038,
+    "discount_zero_to_missing": 0,
+    "discount_capped_at_one": 0,
+    "flagged_weekend_workdays": 124220,
+    "series": 22939,
+    "series_with_gaps": 8022,
+    "missing_days_inside_windows": 1449312
+  },
+  "veg": {
+    "duplicate_item_names": 4,
+    "unparseable_times": 0,
+    "return_lines": 461,
+    "capped_lines": 897,
+    "item_days": 46599,
+    "item_days_without_wholesale": 0,
+    "clearance_item_days": 511,
+    "closure_days": 10
+  }
+}

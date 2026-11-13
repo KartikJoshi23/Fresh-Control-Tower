@@ -15,10 +15,10 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 4: repository setup and collaboration kit (**done**; awaiting the lead's review) |
-| **Gate** | ⏸ Waiting for the lead's message **"Kit approved, begin development"** |
-| **Last completed step** | Phase 4 setup committed: plan audit v1.1, Datasets re-filed, web/pipeline/report scaffolds, 13 contracts + fixtures + JSON Schemas, CI, docs |
-| **Exact next step** | The lead reviews `MASTER_PROMPT.md` and `COLLABORATOR_PROMPT.md` (local only). After "Kit approved, begin development": **Part 1** (tasks P1-01…P1-06, Track A). Track B can start **Part 5** (P5-01…) in parallel. |
+| **Current phase** | Phase 5: development. **Part 1 (data foundation) in progress.** |
+| **Gate** | None until Part 1 is complete. Then ⏸ wait for the lead's "continue". |
+| **Last completed step** | Kit approved by the lead (2026-11-13) |
+| **Exact next step** | Finish P1-01…P1-07 on `feat/P1-data-foundation`, then report Part 1 and stop. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
 | **Last integrated commit on `main`** | `0f12d2b` (Phase 4 setup; later commits are listed in §9) |
 | **Branch** | `main` (initial setup); all Phase 5 work happens on `feat/P<part>-<slug>` branches |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
@@ -30,8 +30,8 @@
 | 1 Problem selection | ✅ Approved | "Problem approved, begin dataset search" | 2026-11-13 |
 | 2 Dataset | ✅ Complete | Lead confirmed the datasets are in the root folder | 2026-11-13 |
 | 3 Inspection and plan | ✅ Approved (v1.1 after audit) | "Plan approved, begin setup" (given with the repository link) | 2026-11-13 |
-| 4 Repository setup and kit | ⏳ Awaiting review | **"Kit approved, begin development"** | — |
-| 5 Development (Parts 1–9) | 🔒 Locked until Phase 4 is approved | "continue" after **each** part | — |
+| 4 Repository setup and kit | ✅ Approved | "Kit approved" | 2026-11-13 |
+| 5 Development (Parts 1–9) | 🟢 Open (Part 1 in progress) | "continue" after **each** part | 2026-11-13 |
 | 6 Screenshots and report | 🔒 | "continue" after **each** section | — |
 | 7 NotebookLM prompt | 🔒 | Lead's review | — |
 
@@ -82,13 +82,13 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P1-01 | `ingest.py` + `clean.py`: cleaning rules C1–C14, each with a unit test | Kit approved | — | ⬜ | | `docs/03` §6 |
-| P1-02 | `calibrate.py` → `data/processed/calibration.json` | P1-01 | — | ⬜ | | Targets: `docs/03` §7 |
-| P1-03 | `calendar_uae.py`: festival dates 2023–2026 with an official source per date → `calendar.json` | Kit approved | — | ⬜ | | No date without a source |
-| P1-04 | `weather.py`: Open-Meteo daily weather for Dubai, Sharjah and Abu Dhabi → `weather.json` | Kit approved | — | ⬜ | | CC BY 4.0 attribution |
-| P1-05 | Reference factors: DESNZ 2025 transport, FoodKeeper shelf life, Poore and Nemecek 2018 food CO2e (verify the ⚠ items) | Kit approved | — | ⬜ | | `data/external/` |
-| P1-06 | Places and routes (origins, ports, chokepoints) → `routes.json` | Kit approved | — | ⬜ | | |
-| P1-07 | `run.py` CLI (steps: clean, calibrate) | P1-01 | — | ⬜ | | Extended in later parts |
+| P1-01 | `ingest.py` + `clean.py`: cleaning rules C1–C14, each with a unit test | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | `docs/03` §6 |
+| P1-02 | `calibrate.py` → `data/processed/calibration.json` | P1-01 | Kartik | 🟨 | feat/P1-data-foundation | Targets: `docs/03` §7 |
+| P1-03 | `calendar_uae.py`: festival dates 2023–2026 with an official source per date → `calendar.json` | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | No date without a source |
+| P1-04 | `weather.py`: Open-Meteo daily weather for Dubai, Sharjah and Abu Dhabi → `weather.json` | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | CC BY 4.0 attribution |
+| P1-05 | Reference factors: DESNZ 2025 transport, FoodKeeper shelf life, Poore and Nemecek 2018 food CO2e (verify the ⚠ items) | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | `data/external/` |
+| P1-06 | Places and routes (origins, ports, chokepoints) → `routes.json` | Kit approved | Kartik | 🟨 | feat/P1-data-foundation | |
+| P1-07 | `run.py` CLI (steps: clean, calibrate) | P1-01 | Kartik | 🟨 | feat/P1-data-foundation | Extended in later parts |
 
 ### Phase 5, Part 2: synthetic UAE world (Track A)
 
@@ -241,5 +241,7 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 
 ### Kartik (lead)
 - 2026-11-13 · Phases 1–4 (K-01…K-11) · branch main · last commit 0f12d2b (7 setup commits, 446c4d2…0f12d2b) · Problem selected (A); datasets chosen and verified; inspection; plan v1.1 (audited); repository scaffold, contracts, fixtures, CI, docs; prompts local-only · next: lead reviews the kit, then "Kit approved, begin development"
+
+- 2026-11-13 · Phase 5 gate · branch main · last commit 206ddee · Kit approved by the lead; P1-01…P1-07 claimed · next: build Part 1 on feat/P1-data-foundation
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->

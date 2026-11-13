@@ -18,7 +18,7 @@
 | **Current phase** | Phase 5: development. **Part 1 (data foundation) done and merged into `main`.** |
 | **Gate** | ▶ "continue" given for Part 2 (2026-11-13). Next stop: after Part 2 |
 | **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass; CI green on the branch (run 43463725418) |
-| **Exact next step** | Build **Part 2** (P2-01…P2-03: synthetic UAE world, P0 baseline simulation, fidelity report) on `feat/P2-synthetic-world`. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
+| **Exact next step** | Finish Part 2 on `feat/P2-synthetic-world`: write `pipeline/tests/test_world.py`, `test_generate.py`, `test_simulate.py`, `test_fidelity.py`; write `docs/04-synthetic-world.md`; log decisions D-21–D-23 (see §9 entry); push, CI green, merge `--no-ff`. Run: `python pipeline/run.py --step part2` |
 | **Last integrated commit on `main`** | `ff47bb7` (merge of Part 1; earlier commits are listed in §9) |
 | **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
@@ -94,9 +94,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik | 🟨 | feat/P2-synthetic-world | Plan §3.4 |
-| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik | 🟨 | feat/P2-synthetic-world | Invariant tests |
-| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik | 🟨 | feat/P2-synthetic-world | Every band must pass |
+| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik | 🟨 | feat/P2-synthetic-world | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). Tests pending |
+| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik | 🟨 | feat/P2-synthetic-world | Code done; ledger invariants asserted in-engine. Unit tests pending |
+| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik | 🟨 | feat/P2-synthetic-world | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). Tests + docs/04 pending |
 
 ### Phase 5, Part 3: models (Track A)
 
@@ -258,5 +258,7 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-13 · P1-01…P1-07 · branch main · last commit ff47bb7 (merge of feat/P1-data-foundation, 8 commits bdbec98…350a293) · Part 1 merged with --no-ff after branch CI passed; rows set to ✅ · next: wait for "continue", then Part 2 on feat/P2-synthetic-world
 
 - 2026-11-13 · Part 2 gate · branch main · last commit 950917d · "continue" given by the lead; P2-01…P2-03 claimed · next: build Part 2 on feat/P2-synthetic-world
+
+- 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · Part 2 code pushed (tests/docs pending). Decisions to log: D-21 P0 coverage = L+R−1 days (22:00 review, 06:00 dawn delivery), weekday-aware 28-day MA; D-22 P0 adds shrink allowance, 1-case presentation minimum (fixes zero-sales trap) and flat +25% promo uplift, buffer stays 20%; D-23 spike bands checked on true demand (recorded sales shown alongside); spoilage band applied to vegetable categories only; added sup-local-bakery (9 suppliers, archetype 'local'). Waste = expiry + quality culls (series.ts comment to update) · next: tests, docs/04, merge
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->

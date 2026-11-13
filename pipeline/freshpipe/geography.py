@@ -1,7 +1,7 @@
 """Places and supplier routes (task P1-06) → routes.json, plus great-circle distances for CO2e.
 
 Places are real, with coordinates rounded to 0.01°. Suppliers are FICTIONAL archetypes:
-- local farm;
+- local producers (a vertical farm and a commercial bakery);
 - GCC overland;
 - sea import through or around Hormuz;
 - air import.
@@ -33,7 +33,7 @@ class Place:
 class SupplierRoute:
     supplier_id: str
     supplier_name: str
-    archetype: str  # local_farm | gcc_overland | sea_import | air_import
+    archetype: str  # local | gcc_overland | sea_import | air_import
     mode: str       # local_truck | truck | sea | air
     place_ids: tuple[str, ...]
     chokepoint_ids: tuple[str, ...]
@@ -51,6 +51,7 @@ PLACES: tuple[Place, ...] = (
     Place("bab-el-mandeb", "Bab el-Mandeb", "chokepoint", 12.58, 43.33),
     Place("suez", "Suez Canal", "chokepoint", 30.42, 32.35),
     Place("origin-dubai-farm", "UAE vertical farm (fictional site)", "origin", 24.95, 55.20),
+    Place("origin-dubai-bakery", "UAE commercial bakery (fictional site)", "origin", 24.98, 55.17),
     Place("origin-muscat", "Muscat, Oman", "origin", 23.59, 58.41),
     Place("origin-al-kharj", "Al Kharj, Saudi Arabia", "origin", 24.15, 47.31),
     Place("origin-nhava-sheva", "Nhava Sheva (JNPT), India", "port", 18.95, 72.95),
@@ -60,8 +61,10 @@ PLACES: tuple[Place, ...] = (
 )
 
 SUPPLIER_ROUTES: tuple[SupplierRoute, ...] = (
-    SupplierRoute("sup-local-farm", "UAE vertical farm (fictional)", "local_farm", "local_truck",
+    SupplierRoute("sup-local-farm", "UAE vertical farm (fictional)", "local", "local_truck",
                   ("origin-dubai-farm", "uae-dubai"), ()),
+    SupplierRoute("sup-local-bakery", "UAE commercial bakery (fictional)", "local", "local_truck",
+                  ("origin-dubai-bakery", "uae-dubai"), ()),
     SupplierRoute("sup-gcc-truck", "GCC overland supplier, Oman (fictional)", "gcc_overland", "truck",
                   ("origin-muscat", "uae-dubai"), ()),
     SupplierRoute("sup-gcc-ksa", "GCC overland supplier, Saudi Arabia (fictional)", "gcc_overland", "truck",

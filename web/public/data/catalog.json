@@ -1,26 +1,804 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
-  "seed": null,
-  "isFixture": true,
+  "generatedAt": "2026-11-13T22:03:22+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "isFixture": false,
   "provenance": "CALIBRATED_SYNTHETIC",
-  "sources": ["fixture-placeholder"],
+  "sources": [
+    "yapwh2023-vegetables",
+    "usda-foodkeeper"
+  ],
   "stores": [
-    { "id": "dxb-marina", "name": "Dark store Marina (fictional)", "area": "Dubai Marina", "emirate": "Dubai", "lat": 25.08, "lon": 55.14, "sizeIndex": 1.2 },
-    { "id": "dxb-barsha", "name": "Dark store Al Barsha (fictional)", "area": "Al Barsha", "emirate": "Dubai", "lat": 25.11, "lon": 55.2, "sizeIndex": 1.0 },
-    { "id": "shj-nahda", "name": "Dark store Al Nahda (fictional)", "area": "Al Nahda", "emirate": "Sharjah", "lat": 25.3, "lon": 55.37, "sizeIndex": 0.9 },
-    { "id": "auh-reem", "name": "Dark store Al Reem (fictional)", "area": "Al Reem Island", "emirate": "Abu Dhabi", "lat": 24.5, "lon": 54.4, "sizeIndex": 1.1 }
+    {
+      "id": "dxb-marina",
+      "name": "Dark store Marina (fictional)",
+      "area": "Dubai Marina",
+      "emirate": "Dubai",
+      "lat": 25.08,
+      "lon": 55.14,
+      "sizeIndex": 1.2
+    },
+    {
+      "id": "dxb-barsha",
+      "name": "Dark store Al Barsha (fictional)",
+      "area": "Al Barsha",
+      "emirate": "Dubai",
+      "lat": 25.11,
+      "lon": 55.2,
+      "sizeIndex": 1.0
+    },
+    {
+      "id": "dxb-deira",
+      "name": "Dark store Deira (fictional)",
+      "area": "Deira",
+      "emirate": "Dubai",
+      "lat": 25.27,
+      "lon": 55.31,
+      "sizeIndex": 1.1
+    },
+    {
+      "id": "dxb-business-bay",
+      "name": "Dark store Business Bay (fictional)",
+      "area": "Business Bay",
+      "emirate": "Dubai",
+      "lat": 25.19,
+      "lon": 55.27,
+      "sizeIndex": 0.95
+    },
+    {
+      "id": "dxb-jvc",
+      "name": "Dark store JVC (fictional)",
+      "area": "Jumeirah Village Circle",
+      "emirate": "Dubai",
+      "lat": 25.06,
+      "lon": 55.21,
+      "sizeIndex": 0.85
+    },
+    {
+      "id": "shj-nahda",
+      "name": "Dark store Al Nahda (fictional)",
+      "area": "Al Nahda",
+      "emirate": "Sharjah",
+      "lat": 25.3,
+      "lon": 55.37,
+      "sizeIndex": 0.9
+    },
+    {
+      "id": "auh-reem",
+      "name": "Dark store Al Reem (fictional)",
+      "area": "Al Reem Island",
+      "emirate": "Abu Dhabi",
+      "lat": 24.5,
+      "lon": 54.4,
+      "sizeIndex": 1.1
+    },
+    {
+      "id": "auh-khalifa",
+      "name": "Dark store Khalifa City (fictional)",
+      "area": "Khalifa City",
+      "emirate": "Abu Dhabi",
+      "lat": 24.42,
+      "lon": 54.58,
+      "sizeIndex": 0.8
+    }
   ],
   "categories": [
-    { "id": "leafy-greens", "name": "Leafy greens and herbs", "shelfLifeDays": { "min": 3, "max": 5 } },
-    { "id": "dairy", "name": "Dairy and laban", "shelfLifeDays": { "min": 7, "max": 14 } },
-    { "id": "dates", "name": "Dates", "shelfLifeDays": { "min": 14, "max": 30 } }
+    {
+      "id": "leafy-greens",
+      "name": "Leafy greens and herbs",
+      "shelfLifeDays": {
+        "min": 4,
+        "max": 4
+      }
+    },
+    {
+      "id": "berries",
+      "name": "Berries",
+      "shelfLifeDays": {
+        "min": 3,
+        "max": 3
+      }
+    },
+    {
+      "id": "stone-fruit",
+      "name": "Stone fruit",
+      "shelfLifeDays": {
+        "min": 4,
+        "max": 4
+      }
+    },
+    {
+      "id": "salad-vegetables",
+      "name": "Salad vegetables",
+      "shelfLifeDays": {
+        "min": 5,
+        "max": 5
+      }
+    },
+    {
+      "id": "dairy",
+      "name": "Dairy and laban",
+      "shelfLifeDays": {
+        "min": 10,
+        "max": 10
+      }
+    },
+    {
+      "id": "bakery",
+      "name": "Bakery and khubz",
+      "shelfLifeDays": {
+        "min": 3,
+        "max": 3
+      }
+    },
+    {
+      "id": "poultry",
+      "name": "Fresh poultry",
+      "shelfLifeDays": {
+        "min": 3,
+        "max": 3
+      }
+    },
+    {
+      "id": "dates",
+      "name": "Dates",
+      "shelfLifeDays": {
+        "min": 30,
+        "max": 30
+      }
+    },
+    {
+      "id": "fruit",
+      "name": "Fruit (bananas, apples, citrus)",
+      "shelfLifeDays": {
+        "min": 5,
+        "max": 28
+      }
+    }
   ],
   "skus": [
-    { "id": "lettuce-romaine", "name": "Romaine lettuce", "categoryId": "leafy-greens", "unit": "each", "kgPerUnit": 0.35, "shelfLifeDays": 4, "unitCostAED": 3.2, "priceAED": 5.5, "casePack": 12, "primarySupplierId": "sup-local-farm" },
-    { "id": "laban-1l", "name": "Laban 1 L", "categoryId": "dairy", "unit": "each", "kgPerUnit": 1.03, "shelfLifeDays": 10, "unitCostAED": 4.1, "priceAED": 6.25, "casePack": 12, "primarySupplierId": "sup-gcc-truck" },
-    { "id": "dates-500g", "name": "Dates 500 g", "categoryId": "dates", "unit": "pack", "kgPerUnit": 0.5, "shelfLifeDays": 21, "unitCostAED": 11.0, "priceAED": 18.0, "casePack": 10, "primarySupplierId": "sup-gcc-truck" }
+    {
+      "id": "lettuce-romaine",
+      "name": "Romaine lettuce",
+      "categoryId": "leafy-greens",
+      "unit": "each",
+      "kgPerUnit": 0.35,
+      "shelfLifeDays": 4,
+      "unitCostAED": 3.4,
+      "priceAED": 6.5,
+      "casePack": 12,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "salad-leaves-150g",
+      "name": "Mixed salad leaves 150 g",
+      "categoryId": "leafy-greens",
+      "unit": "pack",
+      "kgPerUnit": 0.15,
+      "shelfLifeDays": 4,
+      "unitCostAED": 4.26,
+      "priceAED": 9.75,
+      "casePack": 10,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "rocket-125g",
+      "name": "Rocket 125 g",
+      "categoryId": "leafy-greens",
+      "unit": "pack",
+      "kgPerUnit": 0.125,
+      "shelfLifeDays": 4,
+      "unitCostAED": 4.87,
+      "priceAED": 8.25,
+      "casePack": 10,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "spinach-bunch",
+      "name": "Spinach bunch",
+      "categoryId": "leafy-greens",
+      "unit": "each",
+      "kgPerUnit": 0.25,
+      "shelfLifeDays": 4,
+      "unitCostAED": 2.95,
+      "priceAED": 4.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "mint-bunch",
+      "name": "Mint bunch",
+      "categoryId": "leafy-greens",
+      "unit": "each",
+      "kgPerUnit": 0.1,
+      "shelfLifeDays": 4,
+      "unitCostAED": 1.58,
+      "priceAED": 2.75,
+      "casePack": 20,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "coriander-bunch",
+      "name": "Coriander bunch",
+      "categoryId": "leafy-greens",
+      "unit": "each",
+      "kgPerUnit": 0.1,
+      "shelfLifeDays": 4,
+      "unitCostAED": 1.38,
+      "priceAED": 2.5,
+      "casePack": 20,
+      "primarySupplierId": "sup-gcc-truck"
+    },
+    {
+      "id": "parsley-bunch",
+      "name": "Parsley bunch",
+      "categoryId": "leafy-greens",
+      "unit": "each",
+      "kgPerUnit": 0.1,
+      "shelfLifeDays": 4,
+      "unitCostAED": 1.49,
+      "priceAED": 2.5,
+      "casePack": 20,
+      "primarySupplierId": "sup-gcc-truck"
+    },
+    {
+      "id": "strawberries-250g",
+      "name": "Strawberries 250 g",
+      "categoryId": "berries",
+      "unit": "pack",
+      "kgPerUnit": 0.25,
+      "shelfLifeDays": 3,
+      "unitCostAED": 9.3,
+      "priceAED": 14.95,
+      "casePack": 8,
+      "primarySupplierId": "sup-air-europe"
+    },
+    {
+      "id": "blueberries-125g",
+      "name": "Blueberries 125 g",
+      "categoryId": "berries",
+      "unit": "pack",
+      "kgPerUnit": 0.125,
+      "shelfLifeDays": 3,
+      "unitCostAED": 7.89,
+      "priceAED": 12.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-air-import"
+    },
+    {
+      "id": "raspberries-125g",
+      "name": "Raspberries 125 g",
+      "categoryId": "berries",
+      "unit": "pack",
+      "kgPerUnit": 0.125,
+      "shelfLifeDays": 3,
+      "unitCostAED": 12.66,
+      "priceAED": 15.95,
+      "casePack": 6,
+      "primarySupplierId": "sup-air-europe"
+    },
+    {
+      "id": "peaches-1kg",
+      "name": "Peaches 1 kg",
+      "categoryId": "stone-fruit",
+      "unit": "pack",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 4,
+      "unitCostAED": 9.84,
+      "priceAED": 16.5,
+      "casePack": 4,
+      "primarySupplierId": "sup-sea-europe"
+    },
+    {
+      "id": "nectarines-1kg",
+      "name": "Nectarines 1 kg",
+      "categoryId": "stone-fruit",
+      "unit": "pack",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 4,
+      "unitCostAED": 9.8,
+      "priceAED": 16.95,
+      "casePack": 4,
+      "primarySupplierId": "sup-sea-europe"
+    },
+    {
+      "id": "plums-500g",
+      "name": "Plums 500 g",
+      "categoryId": "stone-fruit",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 4,
+      "unitCostAED": 6.49,
+      "priceAED": 9.95,
+      "casePack": 6,
+      "primarySupplierId": "sup-sea-import"
+    },
+    {
+      "id": "apricots-500g",
+      "name": "Apricots 500 g",
+      "categoryId": "stone-fruit",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 4,
+      "unitCostAED": 8.64,
+      "priceAED": 13.95,
+      "casePack": 6,
+      "primarySupplierId": "sup-air-europe"
+    },
+    {
+      "id": "tomatoes-1kg",
+      "name": "Tomatoes",
+      "categoryId": "salad-vegetables",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 5,
+      "unitCostAED": 4.08,
+      "priceAED": 6.95,
+      "casePack": 10,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "cucumbers-1kg",
+      "name": "Cucumbers",
+      "categoryId": "salad-vegetables",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 5,
+      "unitCostAED": 2.97,
+      "priceAED": 5.95,
+      "casePack": 10,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "cherry-tomatoes-250g",
+      "name": "Cherry tomatoes 250 g",
+      "categoryId": "salad-vegetables",
+      "unit": "pack",
+      "kgPerUnit": 0.25,
+      "shelfLifeDays": 5,
+      "unitCostAED": 5.26,
+      "priceAED": 7.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "bell-peppers-500g",
+      "name": "Mixed bell peppers 500 g",
+      "categoryId": "salad-vegetables",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 5,
+      "unitCostAED": 4.69,
+      "priceAED": 9.5,
+      "casePack": 10,
+      "primarySupplierId": "sup-gcc-truck"
+    },
+    {
+      "id": "mushrooms-250g",
+      "name": "White mushrooms 250 g",
+      "categoryId": "salad-vegetables",
+      "unit": "pack",
+      "kgPerUnit": 0.25,
+      "shelfLifeDays": 5,
+      "unitCostAED": 3.7,
+      "priceAED": 7.25,
+      "casePack": 12,
+      "primarySupplierId": "sup-local-farm"
+    },
+    {
+      "id": "aubergine-1kg",
+      "name": "Aubergine",
+      "categoryId": "salad-vegetables",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 5,
+      "unitCostAED": 3.63,
+      "priceAED": 6.5,
+      "casePack": 10,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "laban-1l",
+      "name": "Laban 1 L",
+      "categoryId": "dairy",
+      "unit": "each",
+      "kgPerUnit": 1.03,
+      "shelfLifeDays": 10,
+      "unitCostAED": 4.27,
+      "priceAED": 6.25,
+      "casePack": 12,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "fresh-milk-2l",
+      "name": "Fresh milk 2 L",
+      "categoryId": "dairy",
+      "unit": "each",
+      "kgPerUnit": 2.06,
+      "shelfLifeDays": 10,
+      "unitCostAED": 7.57,
+      "priceAED": 11.5,
+      "casePack": 6,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "yoghurt-1kg",
+      "name": "Plain yoghurt 1 kg",
+      "categoryId": "dairy",
+      "unit": "each",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 10,
+      "unitCostAED": 6.21,
+      "priceAED": 9.75,
+      "casePack": 6,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "labneh-400g",
+      "name": "Labneh 400 g",
+      "categoryId": "dairy",
+      "unit": "each",
+      "kgPerUnit": 0.4,
+      "shelfLifeDays": 10,
+      "unitCostAED": 8.08,
+      "priceAED": 12.5,
+      "casePack": 12,
+      "primarySupplierId": "sup-gcc-truck"
+    },
+    {
+      "id": "fresh-cream-500ml",
+      "name": "Fresh cream 500 ml",
+      "categoryId": "dairy",
+      "unit": "each",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 10,
+      "unitCostAED": 5.18,
+      "priceAED": 10.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "khubz-arabic",
+      "name": "Arabic bread (khubz), 6 pieces",
+      "categoryId": "bakery",
+      "unit": "pack",
+      "kgPerUnit": 0.4,
+      "shelfLifeDays": 3,
+      "unitCostAED": 1.76,
+      "priceAED": 3.5,
+      "casePack": 20,
+      "primarySupplierId": "sup-local-bakery"
+    },
+    {
+      "id": "white-bread-600g",
+      "name": "White sliced bread 600 g",
+      "categoryId": "bakery",
+      "unit": "each",
+      "kgPerUnit": 0.6,
+      "shelfLifeDays": 3,
+      "unitCostAED": 4.25,
+      "priceAED": 6.75,
+      "casePack": 12,
+      "primarySupplierId": "sup-local-bakery"
+    },
+    {
+      "id": "wholemeal-bread-600g",
+      "name": "Wholemeal bread 600 g",
+      "categoryId": "bakery",
+      "unit": "each",
+      "kgPerUnit": 0.6,
+      "shelfLifeDays": 3,
+      "unitCostAED": 4.39,
+      "priceAED": 7.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-local-bakery"
+    },
+    {
+      "id": "croissants-4pk",
+      "name": "Croissants, 4 pieces",
+      "categoryId": "bakery",
+      "unit": "pack",
+      "kgPerUnit": 0.24,
+      "shelfLifeDays": 3,
+      "unitCostAED": 9.32,
+      "priceAED": 12.95,
+      "casePack": 10,
+      "primarySupplierId": "sup-local-bakery"
+    },
+    {
+      "id": "chicken-whole-1kg",
+      "name": "Fresh whole chicken 1 kg",
+      "categoryId": "poultry",
+      "unit": "each",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 3,
+      "unitCostAED": 11.72,
+      "priceAED": 19.95,
+      "casePack": 6,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "chicken-breast-500g",
+      "name": "Fresh chicken breast 500 g",
+      "categoryId": "poultry",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 3,
+      "unitCostAED": 9.44,
+      "priceAED": 22.5,
+      "casePack": 8,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "chicken-thighs-1kg",
+      "name": "Fresh chicken thighs 1 kg",
+      "categoryId": "poultry",
+      "unit": "pack",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 3,
+      "unitCostAED": 16.97,
+      "priceAED": 21.95,
+      "casePack": 6,
+      "primarySupplierId": "sup-gcc-truck"
+    },
+    {
+      "id": "dates-khalas-500g",
+      "name": "Khalas dates 500 g",
+      "categoryId": "dates",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 30,
+      "unitCostAED": 9.27,
+      "priceAED": 14.95,
+      "casePack": 10,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "dates-sukkari-500g",
+      "name": "Sukkari dates 500 g",
+      "categoryId": "dates",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 30,
+      "unitCostAED": 14.77,
+      "priceAED": 22.95,
+      "casePack": 10,
+      "primarySupplierId": "sup-gcc-ksa"
+    },
+    {
+      "id": "dates-medjool-500g",
+      "name": "Medjool dates 500 g",
+      "categoryId": "dates",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 30,
+      "unitCostAED": 25.35,
+      "priceAED": 39.95,
+      "casePack": 6,
+      "primarySupplierId": "sup-gcc-truck"
+    },
+    {
+      "id": "bananas-1kg",
+      "name": "Bananas",
+      "categoryId": "fruit",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 5,
+      "unitCostAED": 3.23,
+      "priceAED": 6.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-sea-import"
+    },
+    {
+      "id": "apples-red-1kg",
+      "name": "Red apples",
+      "categoryId": "fruit",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 28,
+      "unitCostAED": 6.41,
+      "priceAED": 9.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-sea-europe"
+    },
+    {
+      "id": "apples-green-1kg",
+      "name": "Green apples",
+      "categoryId": "fruit",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 28,
+      "unitCostAED": 6.19,
+      "priceAED": 10.5,
+      "casePack": 12,
+      "primarySupplierId": "sup-sea-europe"
+    },
+    {
+      "id": "oranges-1kg",
+      "name": "Oranges",
+      "categoryId": "fruit",
+      "unit": "kg",
+      "kgPerUnit": 1.0,
+      "shelfLifeDays": 14,
+      "unitCostAED": 6.01,
+      "priceAED": 7.95,
+      "casePack": 12,
+      "primarySupplierId": "sup-sea-khorfakkan"
+    },
+    {
+      "id": "limes-500g",
+      "name": "Limes 500 g",
+      "categoryId": "fruit",
+      "unit": "pack",
+      "kgPerUnit": 0.5,
+      "shelfLifeDays": 14,
+      "unitCostAED": 4.46,
+      "priceAED": 5.5,
+      "casePack": 20,
+      "primarySupplierId": "sup-sea-import"
+    }
   ],
-  "heroSeries": [{ "storeId": "dxb-marina", "skuId": "lettuce-romaine" }]
+  "heroSeries": [
+    {
+      "storeId": "dxb-marina",
+      "skuId": "lettuce-romaine"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "mint-bunch"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "strawberries-250g"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "peaches-1kg"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "tomatoes-1kg"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "laban-1l"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "khubz-arabic"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "chicken-whole-1kg"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "dates-khalas-500g"
+    },
+    {
+      "storeId": "dxb-marina",
+      "skuId": "bananas-1kg"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "lettuce-romaine"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "mint-bunch"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "strawberries-250g"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "peaches-1kg"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "tomatoes-1kg"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "laban-1l"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "khubz-arabic"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "chicken-whole-1kg"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "dates-khalas-500g"
+    },
+    {
+      "storeId": "dxb-deira",
+      "skuId": "bananas-1kg"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "lettuce-romaine"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "mint-bunch"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "strawberries-250g"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "peaches-1kg"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "tomatoes-1kg"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "laban-1l"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "khubz-arabic"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "chicken-whole-1kg"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "dates-khalas-500g"
+    },
+    {
+      "storeId": "shj-nahda",
+      "skuId": "bananas-1kg"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "lettuce-romaine"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "mint-bunch"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "strawberries-250g"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "peaches-1kg"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "tomatoes-1kg"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "laban-1l"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "khubz-arabic"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "chicken-whole-1kg"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "dates-khalas-500g"
+    },
+    {
+      "storeId": "auh-reem",
+      "skuId": "bananas-1kg"
+    }
+  ]
 }

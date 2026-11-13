@@ -10,7 +10,12 @@ Usage, from the repository root:
     python pipeline/run.py --step routes             # -> web/public/data/routes.json
     python pipeline/run.py --step meta               # -> web/public/data/meta.json
 
-Later parts add steps (generate, train, backtest, export).
+    python pipeline/run.py --step part2              # everything in Part 2, in order
+    python pipeline/run.py --step generate           # synthetic world -> data/synthetic/world.* + catalog.json
+    python pipeline/run.py --step simulate           # P0 baseline, hour by hour -> data/synthetic/p0_*
+    python pipeline/run.py --step fidelity           # re-run P0 and check the bands -> data/processed/fidelity_report.json
+
+Later parts add steps (train, backtest, export).
 """
 
 from __future__ import annotations
@@ -27,9 +32,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import pandas as pd  # noqa: E402
 
-from freshpipe import calendar_uae, calibrate, clean, geography, ingest, weather  # noqa: E402
+from freshpipe import calendar_uae, calibrate, clean, fidelity, generate, geography, ingest, simulate, weather  # noqa: E402
 from freshpipe.artefacts import write_artefact, write_meta  # noqa: E402
 from freshpipe.config import load_config, repo_path  # noqa: E402
+from freshpipe.world import catalog_body  # noqa: E402
 
 LOG = logging.getLogger("freshpipe")
 FRN_DATASETS = {"frn50k": "frn50k_train", "frnlt": "frnlt_train"}
@@ -104,6 +110,48 @@ def step_meta() -> None:
     write_meta()
 
 
+def _calibration() -> dict:
+    return json.loads((repo_path("processed") / "calibration.json").read_text(encoding="utf-8"))
+
+
+def step_generate() -> None:
+    """Generate the synthetic world (P2-01) and write catalog.json."""
+    config = load_config()
+    world = generate.generate_world(config)
+    generate.save_world(world)
+    write_artefact("catalog.json", catalog_body(_calibration(), world.seed), provenance="CALIBRATED_SYNTHETIC",
+                   sources=["yapwh2023-vegetables", "usda-foodkeeper"], seed=world.seed, pretty=True)
+    LOG.info("world: %s", json.dumps(world.params))
+
+
+def step_simulate() -> None:
+    """Run the P0 baseline over the saved world, hour by hour (P2-02)."""
+    config = load_config()
+    world = generate.load_world()
+    result = simulate.simulate(world, simulate.BaselinePolicy.from_config(config), config=config)
+    simulate.save_run(result, world)
+
+
+def step_fidelity() -> None:
+    """Re-run P0 deterministically, confirm it matches the saved run, and write the fidelity report (P2-03)."""
+    config = load_config()
+    world = generate.load_world()
+    result = simulate.simulate(world, simulate.BaselinePolicy.from_config(config), config=config)
+    manifest_path = repo_path("synthetic") / "p0_manifest.json"
+    if manifest_path.exists():
+        saved = json.loads(manifest_path.read_text(encoding="utf-8"))["checksums"]["sales_h"]
+        fresh = generate.checksum(result.sales_h[:, result.horizon].astype("int16"))
+        if saved != fresh:
+            raise SystemExit("the saved P0 run differs from a fresh run: re-run --step simulate")
+    report = fidelity.build_report(world, result, _calibration())
+    fidelity.write_report(report)
+    failed = [c["id"] for c in report["checks"] if not c["pass"]] + [a["id"] for a in report["anchors"] if not a["pass"]]
+    LOG.info("fidelity: %d/%d checks pass; anchors %d/%d", report["summary"]["passed"], report["summary"]["checks"],
+             report["summary"]["anchorsPassed"], report["summary"]["anchors"])
+    if failed:
+        raise SystemExit(f"fidelity bands failed: {failed}")
+
+
 STEPS = {
     "clean": step_clean,
     "calibrate": step_calibrate,
@@ -111,17 +159,22 @@ STEPS = {
     "weather": None,  # needs --refresh; dispatched below
     "routes": step_routes,
     "meta": step_meta,
+    "generate": step_generate,
+    "simulate": step_simulate,
+    "fidelity": step_fidelity,
 }
 PART1 = ("clean", "calibrate", "calendar", "weather", "routes", "meta")
+PART2 = ("routes", "generate", "simulate", "fidelity")
+PARTS = {"part1": PART1, "part2": PART2}
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Fresh Control Tower pipeline")
-    parser.add_argument("--step", required=True, choices=[*STEPS, "part1"])
+    parser.add_argument("--step", required=True, choices=[*STEPS, *PARTS])
     parser.add_argument("--refresh", action="store_true", help="re-download weather from Open-Meteo")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
-    for step in (PART1 if args.step == "part1" else (args.step,)):
+    for step in PARTS.get(args.step, (args.step,)):
         started = time.perf_counter()
         if step == "weather":
             step_weather(args.refresh)

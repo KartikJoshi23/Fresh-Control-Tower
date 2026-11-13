@@ -1,0 +1,32 @@
+event_id,name,kind,start,end,public_holiday,source_ids,verified,note
+new-year-2023,New Year's Day,civic,2023-01-01,2023-01-01,true,timeanddate-uae-holidays,true,
+ramadan-2023,Ramadan,religious,2023-03-23,2023-04-20,false,timeanddate-uae-holidays,true,End = day before Eid al-Fitr
+eid-al-fitr-2023,Eid al-Fitr,religious,2023-04-20,2023-04-23,true,timeanddate-uae-holidays,true,Eid day 21 Apr; public-holiday window shown
+eid-al-adha-2023,Eid al-Adha (incl. Arafat Day),religious,2023-06-27,2023-06-30,true,timeanddate-uae-holidays,true,Arafat 27 Jun; Eid day 28 Jun
+summer-break-2023,School summer break,school,2023-07-08,2023-08-27,false,news-school-calendar-2023,false,Last day 7 Jul and reopening 28 Aug per news reports; to verify against MoE
+hijri-new-year-2023,Islamic New Year,religious,2023-07-21,2023-07-21,true,timeanddate-uae-holidays,true,
+mawlid-2023,Prophet's Birthday (holiday),religious,2023-09-29,2023-09-29,true,timeanddate-uae-holidays,true,Observance 27 Sep; holiday 29 Sep
+national-day-2023,National Day,national,2023-12-02,2023-12-03,true,timeanddate-uae-holidays,true,Commemoration Day 30 Nov is an observance
+new-year-2024,New Year's Day,civic,2024-01-01,2024-01-01,true,timeanddate-uae-holidays,true,
+ramadan-2024,Ramadan,religious,2024-03-11,2024-04-09,false,timeanddate-uae-holidays,true,End = day before Eid al-Fitr
+eid-al-fitr-2024,Eid al-Fitr,religious,2024-04-08,2024-04-12,true,timeanddate-uae-holidays,true,Eid day 10 Apr; public-holiday window shown
+eid-al-adha-2024,Eid al-Adha (incl. Arafat Day),religious,2024-06-15,2024-06-18,true,timeanddate-uae-holidays,true,Arafat 15 Jun; Eid day 16 Jun
+summer-break-2024,School summer break,school,2024-06-15,2024-08-25,false,news-school-calendar-2024,false,MoE students' last day 14 Jun and reopening 26 Aug per news reports; private schools may differ
+hijri-new-year-2024,Islamic New Year,religious,2024-07-07,2024-07-07,true,timeanddate-uae-holidays,true,
+mawlid-2024,Prophet's Birthday,religious,2024-09-15,2024-09-15,true,timeanddate-uae-holidays,true,
+national-day-2024,National Day,national,2024-12-02,2024-12-03,true,timeanddate-uae-holidays,true,
+new-year-2025,New Year's Day,civic,2025-01-01,2025-01-01,true,timeanddate-uae-holidays,true,
+ramadan-2025,Ramadan,religious,2025-03-01,2025-03-29,false,timeanddate-uae-holidays,true,End = day before Eid al-Fitr
+eid-al-fitr-2025,Eid al-Fitr,religious,2025-03-30,2025-04-02,true,timeanddate-uae-holidays,true,
+eid-al-adha-2025,Eid al-Adha (incl. Arafat Day),religious,2025-06-05,2025-06-08,true,timeanddate-uae-holidays,true,Arafat 5 Jun; Eid day 6 Jun
+hijri-new-year-2025,Islamic New Year (holiday),religious,2025-06-27,2025-06-27,true,timeanddate-uae-holidays,true,Observance 26 Jun; holiday 27 Jun
+summer-break-2025,School summer break,school,2025-06-30,2025-08-24,false,news-school-calendar-2025;wam2025-school-calendar,false,Reopening 25 Aug 2025 is official (MoE via WAM); start date per news reports
+mawlid-2025,Prophet's Birthday,religious,2025-09-05,2025-09-05,true,timeanddate-uae-holidays,true,
+national-day-2025,National Day,national,2025-12-01,2025-12-02,true,timeanddate-uae-holidays,true,
+new-year-2026,New Year's Day,civic,2026-01-01,2026-01-01,true,timeanddate-uae-holidays,true,
+ramadan-2026,Ramadan,religious,2026-02-18,2026-03-19,false,wam2026-ramadan-start;timeanddate-uae-holidays,true,Start confirmed by the Presidential Court (WAM); end = day before Eid al-Fitr
+eid-al-fitr-2026,Eid al-Fitr,religious,2026-03-19,2026-03-22,true,timeanddate-uae-holidays,true,Eid day 20 Mar; public-holiday window shown
+eid-al-adha-2026,Eid al-Adha (incl. Arafat Day),religious,2026-05-26,2026-05-29,true,timeanddate-uae-holidays,true,Arafat 26 May; Eid day 27 May
+hijri-new-year-2026,Islamic New Year,religious,2026-06-15,2026-06-15,true,timeanddate-uae-holidays,true,
+summer-break-2026,School summer break,school,2026-07-04,2026-08-30,false,wam2025-school-calendar;news-school-calendar-2026,false,2025-26 year ends 3 Jul 2026 (MoE via WAM); 2026-27 starts 31 Aug 2026 per news reports
+mawlid-2026,Prophet's Birthday,religious,2026-08-28,2026-08-28,true,timeanddate-uae-holidays,true,

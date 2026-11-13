@@ -1,0 +1,15 @@
+factor_id,kind,applies_to,value,unit,source_id,source_detail,note
+transport-van-diesel,transport,local_truck,0.6313,kg CO2e per tonne.km,desnz2025-ghg-factors,ID 27_303_3102_14_1 | Freighting goods > Vans > Average (up to 3.5 tonnes) > Diesel,Local deliveries and local farms
+transport-hgv-reefer,transport,truck,0.11894,kg CO2e per tonne.km,desnz2025-ghg-factors,ID 27_306_3140_14_1 | Freighting goods > HGV refrigerated (all diesel) > All HGVs > Average laden,GCC overland reefer trucks
+transport-container-ship,transport,sea,0.01612,kg CO2e per tonne.km,desnz2025-ghg-factors,ID 27_320_3235_14_1 | Freighting goods > Cargo ship > Container ship > Average,DESNZ has no reefer-specific container factor; this understates refrigerated sea freight
+transport-air-freight,transport,air,0.89939,kg CO2e per tonne.km,desnz2025-ghg-factors,ID 27_317_3158_14_1 | Freighting goods > Freight flights > International to/from non-UK > With RF,Includes radiative forcing as DESNZ recommends for flights
+food-other-vegetables,food,leafy-greens;salad-vegetables,0.53,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Other Vegetables (2010 global average),Proxy for leafy greens; herbs; cucumbers; peppers
+food-tomatoes,food,tomatoes,2.09,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Tomatoes (2010 global average),
+food-berries,food,berries,1.53,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Berries & Grapes (2010 global average),
+food-other-fruit,food,stone-fruit;dates,1.05,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Other Fruit (2010 global average),Proxy for stone fruit and dates
+food-bananas,food,bananas,0.86,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Bananas (2010 global average),
+food-apples,food,apples,0.43,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Apples (2010 global average),
+food-citrus,food,citrus,0.39,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Citrus Fruit (2010 global average),
+food-milk,food,dairy,3.15,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Milk (2010 global average),Proxy for laban and yoghurt
+food-poultry,food,poultry,9.87,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Poultry Meat (2010 global average),
+food-wheat,food,bakery,1.57,kg CO2e per kg product,poore-nemecek2018;owid-ghg-per-kg,Wheat & Rye (2010 global average),Per kg of wheat; used as a proxy for bread (understates baking and distribution)

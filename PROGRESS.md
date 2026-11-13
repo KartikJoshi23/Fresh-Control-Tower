@@ -15,12 +15,12 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 5: development. **Part 1 (data foundation) complete; in review.** |
+| **Current phase** | Phase 5: development. **Part 1 (data foundation) done and merged into `main`.** |
 | **Gate** | ⏸ Waiting for the lead's **"continue"** to start Part 2 |
-| **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass |
+| **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass; CI green on the branch (run 43463725418) |
 | **Exact next step** | After "continue": **Part 2** (P2-01 synthetic UAE world generator), reading `data/processed/calibration.json`. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
-| **Last integrated commit on `main`** | `0f12d2b` (Phase 4 setup; later commits are listed in §9) |
-| **Branch** | `main` (initial setup); all Phase 5 work happens on `feat/P<part>-<slug>` branches |
+| **Last integrated commit on `main`** | `ff47bb7` (merge of Part 1; earlier commits are listed in §9) |
+| **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
 
 ## 2. Phase gates
@@ -31,7 +31,7 @@
 | 2 Dataset | ✅ Complete | Lead confirmed the datasets are in the root folder | 2026-11-13 |
 | 3 Inspection and plan | ✅ Approved (v1.1 after audit) | "Plan approved, begin setup" (given with the repository link) | 2026-11-13 |
 | 4 Repository setup and kit | ✅ Approved | "Kit approved" | 2026-11-13 |
-| 5 Development (Parts 1–9) | 🟢 Open (Part 1 in progress) | "continue" after **each** part | 2026-11-13 |
+| 5 Development (Parts 1–9) | 🟢 Open (Part 1 ✅ merged; Part 2 waits for "continue") | "continue" after **each** part | 2026-11-13 |
 | 6 Screenshots and report | 🔒 | "continue" after **each** section | — |
 | 7 NotebookLM prompt | 🔒 | Lead's review | — |
 
@@ -82,13 +82,13 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P1-01 | `ingest.py` + `clean.py`: cleaning rules C1–C14, each with a unit test | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | C1-C14 + 15 unit tests; 0 stock-flag mismatches on 12.4M rows |
-| P1-02 | `calibrate.py` → `data/processed/calibration.json` | P1-01 | Kartik | 🟦 | feat/P1-data-foundation | Reproduces docs/03 numbers (golden tests) |
-| P1-03 | `calendar_uae.py`: festival dates 2023–2026 with an official source per date → `calendar.json` | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | 31 sourced events; 1,400 days; school windows unverified (KI-7) |
-| P1-04 | `weather.py`: Open-Meteo daily weather for Dubai, Sharjah and Abu Dhabi → `weather.json` | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | 4,200 real rows (Open-Meteo ERA5) |
-| P1-05 | Reference factors: DESNZ 2025 transport, FoodKeeper shelf life, Poore and Nemecek 2018 food CO2e (verify the ⚠ items) | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | DESNZ 2025 IDs, FoodKeeper IDs, OWID; ⚠ items verified (KI-4) |
-| P1-06 | Places and routes (origins, ports, chokepoints) → `routes.json` | Kit approved | Kartik | 🟦 | feat/P1-data-foundation | 8 fictional suppliers on real routes; 3 chokepoints |
-| P1-07 | `run.py` CLI (steps: clean, calibrate) | P1-01 | Kartik | 🟦 | feat/P1-data-foundation | `--step` clean, calibrate, calendar, weather, routes, meta or part1 |
+| P1-01 | `ingest.py` + `clean.py`: cleaning rules C1–C14, each with a unit test | Kit approved | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | C1-C14 + 15 unit tests; 0 stock-flag mismatches on 12.4M rows |
+| P1-02 | `calibrate.py` → `data/processed/calibration.json` | P1-01 | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | Reproduces docs/03 numbers (golden tests) |
+| P1-03 | `calendar_uae.py`: festival dates 2023–2026 with an official source per date → `calendar.json` | Kit approved | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | 31 sourced events; 1,400 days; school windows unverified (KI-7) |
+| P1-04 | `weather.py`: Open-Meteo daily weather for Dubai, Sharjah and Abu Dhabi → `weather.json` | Kit approved | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | 4,200 real rows (Open-Meteo ERA5) |
+| P1-05 | Reference factors: DESNZ 2025 transport, FoodKeeper shelf life, Poore and Nemecek 2018 food CO2e (verify the ⚠ items) | Kit approved | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | DESNZ 2025 IDs, FoodKeeper IDs, OWID; ⚠ items verified (KI-4) |
+| P1-06 | Places and routes (origins, ports, chokepoints) → `routes.json` | Kit approved | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | 8 fictional suppliers on real routes; 3 chokepoints |
+| P1-07 | `run.py` CLI (steps: clean, calibrate) | P1-01 | Kartik | ✅ | feat/P1-data-foundation (merged `ff47bb7`) | `--step` clean, calibrate, calendar, weather, routes, meta or part1 |
 
 ### Phase 5, Part 2: synthetic UAE world (Track A)
 
@@ -254,5 +254,7 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-13 · Phase 5 gate · branch main · last commit 206ddee · Kit approved by the lead; P1-01…P1-07 claimed · next: build Part 1 on feat/P1-data-foundation
 
 - 2026-11-13 · P1-01…P1-07 · branch feat/P1-data-foundation · Part 1 built and verified: 70 pytest pass; cleaning counts and calibration reproduce docs/03; real calendar, weather and routes artefacts pass both contracts · next: merge, then wait for "continue" (Part 2)
+
+- 2026-11-13 · P1-01…P1-07 · branch main · last commit ff47bb7 (merge of feat/P1-data-foundation, 8 commits bdbec98…350a293) · Part 1 merged with --no-ff after branch CI passed; rows set to ✅ · next: wait for "continue", then Part 2 on feat/P2-synthetic-world
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->

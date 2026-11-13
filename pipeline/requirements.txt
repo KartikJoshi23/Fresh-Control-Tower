@@ -1,0 +1,11 @@
+# Fresh Control Tower pipeline: Python 3.11.
+# Pinned to the versions verified on 13 Nov 2026. Changing a pin needs a change request (docs/decisions/).
+numpy==2.4.6
+pandas==2.3.3
+pyarrow==23.0.0
+scipy==1.17.1
+scikit-learn==1.8.0
+statsmodels==0.14.6
+PyYAML==6.0.3
+jsonschema==4.26.0
+pytest==9.0.2

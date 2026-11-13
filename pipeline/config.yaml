@@ -1,0 +1,53 @@
+# Fresh Control Tower pipeline configuration (implementation-plan.md §3–§4).
+# Owned by the Track A lead. Changes need a change request in docs/decisions/.
+
+seed: 2026
+timezone: Asia/Dubai
+currency: AED
+
+# All paths are relative to the repository root.
+paths:
+  datasets: Datasets
+  frn50k_train: Datasets/FreshRetailNet-50K/train.parquet
+  frn50k_eval: Datasets/FreshRetailNet-50K/eval.parquet
+  frnlt_train: Datasets/FreshRetailNet-LT/train.parquet
+  frnlt_eval: Datasets/FreshRetailNet-LT/eval.parquet
+  veg_dir: Datasets/Kaggle-Vegetables
+  interim: data/interim
+  synthetic: data/synthetic
+  processed: data/processed
+  external: data/external
+  web_data: web/public/data
+  contracts: docs/contracts
+
+# Synthetic UAE world (plan §3.4)
+horizon:
+  start: "2023-01-01"
+  end: "2026-10-31"
+
+splits:
+  train_end: "2025-06-30"
+  validation_end: "2025-12-31"
+  test_start: "2026-01-01"
+
+world:
+  stores: 8
+  skus: 40
+  hero_stores: 4
+  hero_skus_per_store: 10
+
+# P0 legacy rule (plan §3.4)
+baseline_policy:
+  moving_average_days: 28
+  safety_buffer: 0.20
+  review_period_days: 1
+
+# Forecasting (plan §3.6)
+forecast:
+  quantiles: [0.1, 0.5, 0.9]
+  horizon_buckets: [[1, 7], [8, 14], [15, 35]]
+
+# Backtests (plan §4.5)
+backtest:
+  monte_carlo_runs: 200
+  browser_monte_carlo_runs: 50

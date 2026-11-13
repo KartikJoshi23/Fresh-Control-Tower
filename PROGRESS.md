@@ -19,7 +19,7 @@
 | **Gate** | ⏸ Waiting for the lead's message **"Kit approved, begin development"** |
 | **Last completed step** | Phase 4 setup committed: plan audit v1.1, Datasets re-filed, web/pipeline/report scaffolds, 13 contracts + fixtures + JSON Schemas, CI, docs |
 | **Exact next step** | The lead reviews `MASTER_PROMPT.md` and `COLLABORATOR_PROMPT.md` (local only). After "Kit approved, begin development": **Part 1** (tasks P1-01…P1-06, Track A). Track B can start **Part 5** (P5-01…) in parallel. |
-| **Last integrated commit on `main`** | See the latest entry in §9 (recorded after each push) |
+| **Last integrated commit on `main`** | `0f12d2b` (Phase 4 setup; later commits are listed in §9) |
 | **Branch** | `main` (initial setup); all Phase 5 work happens on `feat/P<part>-<slug>` branches |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
 
@@ -235,6 +235,6 @@ python -m pytest pipeline                # data tests run only if Datasets/ is p
 Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <what changed> · next: <next step>`
 
 ### Kartik (lead)
-- 2026-11-13 · Phases 1–4 (K-01…K-11) · branch main · last commit: recorded in the next line after the push · Problem selected (A); datasets chosen and verified; inspection; plan v1.1 (audited); repository scaffold, contracts, fixtures, CI, docs; prompts local-only · next: lead reviews the kit, then "Kit approved, begin development"
+- 2026-11-13 · Phases 1–4 (K-01…K-11) · branch main · last commit 0f12d2b (7 setup commits, 446c4d2…0f12d2b) · Problem selected (A); datasets chosen and verified; inspection; plan v1.1 (audited); repository scaffold, contracts, fixtures, CI, docs; prompts local-only · next: lead reviews the kit, then "Kit approved, begin development"
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->

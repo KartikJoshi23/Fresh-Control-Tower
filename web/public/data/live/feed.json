@@ -1,0 +1,25 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "SIMULATED_FEED",
+  "sources": ["fixture-placeholder"],
+  "timezone": "Asia/Dubai",
+  "window": { "start": "2026-03-10T06:00", "end": "2026-03-10T08:00" },
+  "storeIds": ["dxb-marina"],
+  "skuIds": ["lettuce-romaine"],
+  "ticks": [
+    { "t": "2026-03-10T06:00", "storeId": "dxb-marina", "skuId": "lettuce-romaine", "onHand": 60, "sales": 2, "receipts": 40, "waste": 0, "coverHours": 20, "status": "in_stock" },
+    { "t": "2026-03-10T07:00", "storeId": "dxb-marina", "skuId": "lettuce-romaine", "onHand": 52, "sales": 8, "receipts": 0, "waste": 0, "coverHours": 9.5, "status": "in_stock" },
+    { "t": "2026-03-10T08:00", "storeId": "dxb-marina", "skuId": "lettuce-romaine", "onHand": 41, "sales": 11, "receipts": 0, "waste": 0, "coverHours": 5.2, "status": "at_risk" }
+  ],
+  "events": [
+    { "t": "2026-03-10T06:00", "storeId": "dxb-marina", "skuId": "lettuce-romaine", "kind": "po_received", "severity": "good", "message": "Placeholder: purchase order fx-po-001 received (40 units).", "poId": "fx-po-001" },
+    { "t": "2026-03-10T08:00", "storeId": "dxb-marina", "skuId": "lettuce-romaine", "kind": "stockout_risk", "severity": "warning", "message": "Placeholder: stockout risk before 14:00 at the current sales rate.", "poId": null }
+  ],
+  "purchaseOrders": [
+    { "id": "fx-po-001", "createdAt": "2026-03-09T18:00", "supplierId": "sup-local-farm", "storeId": "dxb-marina", "skuId": "lettuce-romaine", "qty": 40, "etaAt": "2026-03-10T06:00", "approval": "auto", "reason": "Placeholder order for the fixture feed." }
+  ]
+}

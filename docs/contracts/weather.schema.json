@@ -1,0 +1,109 @@
+{
+  "title": "weather (contract 1.0.0)",
+  "$comment": "Generated from web/src/lib/contracts by `npm run contracts:export`. Do not edit by hand.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "generator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "isFixture": {
+      "type": "boolean"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "REAL",
+        "CALIBRATED_SYNTHETIC",
+        "SCENARIO",
+        "SIMULATED_FEED",
+        "DERIVED",
+        "PRECOMPUTED"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      }
+    },
+    "rows": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "emirate": {
+            "type": "string",
+            "enum": [
+              "Dubai",
+              "Sharjah",
+              "Abu Dhabi"
+            ]
+          },
+          "tMaxC": {
+            "type": "number",
+            "minimum": -10,
+            "maximum": 60
+          },
+          "tMeanC": {
+            "type": "number",
+            "minimum": -10,
+            "maximum": 55
+          },
+          "precipMm": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "date",
+          "emirate",
+          "tMaxC",
+          "tMeanC",
+          "precipMm"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "contractVersion",
+    "generatedAt",
+    "generator",
+    "seed",
+    "isFixture",
+    "provenance",
+    "sources",
+    "rows"
+  ],
+  "additionalProperties": false
+}

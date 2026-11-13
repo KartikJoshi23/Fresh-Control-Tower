@@ -1,0 +1,38 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase3-inspection (re-created as pipeline code in Part 3)",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "REAL",
+  "sources": ["dingdong2025-frn50k", "dingdong2026-frnlt", "wang2025-freshretailnet"],
+  "entries": [
+    {
+      "datasetId": "frn-50k",
+      "label": "FreshRetailNet-50K (training split)",
+      "period": { "start": "2024-03-28", "end": "2024-06-25" },
+      "stockoutShareByHour": [0.3873, 0.3752, 0.3489, 0.3016, 0.2366, 0.1399, 0.023, 0.0096, 0.0168, 0.0323, 0.0559, 0.0856, 0.112, 0.1311, 0.1453, 0.1658, 0.2079, 0.2637, 0.3079, 0.3372, 0.3617, 0.3851, 0.395, 0.3945],
+      "oosHoursShare": 0.1988,
+      "daysWithStockoutShare": 0.4427,
+      "allDayOutageShare": 0.0404,
+      "censoring": { "morningSalesSoldOutLater": 0.574, "morningSalesNoStockout": 0.392, "ratio": 1.464 },
+      "masking": { "method": "Not run yet (Part 3)", "recoveryWape": null, "recoveryWpe": null, "naiveForecastWpe": null, "recoveredForecastWpe": null }
+    },
+    {
+      "datasetId": "frn-lt",
+      "label": "FreshRetailNet-LT (training split)",
+      "period": { "start": "2023-06-05", "end": "2025-07-13" },
+      "stockoutShareByHour": [0.412, 0.4003, 0.3633, 0.3013, 0.2262, 0.1298, 0.028, 0.0141, 0.0214, 0.0371, 0.0622, 0.0924, 0.1185, 0.1369, 0.1503, 0.1718, 0.22, 0.2845, 0.3326, 0.3626, 0.3874, 0.4084, 0.4176, 0.4179],
+      "oosHoursShare": 0.2216,
+      "daysWithStockoutShare": 0.482,
+      "allDayOutageShare": 0.0545,
+      "censoring": { "morningSalesSoldOutLater": 0.85, "morningSalesNoStockout": 0.695, "ratio": 1.223 },
+      "masking": { "method": "Not run yet (Part 3)", "recoveryWape": null, "recoveryWpe": null, "naiveForecastWpe": null, "recoveredForecastWpe": null }
+    }
+  ],
+  "paperReference": { "naiveWpe": -0.0737, "bestRecoveryWape": 0.2762, "sourceId": "wang2025-freshretailnet" },
+  "notes": [
+    "Values were measured in Phase 3 (docs/03-data-inspection.md). Part 3 regenerates this file from pipeline code and adds the masking test.",
+    "Stockout shares by hour exclude all-day outages. Sales in FreshRetailNet are scaled, so only ratios and shares are reported."
+  ]
+}

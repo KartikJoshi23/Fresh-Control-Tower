@@ -1,0 +1,30 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "DERIVED",
+  "sources": ["fixture-placeholder"],
+  "period": { "start": "2026-01-01", "end": "2026-10-31" },
+  "annualisation": "Placeholder: test-window results scaled to 12 months.",
+  "waterfall": [
+    { "id": "baseline-cost", "label": "Baseline total cost", "valueAED": 1000000, "kind": "baseline" },
+    { "id": "lost-sales", "label": "Fewer lost sales", "valueAED": -250000, "kind": "delta" },
+    { "id": "waste", "label": "Less waste", "valueAED": -90000, "kind": "delta" },
+    { "id": "expediting", "label": "More expediting", "valueAED": 20000, "kind": "delta" },
+    { "id": "ai-cost", "label": "AI total cost", "valueAED": 680000, "kind": "total" }
+  ],
+  "waste": { "baselineKg": 120000, "aiKg": 85000, "foodRescueKg": 9000 },
+  "co2e": {
+    "baselineKg": 300000,
+    "aiKg": 220000,
+    "byComponent": [
+      { "id": "waste", "label": "Food waste", "baselineKg": 210000, "aiKg": 150000 },
+      { "id": "transport", "label": "Transport", "baselineKg": 90000, "aiKg": 70000 }
+    ]
+  },
+  "assumptions": [
+    { "id": "goodwill", "label": "Goodwill cost per lost unit", "value": 1.0, "unit": "AED/unit", "sourceId": null, "note": "Placeholder assumption, set in Part 4." }
+  ]
+}

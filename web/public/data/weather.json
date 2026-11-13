@@ -1,0 +1,14 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "REAL",
+  "sources": ["fixture-placeholder"],
+  "rows": [
+    { "date": "2026-02-08", "emirate": "Dubai", "tMaxC": 26.0, "tMeanC": 21.5, "precipMm": 0 },
+    { "date": "2026-02-09", "emirate": "Dubai", "tMaxC": 26.5, "tMeanC": 22.0, "precipMm": 0 },
+    { "date": "2026-02-10", "emirate": "Dubai", "tMaxC": 25.5, "tMeanC": 21.0, "precipMm": 1.2 }
+  ]
+}

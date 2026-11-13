@@ -1,0 +1,23 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "PRECOMPUTED",
+  "sources": ["fixture-placeholder"],
+  "scope": "Placeholder: all hero series over the test window.",
+  "curves": [
+    { "policyId": "P0", "points": [
+      { "serviceTarget": 0.8, "availabilityPct": 82, "wastePct": 9, "totalCostAED": 9800 },
+      { "serviceTarget": 0.9, "availabilityPct": 88, "wastePct": 12, "totalCostAED": 9600 },
+      { "serviceTarget": 0.97, "availabilityPct": 93, "wastePct": 16, "totalCostAED": 10400 }
+    ] },
+    { "policyId": "P1", "points": [
+      { "serviceTarget": 0.8, "availabilityPct": 87, "wastePct": 6.5, "totalCostAED": 7400 },
+      { "serviceTarget": 0.9, "availabilityPct": 92, "wastePct": 8, "totalCostAED": 7000 },
+      { "serviceTarget": 0.97, "availabilityPct": 96, "wastePct": 11, "totalCostAED": 7600 }
+    ] }
+  ],
+  "recommended": { "policyId": "P1", "serviceTarget": 0.9 }
+}

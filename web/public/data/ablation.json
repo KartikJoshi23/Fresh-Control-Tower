@@ -1,0 +1,18 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "PRECOMPUTED",
+  "sources": ["fixture-placeholder"],
+  "evaluation": "Placeholder until Part 3 (test window, hero series).",
+  "full": { "wape": 0.3, "wpe": -0.01 },
+  "groups": [
+    { "id": "sales-history", "label": "Sales history only", "description": "Lags and rolling means of recorded sales.", "wape": 0.41, "wpe": -0.08, "deltaWape": 0.11, "deltaWpe": -0.07 },
+    { "id": "stock-status", "label": "Stock status / demand recovery", "description": "Hourly stock flags used to recover hidden demand.", "wape": 0.35, "wpe": -0.06, "deltaWape": 0.05, "deltaWpe": -0.05 },
+    { "id": "calendar", "label": "Calendar and festivals", "description": "Weekday, Ramadan, Eid and holiday features.", "wape": 0.36, "wpe": -0.02, "deltaWape": 0.06, "deltaWpe": -0.01 },
+    { "id": "promotions", "label": "Promotions and price", "description": "Discount depth and promotion flags.", "wape": 0.32, "wpe": -0.01, "deltaWape": 0.02, "deltaWpe": 0.0 },
+    { "id": "weather", "label": "Weather", "description": "Real daily temperature and precipitation.", "wape": 0.31, "wpe": -0.01, "deltaWape": 0.01, "deltaWpe": 0.0 }
+  ]
+}

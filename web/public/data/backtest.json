@@ -1,0 +1,48 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "PRECOMPUTED",
+  "sources": ["fixture-placeholder"],
+  "windows": [
+    { "id": "fixture-window", "label": "Placeholder window", "range": { "start": "2026-02-01", "end": "2026-02-28" }, "description": "Placeholder until Part 4 exports the real backtests." }
+  ],
+  "policies": [
+    { "id": "P0", "label": "Baseline", "description": "Legacy rule: 28-day moving average of recorded sales plus a fixed 20% buffer." },
+    { "id": "P1", "label": "AI-Daily", "description": "Demand recovery, quantile forecasts and an optimised service quantile, reviewed daily." },
+    { "id": "P2", "label": "AI-Intraday", "description": "P1 plus real-time stock visibility, a midday top-up and spike detection." },
+    { "id": "P3", "label": "AI-Intraday + Smart Sourcing", "description": "P2 plus a supplier mix chosen by multi-criteria ranking under disruption." }
+  ],
+  "results": [
+    { "windowId": "fixture-window", "policyId": "P0", "runs": 200, "kpis": {
+      "availabilityPct": { "p10": 80, "p50": 84, "p90": 88 }, "fillRatePct": { "p10": 85, "p50": 88, "p90": 91 },
+      "lostSalesUnits": { "p10": 900, "p50": 1000, "p90": 1100 }, "lostSalesAED": { "p10": 5000, "p50": 5500, "p90": 6000 },
+      "wasteKg": { "p10": 400, "p50": 450, "p90": 500 }, "wastePctOfReceipts": { "p10": 9, "p50": 10, "p90": 11 },
+      "holdingAED": { "p10": 800, "p50": 850, "p90": 900 }, "expediteAED": { "p10": 0, "p50": 0, "p90": 0 },
+      "totalCostAED": { "p10": 9000, "p50": 9500, "p90": 10000 }, "co2eKg": { "p10": 1500, "p50": 1600, "p90": 1700 },
+      "daysOfCover": { "p10": 2.5, "p50": 3, "p90": 3.5 } } },
+    { "windowId": "fixture-window", "policyId": "P1", "runs": 200, "kpis": {
+      "availabilityPct": { "p10": 88, "p50": 91, "p90": 94 }, "fillRatePct": { "p10": 92, "p50": 94, "p90": 96 },
+      "lostSalesUnits": { "p10": 500, "p50": 600, "p90": 700 }, "lostSalesAED": { "p10": 2700, "p50": 3300, "p90": 3900 },
+      "wasteKg": { "p10": 300, "p50": 340, "p90": 380 }, "wastePctOfReceipts": { "p10": 7, "p50": 8, "p90": 9 },
+      "holdingAED": { "p10": 750, "p50": 800, "p90": 850 }, "expediteAED": { "p10": 0, "p50": 50, "p90": 100 },
+      "totalCostAED": { "p10": 6500, "p50": 7000, "p90": 7500 }, "co2eKg": { "p10": 1200, "p50": 1300, "p90": 1400 },
+      "daysOfCover": { "p10": 2, "p50": 2.5, "p90": 3 } } },
+    { "windowId": "fixture-window", "policyId": "P2", "runs": 200, "kpis": {
+      "availabilityPct": { "p10": 91, "p50": 94, "p90": 96 }, "fillRatePct": { "p10": 94, "p50": 96, "p90": 97 },
+      "lostSalesUnits": { "p10": 350, "p50": 420, "p90": 500 }, "lostSalesAED": { "p10": 1900, "p50": 2300, "p90": 2700 },
+      "wasteKg": { "p10": 280, "p50": 310, "p90": 340 }, "wastePctOfReceipts": { "p10": 6, "p50": 7, "p90": 8 },
+      "holdingAED": { "p10": 700, "p50": 760, "p90": 820 }, "expediteAED": { "p10": 100, "p50": 150, "p90": 200 },
+      "totalCostAED": { "p10": 5800, "p50": 6200, "p90": 6600 }, "co2eKg": { "p10": 1100, "p50": 1200, "p90": 1300 },
+      "daysOfCover": { "p10": 2, "p50": 2.3, "p90": 2.7 } } },
+    { "windowId": "fixture-window", "policyId": "P3", "runs": 200, "kpis": {
+      "availabilityPct": { "p10": 92, "p50": 95, "p90": 97 }, "fillRatePct": { "p10": 95, "p50": 96.5, "p90": 98 },
+      "lostSalesUnits": { "p10": 300, "p50": 380, "p90": 460 }, "lostSalesAED": { "p10": 1650, "p50": 2100, "p90": 2500 },
+      "wasteKg": { "p10": 270, "p50": 300, "p90": 330 }, "wastePctOfReceipts": { "p10": 6, "p50": 6.8, "p90": 7.6 },
+      "holdingAED": { "p10": 700, "p50": 750, "p90": 800 }, "expediteAED": { "p10": 120, "p50": 170, "p90": 220 },
+      "totalCostAED": { "p10": 5600, "p50": 6000, "p90": 6400 }, "co2eKg": { "p10": 1000, "p50": 1100, "p90": 1200 },
+      "daysOfCover": { "p10": 2, "p50": 2.2, "p90": 2.6 } } }
+  ]
+}

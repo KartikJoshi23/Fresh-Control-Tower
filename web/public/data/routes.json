@@ -1,0 +1,24 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "REAL",
+  "sources": ["fixture-placeholder"],
+  "places": [
+    { "id": "uae-dubai", "name": "Dubai (Jebel Ali)", "kind": "hub", "lat": 25.01, "lon": 55.06 },
+    { "id": "hormuz", "name": "Strait of Hormuz", "kind": "chokepoint", "lat": 26.57, "lon": 56.25 },
+    { "id": "bab-el-mandeb", "name": "Bab el-Mandeb", "kind": "chokepoint", "lat": 12.58, "lon": 43.33 },
+    { "id": "origin-mumbai", "name": "Mumbai (Nhava Sheva)", "kind": "port", "lat": 18.95, "lon": 72.95 },
+    { "id": "origin-muscat", "name": "Muscat", "kind": "origin", "lat": 23.59, "lon": 58.41 },
+    { "id": "origin-nairobi", "name": "Nairobi (air cargo)", "kind": "origin", "lat": -1.32, "lon": 36.93 },
+    { "id": "origin-dubai-farm", "name": "UAE vertical farm (fictional location)", "kind": "origin", "lat": 24.95, "lon": 55.2 }
+  ],
+  "routes": [
+    { "id": "route-local-farm", "supplierId": "sup-local-farm", "mode": "local_truck", "placeIds": ["origin-dubai-farm", "uae-dubai"], "chokepointIds": [] },
+    { "id": "route-gcc-truck", "supplierId": "sup-gcc-truck", "mode": "truck", "placeIds": ["origin-muscat", "uae-dubai"], "chokepointIds": [] },
+    { "id": "route-sea-import", "supplierId": "sup-sea-import", "mode": "sea", "placeIds": ["origin-mumbai", "hormuz", "uae-dubai"], "chokepointIds": ["hormuz"] },
+    { "id": "route-air-import", "supplierId": "sup-air-import", "mode": "air", "placeIds": ["origin-nairobi", "uae-dubai"], "chokepointIds": [] }
+  ]
+}

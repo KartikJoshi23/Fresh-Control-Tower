@@ -1,0 +1,21 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "REAL",
+  "sources": ["fixture-placeholder"],
+  "festivals": [
+    { "id": "fixture-festival", "name": "Example festival (placeholder)", "kind": "commercial", "start": "2026-02-10", "end": "2026-02-12", "sourceId": "fixture-placeholder" }
+  ],
+  "days": [
+    { "date": "2026-02-08", "weekday": 6, "isWeekend": true, "festivalId": null, "festivalPhase": "none", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false },
+    { "date": "2026-02-09", "weekday": 0, "isWeekend": false, "festivalId": "fixture-festival", "festivalPhase": "pre", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false },
+    { "date": "2026-02-10", "weekday": 1, "isWeekend": false, "festivalId": "fixture-festival", "festivalPhase": "during", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false },
+    { "date": "2026-02-11", "weekday": 2, "isWeekend": false, "festivalId": "fixture-festival", "festivalPhase": "during", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false },
+    { "date": "2026-02-12", "weekday": 3, "isWeekend": false, "festivalId": "fixture-festival", "festivalPhase": "during", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false },
+    { "date": "2026-02-13", "weekday": 4, "isWeekend": false, "festivalId": "fixture-festival", "festivalPhase": "post", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false },
+    { "date": "2026-02-14", "weekday": 5, "isWeekend": true, "festivalId": null, "festivalPhase": "none", "ramadanDay": null, "publicHoliday": false, "schoolHoliday": false }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "contractVersion": "1.0.0",
+  "generatedAt": "2026-11-13T20:00:00+04:00",
+  "generator": "phase4-fixture",
+  "seed": null,
+  "isFixture": true,
+  "provenance": "CALIBRATED_SYNTHETIC",
+  "sources": ["fixture-placeholder"],
+  "stores": [
+    { "id": "dxb-marina", "name": "Dark store Marina (fictional)", "area": "Dubai Marina", "emirate": "Dubai", "lat": 25.08, "lon": 55.14, "sizeIndex": 1.2 },
+    { "id": "dxb-barsha", "name": "Dark store Al Barsha (fictional)", "area": "Al Barsha", "emirate": "Dubai", "lat": 25.11, "lon": 55.2, "sizeIndex": 1.0 },
+    { "id": "shj-nahda", "name": "Dark store Al Nahda (fictional)", "area": "Al Nahda", "emirate": "Sharjah", "lat": 25.3, "lon": 55.37, "sizeIndex": 0.9 },
+    { "id": "auh-reem", "name": "Dark store Al Reem (fictional)", "area": "Al Reem Island", "emirate": "Abu Dhabi", "lat": 24.5, "lon": 54.4, "sizeIndex": 1.1 }
+  ],
+  "categories": [
+    { "id": "leafy-greens", "name": "Leafy greens and herbs", "shelfLifeDays": { "min": 3, "max": 5 } },
+    { "id": "dairy", "name": "Dairy and laban", "shelfLifeDays": { "min": 7, "max": 14 } },
+    { "id": "dates", "name": "Dates", "shelfLifeDays": { "min": 14, "max": 30 } }
+  ],
+  "skus": [
+    { "id": "lettuce-romaine", "name": "Romaine lettuce", "categoryId": "leafy-greens", "unit": "each", "kgPerUnit": 0.35, "shelfLifeDays": 4, "unitCostAED": 3.2, "priceAED": 5.5, "casePack": 12, "primarySupplierId": "sup-local-farm" },
+    { "id": "laban-1l", "name": "Laban 1 L", "categoryId": "dairy", "unit": "each", "kgPerUnit": 1.03, "shelfLifeDays": 10, "unitCostAED": 4.1, "priceAED": 6.25, "casePack": 12, "primarySupplierId": "sup-gcc-truck" },
+    { "id": "dates-500g", "name": "Dates 500 g", "categoryId": "dates", "unit": "pack", "kgPerUnit": 0.5, "shelfLifeDays": 21, "unitCostAED": 11.0, "priceAED": 18.0, "casePack": 10, "primarySupplierId": "sup-gcc-truck" }
+  ],
+  "heroSeries": [{ "storeId": "dxb-marina", "skuId": "lettuce-romaine" }]
+}

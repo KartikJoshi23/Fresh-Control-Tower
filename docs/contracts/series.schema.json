@@ -1,0 +1,382 @@
+{
+  "title": "series (contract 1.0.0)",
+  "$comment": "Generated from web/src/lib/contracts by `npm run contracts:export`. Do not edit by hand.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contractVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "generator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "isFixture": {
+      "type": "boolean"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "REAL",
+        "CALIBRATED_SYNTHETIC",
+        "SCENARIO",
+        "SIMULATED_FEED",
+        "DERIVED",
+        "PRECOMPUTED"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      }
+    },
+    "storeId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "skuId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "rows": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "trueDemand": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recordedSales": {
+            "type": "number",
+            "minimum": 0
+          },
+          "recoveredDemand": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fcP10": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fcP50": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fcP90": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stockoutHours": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 24
+          },
+          "receipts": {
+            "type": "number",
+            "minimum": 0
+          },
+          "waste": {
+            "type": "number",
+            "minimum": 0
+          },
+          "onHandClose": {
+            "type": "number",
+            "minimum": 0
+          },
+          "lostSales": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "promo": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "date",
+          "trueDemand",
+          "recordedSales",
+          "recoveredDemand",
+          "fcP10",
+          "fcP50",
+          "fcP90",
+          "stockoutHours",
+          "receipts",
+          "waste",
+          "onHandClose",
+          "lostSales",
+          "promo"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "engine": {
+      "type": "object",
+      "properties": {
+        "planningStart": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+        },
+        "horizonQuantiles": {
+          "minItems": 7,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "p10": {
+                "type": "number",
+                "minimum": 0
+              },
+              "p50": {
+                "type": "number",
+                "minimum": 0
+              },
+              "p90": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "date",
+              "p10",
+              "p50",
+              "p90"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "leadTimes": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "supplierId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]*$"
+              },
+              "meanDays": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "sdDays": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "supplierId",
+              "meanDays",
+              "sdDays"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "shelfLifeDays": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "minRemainingShelfLifeDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unitCostAED": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "priceAED": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "holdingCostPerUnitDayAED": {
+          "type": "number",
+          "minimum": 0
+        },
+        "wasteDisposalPerUnitAED": {
+          "type": "number",
+          "minimum": 0
+        },
+        "goodwillPerUnitAED": {
+          "type": "number",
+          "minimum": 0
+        },
+        "reviewPeriodDays": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "casePack": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "intradayProfile": {
+          "minItems": 24,
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "ramadanProfile": {
+          "minItems": 24,
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "optimalTau": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "initialOnHand": {
+          "type": "number",
+          "minimum": 0
+        },
+        "onOrder": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "arrivalDate": {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              "qty": {
+                "type": "number",
+                "minimum": 0
+              },
+              "supplierId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]*$"
+              }
+            },
+            "required": [
+              "arrivalDate",
+              "qty",
+              "supplierId"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "planningStart",
+        "horizonQuantiles",
+        "leadTimes",
+        "shelfLifeDays",
+        "minRemainingShelfLifeDays",
+        "unitCostAED",
+        "priceAED",
+        "holdingCostPerUnitDayAED",
+        "wasteDisposalPerUnitAED",
+        "goodwillPerUnitAED",
+        "reviewPeriodDays",
+        "casePack",
+        "intradayProfile",
+        "ramadanProfile",
+        "optimalTau",
+        "initialOnHand",
+        "onOrder"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "contractVersion",
+    "generatedAt",
+    "generator",
+    "seed",
+    "isFixture",
+    "provenance",
+    "sources",
+    "storeId",
+    "skuId",
+    "rows",
+    "engine"
+  ],
+  "additionalProperties": false
+}

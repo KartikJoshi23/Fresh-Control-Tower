@@ -1,9 +1,10 @@
 name: CI
 
 on:
+  # Every pushed branch gets CI (feature branches too), so work is checked before it is merged,
+  # with or without a pull request. Pull requests show the branch's checks.
   push:
-    branches: [main]
-  pull_request:
+    branches: ["**"]
 
 permissions:
   contents: read

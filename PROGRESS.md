@@ -133,9 +133,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
-| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
-| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
+| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | Overview: recommendation (lowest-cost policy for the scenario window), 5 KPI tiles vs baseline with icon+text deltas and P10–P90, Hidden Demand Reveal, mini frontier |
+| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟨 | feat/P6-overview-demand | HiddenDemandReveal: draggable veil + slider/keyboard, gap shading, live units/AED counter, AI recovered share; on Overview and Demand Lab |
+| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | Demand Lab: series (true/recorded/recovered + AI P10–P90, festival shades), legacy-vs-AI forecast toggle with in-browser bias vs truth, stockout strip; Real-data tab (REAL); ablation chart |
 | P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | Anurag | 🟨 | feat/P7-scenario-studio | |
 | P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | Anurag | 🟨 | feat/P7-scenario-studio | Use fixtures until P4-06 |
 | P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | Anurag | 🟨 | feat/P7-scenario-studio | |

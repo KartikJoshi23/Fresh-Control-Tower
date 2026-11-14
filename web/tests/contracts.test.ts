@@ -80,7 +80,7 @@ describe("contracts reject invalid data", () => {
   it("rejects a non-reciprocal AHP matrix", () => {
     const mcdm = load("mcdm.json") as { ahp: { matrix: number[][] } };
     const matrix = mcdm.ahp.matrix.map((row) => [...row]);
-    matrix[0][1] = 3; // a_10 stays 1, so a_01 × a_10 = 3 ≠ 1
+    matrix[0][1] = matrix[0][1] * 2; // a_10 is unchanged, so a_01 × a_10 = 2 ≠ 1 (holds for any valid matrix)
     expect(McdmFile.safeParse({ ...mcdm, ahp: { ...mcdm.ahp, matrix } }).success).toBe(false);
   });
 

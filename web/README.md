@@ -47,3 +47,46 @@ tests/                   Vitest; e2e/ Playwright
 - **No console errors** in the production build. The e2e tests fail on any console error.
 - **Provenance.** Every chart shows a provenance chip. Fixture data always shows the "PLACEHOLDER DATA" banner.
 - **Dependencies.** All planned dependencies are already installed and pinned. Adding or upgrading one needs a change request, because `package.json` and `package-lock.json` are shared files.
+
+## Building a page on the Part 5 foundation
+
+Every page (Parts 6–9) composes these pieces. Don't re-implement them.
+
+```tsx
+"use client";
+import { ChartFrame, ENTITY_COLOR, TableView } from "@/components/charts/primitives";
+import { DataState } from "@/components/ui/DataState";
+import { useArtefact, useSeries } from "@/lib/data/hooks";
+import { useScenario } from "@/lib/state/scenarioStore";
+
+export function DemandChart() {
+  const { selection } = useScenario();                       // the one shared scenario (URL-synced)
+  const series = useSeries(selection.storeId, selection.skuId); // Zod-validated, cached
+  return (
+    <DataState result={series} what="the demand series">      {/* loading / empty / error panels */}
+      {(data) => (
+        <ChartFrame title="Recorded sales hide demand" provenance="CALIBRATED_SYNTHETIC"
+          legend={[{ label: "True demand", color: ENTITY_COLOR.truth }, { label: "Recorded sales", color: ENTITY_COLOR.baseline }]}
+          table={<TableView caption="Daily demand" rows={data.rows} columns={[/* … */]} />}>
+          {/* chart: Recharts imported in the page, never in the shared layout (JS budget) */}
+        </ChartFrame>
+      )}
+    </DataState>
+  );
+}
+```
+
+| Need | Use |
+|---|---|
+| A panel | `GlassPanel` (`variant="chart"` behind data; `"deco"` only where no data is drawn) |
+| Provenance | `ProvenanceChip` (ChartFrame adds it from `provenance`) |
+| Status (stock) | `StatusBadge` (icon + label + status token); `SHELF_STATUS` maps the live-feed statuses |
+| Scenario values | `useScenario()`; change one with `useScenarioStore.getState().set("spike.magnitude", 3)`; fields and query keys in `lib/state/scenario.ts`. Adding a field needs a change request (plan §10.2) |
+| Date window | `scenario.selection.window` = a `backtest.json` window id (`test-2026`, `normal`, `ramadan-2026`, `stockpiling`, `hormuz`, `summer`) |
+| Colours | `ENTITY_COLOR.ai` / `.baseline` / `.truth`; `otherSeriesColor(i)` for slots 4+. Never cycle hues |
+
+The six non-Overview routes hold `PagePlaceholder` stand-ins from Part 5. Each page owner replaces their `page.tsx`.
+
+**Tests:**
+- `tests/shell.test.ts` (Vitest): the URL codec, presets, chips, navigation and loader states.
+- `e2e/shell.spec.ts` (Playwright): the top bar at 1440 and 375 px, Console → URL → links, the placeholder banner, contract errors as panels, zero console errors.

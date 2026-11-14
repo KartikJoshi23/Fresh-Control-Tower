@@ -1,30 +1,144 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
-  "seed": null,
-  "isFixture": true,
+  "generatedAt": "2026-11-14T19:24:57+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "isFixture": false,
   "provenance": "DERIVED",
-  "sources": ["fixture-placeholder"],
-  "period": { "start": "2026-01-01", "end": "2026-10-31" },
-  "annualisation": "Placeholder: test-window results scaled to 12 months.",
-  "waterfall": [
-    { "id": "baseline-cost", "label": "Baseline total cost", "valueAED": 1000000, "kind": "baseline" },
-    { "id": "lost-sales", "label": "Fewer lost sales", "valueAED": -250000, "kind": "delta" },
-    { "id": "waste", "label": "Less waste", "valueAED": -90000, "kind": "delta" },
-    { "id": "expediting", "label": "More expediting", "valueAED": 20000, "kind": "delta" },
-    { "id": "ai-cost", "label": "AI total cost", "valueAED": 680000, "kind": "total" }
+  "sources": [
+    "desnz2025-ghg-factors",
+    "poore-nemecek2018"
   ],
-  "waste": { "baselineKg": 120000, "aiKg": 85000, "foodRescueKg": 9000 },
+  "period": {
+    "start": "2026-01-01",
+    "end": "2026-10-31"
+  },
+  "annualisation": "Median of the Monte Carlo runs over the Jan-Oct 2026 test window x 1.201 (to 12 months). Illustrative and synthetic: a fictional 8-store operator.",
+  "waterfall": [
+    {
+      "id": "baseline-cost",
+      "label": "Baseline (P0) total cost",
+      "valueAED": 9046180.0,
+      "kind": "baseline"
+    },
+    {
+      "id": "lost-margin-goodwill",
+      "label": "Fewer lost sales (margin + goodwill)",
+      "valueAED": -7469682.0,
+      "kind": "delta"
+    },
+    {
+      "id": "waste",
+      "label": "Waste cost",
+      "valueAED": 480093.0,
+      "kind": "delta"
+    },
+    {
+      "id": "holding",
+      "label": "Holding cost",
+      "valueAED": 113511.0,
+      "kind": "delta"
+    },
+    {
+      "id": "expedite",
+      "label": "Expediting and sourcing premium",
+      "valueAED": 403781.0,
+      "kind": "delta"
+    },
+    {
+      "id": "ai-cost",
+      "label": "AI (P3) total cost",
+      "valueAED": 2573883.0,
+      "kind": "total"
+    }
+  ],
+  "waste": {
+    "baselineKg": 93255.0,
+    "aiKg": 153167.0,
+    "foodRescueKg": 9774.0
+  },
   "co2e": {
-    "baselineKg": 300000,
-    "aiKg": 220000,
+    "baselineKg": 423793.0,
+    "aiKg": 615770.0,
     "byComponent": [
-      { "id": "waste", "label": "Food waste", "baselineKg": 210000, "aiKg": 150000 },
-      { "id": "transport", "label": "Transport", "baselineKg": 90000, "aiKg": 70000 }
+      {
+        "id": "food-waste",
+        "label": "Wasted food",
+        "baselineKg": 149040.0,
+        "aiKg": 201519.0
+      },
+      {
+        "id": "transport",
+        "label": "Transport",
+        "baselineKg": 274753.0,
+        "aiKg": 414251.0
+      }
     ]
   },
   "assumptions": [
-    { "id": "goodwill", "label": "Goodwill cost per lost unit", "value": 1.0, "unit": "AED/unit", "sourceId": null, "note": "Placeholder assumption, set in Part 4." }
+    {
+      "id": "goodwill",
+      "label": "Goodwill cost of a lost sale",
+      "value": 10.0,
+      "unit": "% of price",
+      "sourceId": null,
+      "note": "Future custom lost when a shelf is empty (assumption)."
+    },
+    {
+      "id": "disposal",
+      "label": "Disposal of spoiled food",
+      "value": 0.2,
+      "unit": "AED/kg",
+      "sourceId": null,
+      "note": "Assumption."
+    },
+    {
+      "id": "holding",
+      "label": "Holding cost",
+      "value": 0.3,
+      "unit": "% of unit cost per day",
+      "sourceId": null,
+      "note": "Refrigeration and capital (assumption)."
+    },
+    {
+      "id": "topup-premium",
+      "label": "Same-day top-up premium",
+      "value": 25.0,
+      "unit": "% of unit cost",
+      "sourceId": null,
+      "note": "UAE wholesale market, delivered 16:00 (assumption)."
+    },
+    {
+      "id": "food-rescue",
+      "label": "Expiring stock diverted to food rescue",
+      "value": 50.0,
+      "unit": "% of expiring kg",
+      "sourceId": null,
+      "note": "Food-rescue partners (assumption; ne'ma programme context)."
+    },
+    {
+      "id": "food-co2e",
+      "label": "Food emission factors",
+      "value": 0.0,
+      "unit": "kg CO2e/kg (by category)",
+      "sourceId": "poore-nemecek2018",
+      "note": "Poore and Nemecek (2018), 2010 global averages via OWID."
+    },
+    {
+      "id": "transport-co2e",
+      "label": "Transport emission factors",
+      "value": 0.0,
+      "unit": "kg CO2e per tonne.km (by mode)",
+      "sourceId": "desnz2025-ghg-factors",
+      "note": "DESNZ 2025 freight factors x route distance."
+    },
+    {
+      "id": "annualisation",
+      "label": "Annualisation factor",
+      "value": 1.2007,
+      "unit": "x",
+      "sourceId": null,
+      "note": "Jan-Oct 2026 (304 days) scaled to 365 days."
+    }
   ]
 }

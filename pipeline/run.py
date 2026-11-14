@@ -22,7 +22,11 @@ Usage, from the repository root:
     python pipeline/run.py --step ablation           # feature-group ablation (KQ2) -> ablation.json
     python pipeline/run.py --step spikes             # spike detector, tuned on 2025, scored on 2026
 
-Later parts add steps (backtest, export).
+    python pipeline/run.py --step part4              # everything in Part 4, in order
+    python pipeline/run.py --step mcdm               # AHP + entropy + TOPSIS supplier ranking -> mcdm.json
+    python pipeline/run.py --step tau                # per-SKU service quantile, tuned on 2025 H2 -> data/synthetic/tau.npz
+    python pipeline/run.py --step backtest           # Monte Carlo P0-P3 x stress windows -> backtest.json, frontier.json
+    python pipeline/run.py --step export             # hero series, live feed, golden engine cases, meta.json
 """
 
 from __future__ import annotations
@@ -40,8 +44,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from freshpipe import (calendar_uae, calibrate, clean, fidelity, forecast, generate, geography, ingest,  # noqa: E402
-                       masking, recover, simulate, spikes, weather)
+from freshpipe import (backtest, calendar_uae, calibrate, clean, export, fidelity, forecast, generate,  # noqa: E402
+                       geography, impact, ingest, masking, mcdm, recover, simulate, spikes, weather)
 from freshpipe.artefacts import write_artefact, write_meta  # noqa: E402
 from freshpipe.config import load_config, repo_path  # noqa: E402
 from freshpipe.world import STORES, catalog_body  # noqa: E402
@@ -255,6 +259,91 @@ def step_spikes() -> None:
     LOG.info("spikes item %s; store %s", json.dumps(report["item"]["test"]), json.dumps(report["store"]["test"]))
 
 
+def _backtest_context(fc: "np.ndarray | None" = None, tau: "np.ndarray | None" = None) -> backtest.Context:
+    """Inputs shared by the Part 4 steps (forecasts default to the Part 3 test-window models)."""
+    config = load_config()
+    world = generate.load_world()
+    hourly = np.load(repo_path("synthetic") / "p0_hourly.npz")
+    ri = recover.world_inputs(world, config)
+    prof = recover.day_profiles(recover.estimate_profiles(hourly["sales_h"], hourly["oos_h"], ri["groups"],
+                                                          ri["special_day"], ri["fit"]), ri["special_day"])
+    if fc is None:
+        fc = np.load(repo_path("synthetic") / "forecasts.npz")["quantiles"].astype(float)
+    if tau is None:
+        tau = np.load(repo_path("synthetic") / "tau.npz")["tau"]
+    catalog = json.loads((repo_path("web_data") / "catalog.json").read_text(encoding="utf-8"))
+    calibration = json.loads((repo_path("processed") / "calibration.json").read_text(encoding="utf-8"))
+    return backtest.Context(world, config, catalog, fc, prof, tau, calibration)
+
+
+def step_mcdm() -> None:
+    """AHP (board preference), entropy weights and TOPSIS inputs for the suppliers (P4-03) -> mcdm.json."""
+    body = mcdm.mcdm_body()
+    write_artefact("mcdm.json", body, provenance="CALIBRATED_SYNTHETIC",
+                   sources=["desnz2025-ghg-factors", "goharbakhsh2026-hormuz", "sohail2026-gulf-business"],
+                   seed=load_config()["seed"], pretty=True)
+    LOG.info("mcdm: AHP CR %.3f; normal ranking %s", body["ahp"]["cr"],
+             sorted(mcdm.ranking().items(), key=lambda kv: -kv[1])[:3])
+
+
+def step_tau() -> None:
+    """Per-SKU τ by simulation-optimisation on 2025 H2, with forecasts fitted to Jun 2025 only (P4-01)."""
+    config = load_config()
+    world = generate.load_world()
+    recovered, _ = _recovered_and_recorded()
+    inp = forecast.world_forecast_inputs(world, config)
+    fit = np.asarray(inp.dates <= pd.Timestamp(config["splits"]["train_end"]))
+    fc_val = np.stack([forecast.fit_predict(recovered, inp, fit, bucket=b, seed=config["seed"])
+                       for b in range(len(forecast.BUCKETS))])
+    ctx = _backtest_context(fc=fc_val, tau=np.full(world.n_series, 0.8))
+    tau, report = backtest.optimise_tau(ctx, "2025-07-01", config["splits"]["validation_end"])
+    np.savez_compressed(repo_path("synthetic") / "tau.npz", tau=tau)
+    _update_model_report("tau", report)
+    LOG.info("tau: %s", json.dumps(report))
+
+
+def step_backtest(runs: int | None = None) -> None:
+    """Monte Carlo P0-P3 over the 2026 stress windows (P4-04) and the frontier -> backtest.json, frontier.json;
+    then the annualised impact (P4-05) -> impact.json."""
+    config = load_config()
+    runs = int(runs or config["backtest"]["monte_carlo_runs"])
+    ctx = _backtest_context()
+    mc = backtest.monte_carlo(ctx, runs, log=LOG.info)
+    _write_json(repo_path("synthetic") / "backtest_runs.json", mc)
+    sources = ["dingdong2025-frn50k", "yapwh2023-vegetables", "desnz2025-ghg-factors", "poore-nemecek2018"]
+    write_artefact("backtest.json", backtest.backtest_body(mc), provenance="PRECOMPUTED", sources=sources,
+                   seed=config["seed"], pretty=True)
+    write_artefact("frontier.json", backtest.frontier_body(ctx), provenance="PRECOMPUTED", sources=sources,
+                   seed=config["seed"], pretty=True)
+    write_artefact("impact.json", impact.impact_body(mc), provenance="DERIVED", sources=sources[2:],
+                   seed=config["seed"], pretty=True)
+    summary = backtest.paired_summary(mc)
+    _update_model_report("backtest", {"runs": runs, "paired_vs_p0": summary})
+    LOG.info("backtest test-2026 vs P0: %s", json.dumps(summary["test-2026"]))
+
+
+def step_export() -> None:
+    """Hero series files, the live feed, the golden engine cases and meta.json (P4-06)."""
+    config = load_config()
+    ctx = _backtest_context()
+    hourly = np.load(repo_path("synthetic") / "p0_hourly.npz")
+    ri = recover.world_inputs(ctx.world, config)
+    profiles = recover.estimate_profiles(hourly["sales_h"], hourly["oos_h"], ri["groups"], ri["special_day"], ri["fit"])
+    recovered, _ = _recovered_and_recorded()
+    p0_daily = pd.read_parquet(repo_path("synthetic") / "p0_daily.parquet")
+    sources = ["dingdong2025-frn50k", "yapwh2023-vegetables", "usda-foodkeeper"]
+    bodies = export.series_bodies(ctx, p0_daily, recovered, profiles)
+    for body in bodies:
+        write_artefact(f"series/{body['storeId']}__{body['skuId']}.json", body, provenance="CALIBRATED_SYNTHETIC",
+                       sources=sources, seed=config["seed"])
+    write_artefact("live/feed.json", export.live_feed_body(ctx), provenance="SIMULATED_FEED", sources=sources[:2],
+                   seed=config["seed"])
+    _write_json(repo_path("web_data").parent.parent / "tests" / "fixtures" / "golden" / "engine_cases.json",
+                export.golden_body(bodies))
+    write_meta()
+    LOG.info("export: %d series files, live feed, golden cases, meta.json", len(bodies))
+
+
 STEPS = {
     "clean": step_clean,
     "calibrate": step_calibrate,
@@ -270,23 +359,31 @@ STEPS = {
     "forecast": step_forecast,
     "ablation": step_ablation,
     "spikes": step_spikes,
+    "mcdm": step_mcdm,
+    "tau": step_tau,
+    "backtest": step_backtest,
+    "export": step_export,
 }
 PART1 = ("clean", "calibrate", "calendar", "weather", "routes", "meta")
 PART2 = ("routes", "generate", "simulate", "fidelity")
 PART3 = ("recover", "realdata", "forecast", "ablation", "spikes")
-PARTS = {"part1": PART1, "part2": PART2, "part3": PART3}
+PART4 = ("mcdm", "tau", "backtest", "export")
+PARTS = {"part1": PART1, "part2": PART2, "part3": PART3, "part4": PART4}
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Fresh Control Tower pipeline")
     parser.add_argument("--step", required=True, choices=[*STEPS, *PARTS])
     parser.add_argument("--refresh", action="store_true", help="re-download weather from Open-Meteo")
+    parser.add_argument("--runs", type=int, default=None, help="Monte Carlo runs for --step backtest (default: config)")
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
     for step in PARTS.get(args.step, (args.step,)):
         started = time.perf_counter()
         if step == "weather":
             step_weather(args.refresh)
+        elif step == "backtest":
+            step_backtest(args.runs)
         else:
             STEPS[step]()
         LOG.info("step %-9s done in %5.1fs", step, time.perf_counter() - started)

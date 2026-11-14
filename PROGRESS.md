@@ -112,30 +112,30 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P4-01 | `optimise.py`: τ simulation-optimisation + shelf-life guard | P3-03 | Anurag | 🟨 | feat/P4-decisions | Worked newsvendor check; stacked on PR #2 |
-| P4-02 | Surge planner (known spikes) and unannounced-spike response | P4-01, P3-05 | Anurag | 🟨 | feat/P4-decisions | Plan §4.2–4.3; stacked on PR #2 |
-| P4-03 | `mcdm.py`: AHP, entropy, TOPSIS, sensitivity, allocation LP → `mcdm.json` | P1-06 | Anurag | 🟨 | feat/P4-decisions | Reproduce a published TOPSIS example; stacked on PR #2 |
-| P4-04 | `backtest.py`: Monte Carlo P0–P3 × stress windows → `backtest.json`, `frontier.json` | P4-01, P4-02, P4-03 | Anurag | 🟨 | feat/P4-decisions | 200 runs; stacked on PR #2 |
-| P4-05 | `impact.py` → `impact.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | Labelled illustrative; stacked on PR #2 |
-| P4-06 | `export.py` + `engine_reference.py` + golden cases; `live/feed.json`, `series/*`, `meta.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | Replaces all fixtures; stacked on PR #2 |
+| P4-01 | `optimise.py`: τ simulation-optimisation + shelf-life guard | P3-03 | Anurag | 🟦 | feat/P4-decisions · [PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3) | AI order-up-to + shelf-life guard; per-SKU τ on 2025 H2 (out-of-sample forecasts): median 0.85, −12.7% cost vs best single τ; newsvendor CR 0.40 checked |
+| P4-02 | Surge planner (known spikes) and unannounced-spike response | P4-01, P3-05 | Anurag | 🟦 | feat/P4-decisions · [PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3) | plan_surge (latest safe order, sellable window, split, shortfall, minimum warning) + P2 store-level surge response; worked tests |
+| P4-03 | `mcdm.py`: AHP, entropy, TOPSIS, sensitivity, allocation LP → `mcdm.json` | P1-06 | Anurag | 🟦 | feat/P4-decisions · [PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3) | mcdm.json: AHP CR 0.025; entropy + TOPSIS reproduce arXiv:2407.09931 Ex. 2 to 6 dp; LP = greedy; CR-002 raised (archetype `local`) |
+| P4-04 | `backtest.py`: Monte Carlo P0–P3 × stress windows → `backtest.json`, `frontier.json` | P4-01, P4-02, P4-03 | Anurag | 🟦 | feat/P4-decisions · [PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3) | 200 paired runs, 2026: P3 vs P0 lost sales −93.7%, cost −71.6% (lower in 200/200 runs, every window); waste kg +64% (rate 3.2→3.6%); at equal availability AI waste −41% (frontier) |
+| P4-05 | `impact.py` → `impact.json` | P4-04 | Anurag | 🟦 | feat/P4-decisions · [PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3) | impact.json (illustrative, annualised): cost AED 9.05 M → 2.57 M; waste 93 t → 153 t; CO2e 424 t → 616 t (≈ flat per unit sold); food rescue 9.8 t |
+| P4-06 | `export.py` + `engine_reference.py` + golden cases; `live/feed.json`, `series/*`, `meta.json` | P4-04 | Anurag | 🟦 | feat/P4-decisions · [PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3) | 40 series files, live/feed.json, meta.json, golden engine_cases.json (24 cases; mulberry32 = JS); 52/52 artefacts valid, 0 fixtures |
 
 ### Phase 5, Part 5: web foundation (Track B; can start in parallel with Part 1)
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | Anurag | 🟨 | feat/P5-web-foundation | `docs/design-system.md` |
-| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | |
-| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Plan §2.5; Suspense |
-| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | |
-| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Data-viz rules |
+| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | TopNav (horizontal only, 64 px, top sheet < 768 px, accent active link), 12-col page grid (max 1440, 16/24 gutters), GlassPanel chart/deco with solid fallback; placeholder pages for the 6 other routes (owners replace) |
+| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | ProvenanceChip (monochrome, glyph + label + tooltip) and PlaceholderBanner (fixture registry: shows if ANY loaded artefact isFixture); e2e proves both states |
+| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | Zustand store + URL codec (short stable keys, clamped, junk ignored) + replaceState sync + Scenario Console drawer (all §2.5 groups, 5 presets, Esc/focus) + active chips; adds `selection.window` (plan §2.5 dateWindow = backtest window ids) |
+| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | loadArtefact/loadSeries: fetch → Zod → ok/empty/error (never throws, never logs), cached; DataState panels; contract failure → error panel with zero console errors (e2e) |
+| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | ChartFrame (title, provenance, legend ≥ 2 series, table toggle + global table view), TableView, ChartTooltip, theme (entity colours, no hue cycling). Initial JS 216 KB gzip (KI-15) |
 
 ### Phase 5, Parts 6–9: pages (Track B)
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
-| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
-| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
+| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | Overview: recommendation (lowest-cost policy for the scenario window), 5 KPI tiles vs baseline with icon+text deltas and P10–P90, Hidden Demand Reveal, mini frontier |
+| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | HiddenDemandReveal: draggable veil + slider/keyboard, gap shading, live units/AED counter, AI recovered share; on Overview and Demand Lab |
+| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | Demand Lab: series (true/recorded/recovered + AI P10–P90, festival shades), legacy-vs-AI forecast toggle with in-browser bias vs truth, stockout strip; Real-data tab (REAL); ablation chart |
 | P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | Anurag | 🟨 | feat/P7-scenario-studio | |
 | P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | Anurag | 🟨 | feat/P7-scenario-studio | Use fixtures until P4-06 |
 | P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | Anurag | 🟨 | feat/P7-scenario-studio | |
@@ -200,6 +200,7 @@
 | Q6 | Harvard variant SP Jain expects | Kartik | Phase 6 | Open |
 | Q7 | Course policy on acknowledging AI-assisted work | Kartik | Phase 6 | Open |
 | CR-001 | `series.ts`: the `waste` comment should read "quality culls on receipt plus expiry" (comment only, no schema change) | Kartik (approve) | P4-06 | Proposed: `docs/decisions/CR-001-series-waste-definition.md` |
+| CR-002 | `mcdm.ts`: rename archetype `local_farm` → `local` (the bakery is not a farm; D-22) | Kartik (approve) | P8-02 | Proposed: `docs/decisions/CR-002-mcdm-archetype-local.md` |
 
 ## 6. Known issues
 
@@ -219,6 +220,7 @@
 | KI-12 | `live/feed.json` is 1.25 MB raw (72 KB gzipped); the series files are about 145 KB each (17 KB gzipped) | Page weight on `/live` | P8-01 loads it lazily on `/live` only; trim the window if LCP misses its budget |
 | KI-13 | **Honest results to carry into the report:** recovery WAPE 30.5% vs the 25% target; item-level spike delay 7 h vs ≤ 4 h (store level meets it); under the AI, absolute waste kg is +64% and CO2e +45%, because it serves 30 points more demand (waste per kg received is about flat; at equal availability waste is −41%) | Phase 6 must not overclaim | `docs/05-models.md` §1 and `docs/06-decisions.md` §1 and §4 give the wording and the numbers |
 | KI-14 | GitHub GraphQL is blocked from Claude Code sessions, so `gh pr create` fails | — | `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls -f title=… -f head=… -f base=main -F body=@file` |
+| KI-15 | Shell initial JS is 216 KB gzip per route (React + Next.js about 155 KB, Zod + shell about 45 KB) against a 250 KB target and a 300 KB hard limit (plan §6.6) | Recharts on a page would exceed the target | Parts 6–9: prefer custom SVG with `d3-scale`/`d3-shape` (pinned); lazy-load Recharts (`next/dynamic`) below the fold; measure with the gzip check in P9-03 |
 
 ## 7. File ownership map
 
@@ -280,5 +282,9 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-14 · P3-03…P3-05 · branch feat/P3-models · forecast.py (9 quantile models, baselines, ablation), spikes.py, run steps forecast/ablation/spikes; ablation.json generated; 121 pytest pass · next: docs/05-models.md, PR for Part 3
 - 2026-11-14 · P3-01…P3-05 · branch feat/P3-models · last commit 520696e · docs/05-models.md; PR #2 opened (stacked on PR #1); rows 🟦 · next: Part 4 (P4-01…P4-06) on feat/P4-decisions, stacked on feat/P3-models
 - 2026-11-14 · P2-01…P2-03 · branch main · last commit b0f26fe (merge of PR #1 by Kartik) · Part 2 rows set to ✅ · next: PR #2 (Part 3) retargeted to main
+- 2026-11-14 · P4-01…P4-06 (WIP) · branch feat/P4-decisions · optimise.py (P1-P3 policies, costs, newsvendor, surge planner), mcdm.py (AHP CR 0.025; entropy + TOPSIS reproduce arXiv:2407.09931 Ex. 2 to 6 dp), backtest.py, impact.py, export.py, engine_reference.py (mulberry32 bit-identical to JS); simulate.py gains the noon top-up channel (P0 unchanged); 52/52 artefacts valid, 0 fixtures; backtest.json/frontier.json/impact.json are a 2-run preview · next: commit the 200-run Monte Carlo, docs/06-decisions.md, PR
 - 2026-11-14 · P3-01…P3-05 · branch main · last commit 3d8725e (merge of PR #2 by Kartik) · Part 3 rows set to ✅ · next: PR #3 (Part 4) retargeted to main
+- 2026-11-14 · P4-01…P4-06 · branch feat/P4-decisions · last commit 36fa5ba · Part 4 complete: 200-run backtests, frontier, impact, 40 series, live feed, golden cases; docs/06; CR-002; 138 pytest + 61 vitest pass, 52/52 artefacts valid, 0 fixtures; PR #3 opened, rows 🟦 · next: lead merges PR #3; then Part 5 (P5-01 app shell: TopNav, layout grid, GlassPanel) on feat/P5-web-foundation — build against the real artefacts (no fixtures remain)
 - 2026-11-14 · docs sync · branch main · refreshed §1 Status, the §2 status note (approvals unchanged), §6 (KI-2/5/9 resolved; KI-10…KI-14 added) and §7 (new Part 2–4 files) after Parts 2–3 merged; handover in docs/progress/anurag.md; flagged to the lead on PR #3 · next: claim P5-01
+- 2026-11-14 · P5-01…P5-05 · branch feat/P5-web-foundation · last commit 5d1cc92 · Part 5 done: shell (TopNav, grid, GlassPanel), Scenario Console + URL sync (adds selection.window), Zod loaders + DataState, ProvenanceChip + PlaceholderBanner, chart primitives; 6 placeholder routes; 74 Vitest + 8 e2e pass; JS 216 KB gzip (KI-15); PR #4 opened (stacked on #3), rows 🟦 · next: lead merges #3 then #4 (retarget #4 to main after #3); then Part 6 (Overview + Demand Lab, Hidden Demand Reveal) on feat/P6-overview-demand
+- 2026-11-14 · P6-01…P6-03 · branch feat/P6-overview-demand · Overview + Demand Lab + Hidden Demand Reveal, d3/SVG chart kit; 78 Vitest + 10 e2e; PR #5 (stacked on #4), rows 🟦 · next: Part 7 (TS engine port + parity, Scenario Studio, Surge Planner) on feat/P7-scenario-studio

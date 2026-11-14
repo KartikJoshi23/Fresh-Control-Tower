@@ -1,53 +1,419 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
-  "seed": null,
-  "isFixture": true,
+  "generatedAt": "2026-11-14T19:07:00+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "isFixture": false,
   "provenance": "CALIBRATED_SYNTHETIC",
-  "sources": ["fixture-placeholder"],
+  "sources": [
+    "desnz2025-ghg-factors",
+    "goharbakhsh2026-hormuz",
+    "sohail2026-gulf-business"
+  ],
   "criteria": [
-    { "id": "landed-cost", "label": "Landed cost", "type": "cost", "unit": "AED/kg", "description": "Purchase price plus freight and duties per kg delivered." },
-    { "id": "lead-time", "label": "Lead time", "type": "cost", "unit": "days", "description": "Mean days from order to arrival." },
-    { "id": "reliability", "label": "Lead-time reliability", "type": "benefit", "unit": "% on time", "description": "Share of deliveries arriving on time." },
-    { "id": "freshness", "label": "Freshness on arrival", "type": "benefit", "unit": "% shelf life left", "description": "Share of shelf life remaining when the stock arrives." },
-    { "id": "quality-rejects", "label": "Quality rejects", "type": "cost", "unit": "%", "description": "Share of received units rejected for quality." },
-    { "id": "disruption-exposure", "label": "Disruption exposure", "type": "cost", "unit": "score 0-1", "description": "Exposure of the route to chokepoints such as Hormuz and Bab el-Mandeb." },
-    { "id": "carbon", "label": "Carbon", "type": "cost", "unit": "kg CO2e/kg", "description": "Transport emissions per kg delivered." }
+    {
+      "id": "landed-cost",
+      "label": "Landed cost",
+      "type": "cost",
+      "unit": "AED/kg",
+      "description": "Purchase price plus freight and duties per kg delivered."
+    },
+    {
+      "id": "lead-time",
+      "label": "Lead time",
+      "type": "cost",
+      "unit": "days",
+      "description": "Mean days from order to arrival, including late deliveries."
+    },
+    {
+      "id": "reliability",
+      "label": "Lead-time reliability",
+      "type": "benefit",
+      "unit": "% on time",
+      "description": "Share of orders delivered in full on the due day."
+    },
+    {
+      "id": "freshness",
+      "label": "Freshness on arrival",
+      "type": "benefit",
+      "unit": "% shelf life left",
+      "description": "Share of total shelf life still left when the stock reaches the store."
+    },
+    {
+      "id": "quality-rejects",
+      "label": "Quality rejects",
+      "type": "cost",
+      "unit": "%",
+      "description": "Share of received units rejected for quality."
+    },
+    {
+      "id": "disruption-exposure",
+      "label": "Disruption exposure",
+      "type": "cost",
+      "unit": "score 0-1",
+      "description": "Exposure of the route to chokepoints such as Hormuz and Bab el-Mandeb."
+    },
+    {
+      "id": "carbon",
+      "label": "Carbon",
+      "type": "cost",
+      "unit": "kg CO2e/kg",
+      "description": "Transport emissions per kg delivered (DESNZ 2025 x route distance)."
+    }
   ],
   "ahp": {
     "matrix": [
-      [1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1]
+      [
+        1.0,
+        3.0,
+        0.333333333333,
+        0.333333333333,
+        5.0,
+        1.0,
+        5.0
+      ],
+      [
+        0.333333333333,
+        1.0,
+        0.2,
+        0.2,
+        3.0,
+        0.333333333333,
+        3.0
+      ],
+      [
+        3.0,
+        5.0,
+        1.0,
+        1.0,
+        7.0,
+        3.0,
+        7.0
+      ],
+      [
+        3.0,
+        5.0,
+        1.0,
+        1.0,
+        7.0,
+        3.0,
+        7.0
+      ],
+      [
+        0.2,
+        0.333333333333,
+        0.142857142857,
+        0.142857142857,
+        1.0,
+        0.2,
+        1.0
+      ],
+      [
+        1.0,
+        3.0,
+        0.333333333333,
+        0.333333333333,
+        5.0,
+        1.0,
+        5.0
+      ],
+      [
+        0.2,
+        0.333333333333,
+        0.142857142857,
+        0.142857142857,
+        1.0,
+        0.2,
+        1.0
+      ]
     ],
-    "weights": [0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857],
-    "lambdaMax": 7,
-    "ci": 0,
-    "cr": 0,
+    "weights": [
+      0.135386,
+      0.064084,
+      0.301488,
+      0.301488,
+      0.031084,
+      0.135386,
+      0.031084
+    ],
+    "lambdaMax": 7.200576,
+    "ci": 0.033429,
+    "cr": 0.025325,
     "ri": 1.32
   },
-  "entropyWeights": [0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857, 0.142857],
+  "entropyWeights": [
+    0.006677,
+    0.023959,
+    0.000307,
+    0.00681,
+    0.047877,
+    0.434747,
+    0.479623
+  ],
   "suppliers": [
-    { "id": "sup-local-farm", "name": "UAE vertical farm (fictional)", "archetype": "local_farm", "origin": "Dubai, UAE", "mode": "local_truck", "routeId": "route-local-farm", "chokepoints": [], "capacityPerDay": 800,
-      "metrics": { "landed-cost": 9.0, "lead-time": 1, "reliability": 96, "freshness": 90, "quality-rejects": 1.5, "disruption-exposure": 0.0, "carbon": 0.15 } },
-    { "id": "sup-gcc-truck", "name": "GCC overland supplier (fictional)", "archetype": "gcc_overland", "origin": "Oman", "mode": "truck", "routeId": "route-gcc-truck", "chokepoints": [], "capacityPerDay": 2000,
-      "metrics": { "landed-cost": 6.5, "lead-time": 3, "reliability": 90, "freshness": 75, "quality-rejects": 3.0, "disruption-exposure": 0.1, "carbon": 0.35 } },
-    { "id": "sup-sea-import", "name": "Sea importer via Jebel Ali (fictional)", "archetype": "sea_import", "origin": "India", "mode": "sea", "routeId": "route-sea-import", "chokepoints": ["hormuz"], "capacityPerDay": 5000,
-      "metrics": { "landed-cost": 4.2, "lead-time": 18, "reliability": 82, "freshness": 55, "quality-rejects": 4.0, "disruption-exposure": 0.9, "carbon": 0.25 } },
-    { "id": "sup-air-import", "name": "Air importer (fictional)", "archetype": "air_import", "origin": "Kenya", "mode": "air", "routeId": "route-air-import", "chokepoints": [], "capacityPerDay": 600,
-      "metrics": { "landed-cost": 14.0, "lead-time": 2, "reliability": 93, "freshness": 85, "quality-rejects": 2.0, "disruption-exposure": 0.2, "carbon": 3.5 } }
+    {
+      "id": "sup-local-farm",
+      "name": "UAE vertical farm (fictional)",
+      "archetype": "local_farm",
+      "origin": "origin-dubai-farm",
+      "mode": "local_truck",
+      "routeId": "route-local-farm",
+      "chokepoints": [],
+      "capacityPerDay": 1500.0,
+      "metrics": {
+        "landed-cost": 6.9,
+        "lead-time": 1.02,
+        "reliability": 93.4214,
+        "freshness": 95.6284,
+        "quality-rejects": 10.6,
+        "disruption-exposure": 0.0,
+        "carbon": 0.0099
+      }
+    },
+    {
+      "id": "sup-local-bakery",
+      "name": "UAE commercial bakery (fictional)",
+      "archetype": "local_farm",
+      "origin": "origin-dubai-bakery",
+      "mode": "local_truck",
+      "routeId": "route-local-bakery",
+      "chokepoints": [],
+      "capacityPerDay": 1500.0,
+      "metrics": {
+        "landed-cost": 6.0,
+        "lead-time": 1.01,
+        "reliability": 94.3747,
+        "freshness": 93.75,
+        "quality-rejects": 2.0,
+        "disruption-exposure": 0.0,
+        "carbon": 0.0073
+      }
+    },
+    {
+      "id": "sup-gcc-truck",
+      "name": "GCC overland supplier, Oman (fictional)",
+      "archetype": "gcc_overland",
+      "origin": "origin-muscat",
+      "mode": "truck",
+      "routeId": "route-gcc-truck",
+      "chokepoints": [],
+      "capacityPerDay": 4000.0,
+      "metrics": {
+        "landed-cost": 6.0,
+        "lead-time": 2.06,
+        "reliability": 86.7882,
+        "freshness": 86.1538,
+        "quality-rejects": 5.9833,
+        "disruption-exposure": 0.0,
+        "carbon": 0.0445
+      }
+    },
+    {
+      "id": "sup-gcc-ksa",
+      "name": "GCC overland supplier, Saudi Arabia (fictional)",
+      "archetype": "gcc_overland",
+      "origin": "origin-al-kharj",
+      "mode": "truck",
+      "routeId": "route-gcc-ksa",
+      "chokepoints": [],
+      "capacityPerDay": 4000.0,
+      "metrics": {
+        "landed-cost": 5.7,
+        "lead-time": 3.07,
+        "reliability": 85.8746,
+        "freshness": 88.5496,
+        "quality-rejects": 2.42,
+        "disruption-exposure": 0.0,
+        "carbon": 0.0939
+      }
+    },
+    {
+      "id": "sup-sea-import",
+      "name": "Sea importer via Jebel Ali, India (fictional)",
+      "archetype": "sea_import",
+      "origin": "origin-nhava-sheva",
+      "mode": "sea",
+      "routeId": "route-sea-import",
+      "chokepoints": [
+        "hormuz"
+      ],
+      "capacityPerDay": 8000.0,
+      "metrics": {
+        "landed-cost": 5.1,
+        "lead-time": 2.05,
+        "reliability": 87.7018,
+        "freshness": 59.3131,
+        "quality-rejects": 3.3333,
+        "disruption-exposure": 0.6,
+        "carbon": 0.0341
+      }
+    },
+    {
+      "id": "sup-sea-khorfakkan",
+      "name": "Sea importer via Khor Fakkan, India (fictional)",
+      "archetype": "sea_import",
+      "origin": "origin-nhava-sheva",
+      "mode": "sea",
+      "routeId": "route-sea-khorfakkan",
+      "chokepoints": [],
+      "capacityPerDay": 8000.0,
+      "metrics": {
+        "landed-cost": 5.4,
+        "lead-time": 3.06,
+        "reliability": 86.7882,
+        "freshness": 73.4759,
+        "quality-rejects": 3.0,
+        "disruption-exposure": 0.0,
+        "carbon": 0.032
+      }
+    },
+    {
+      "id": "sup-sea-europe",
+      "name": "Sea importer via Suez, Netherlands (fictional)",
+      "archetype": "sea_import",
+      "origin": "origin-rotterdam",
+      "mode": "sea",
+      "routeId": "route-sea-europe",
+      "chokepoints": [
+        "suez",
+        "bab-el-mandeb",
+        "hormuz"
+      ],
+      "capacityPerDay": 8000.0,
+      "metrics": {
+        "landed-cost": 5.4,
+        "lead-time": 3.07,
+        "reliability": 85.8746,
+        "freshness": 53.1319,
+        "quality-rejects": 3.5,
+        "disruption-exposure": 1.0,
+        "carbon": 0.1269
+      }
+    },
+    {
+      "id": "sup-air-import",
+      "name": "Air importer, Kenya (fictional)",
+      "archetype": "air_import",
+      "origin": "origin-nairobi",
+      "mode": "air",
+      "routeId": "route-air-import",
+      "chokepoints": [],
+      "capacityPerDay": 1200.0,
+      "metrics": {
+        "landed-cost": 8.4,
+        "lead-time": 2.07,
+        "reliability": 83.754,
+        "freshness": 66.6667,
+        "quality-rejects": 6.0,
+        "disruption-exposure": 0.1,
+        "carbon": 3.2006
+      }
+    },
+    {
+      "id": "sup-air-europe",
+      "name": "Air importer, Netherlands (fictional)",
+      "archetype": "air_import",
+      "origin": "origin-amsterdam",
+      "mode": "air",
+      "routeId": "route-air-europe",
+      "chokepoints": [],
+      "capacityPerDay": 1200.0,
+      "metrics": {
+        "landed-cost": 8.7,
+        "lead-time": 2.07,
+        "reliability": 83.754,
+        "freshness": 68.9655,
+        "quality-rejects": 5.3333,
+        "disruption-exposure": 0.1,
+        "carbon": 4.6488
+      }
+    }
   ],
   "scenarios": [
-    { "id": "hormuz2026", "label": "Hormuz 2026 (placeholder values)", "description": "Sea routes through Hormuz slow down, become less reliable and cost more.",
+    {
+      "id": "hormuz2026",
+      "label": "Hormuz 2026",
+      "description": "Orders placed 1 Mar-31 May 2026: sea and air importers take the disruption terms the simulation uses (longer, less reliable deliveries; higher exposure).",
       "adjustments": [
-        { "supplierId": "sup-sea-import", "criterionId": "lead-time", "op": "multiply", "value": 1.6 },
-        { "supplierId": "sup-sea-import", "criterionId": "reliability", "op": "add", "value": -20 },
-        { "supplierId": "sup-sea-import", "criterionId": "landed-cost", "op": "multiply", "value": 1.2 }
-      ] }
+        {
+          "supplierId": "sup-sea-import",
+          "criterionId": "lead-time",
+          "op": "add",
+          "value": 3.6
+        },
+        {
+          "supplierId": "sup-sea-import",
+          "criterionId": "reliability",
+          "op": "add",
+          "value": -69.3018
+        },
+        {
+          "supplierId": "sup-sea-import",
+          "criterionId": "disruption-exposure",
+          "op": "add",
+          "value": 0.3
+        },
+        {
+          "supplierId": "sup-sea-khorfakkan",
+          "criterionId": "lead-time",
+          "op": "add",
+          "value": 1.19
+        },
+        {
+          "supplierId": "sup-sea-khorfakkan",
+          "criterionId": "reliability",
+          "op": "add",
+          "value": -28.5882
+        },
+        {
+          "supplierId": "sup-sea-europe",
+          "criterionId": "lead-time",
+          "op": "add",
+          "value": 4.73
+        },
+        {
+          "supplierId": "sup-sea-europe",
+          "criterionId": "reliability",
+          "op": "add",
+          "value": -75.0746
+        },
+        {
+          "supplierId": "sup-air-import",
+          "criterionId": "lead-time",
+          "op": "add",
+          "value": 2.23
+        },
+        {
+          "supplierId": "sup-air-import",
+          "criterionId": "reliability",
+          "op": "add",
+          "value": -37.4415
+        },
+        {
+          "supplierId": "sup-air-import",
+          "criterionId": "disruption-exposure",
+          "op": "add",
+          "value": 0.05
+        },
+        {
+          "supplierId": "sup-air-europe",
+          "criterionId": "lead-time",
+          "op": "add",
+          "value": 2.23
+        },
+        {
+          "supplierId": "sup-air-europe",
+          "criterionId": "reliability",
+          "op": "add",
+          "value": -37.4415
+        },
+        {
+          "supplierId": "sup-air-europe",
+          "criterionId": "disruption-exposure",
+          "op": "add",
+          "value": 0.05
+        }
+      ]
+    }
   ]
 }

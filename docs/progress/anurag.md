@@ -71,3 +71,22 @@ cd web && npm run check                  # lint, types, 61 Vitest tests, 52/52 c
 ### Next
 
 The lead merges PR #3. Then **Part 5** (web foundation) on `feat/P5-web-foundation`, starting with P5-01: the app shell, TopNav (no sidebar), the layout grid and GlassPanel.
+
+## 2026-11-14 · docs sync + P5-01…P5-05 · main, feat/P5-web-foundation
+
+- **Docs sync (on `main`, with Anurag's go-ahead; flagged to Kartik on PR #3):**
+  - §1 Status refreshed;
+  - the §2 status note updated (approvals unchanged);
+  - KI-2, KI-5 and KI-9 resolved; KI-10 to KI-14 added;
+  - §7 ownership map extended;
+  - README and `pipeline/README.md` indexes updated.
+- **Part 5 is in PR #4**, stacked on #3. It is built against the real artefacts.
+  - **Shell.** TopNav (no sidebar, top sheet below 768 px), the grid and GlassPanel.
+  - **Scenario.** Zustand store with a URL mirror (`replaceState`; no Suspense needed, because it reads `window.location` in effects) and the Scenario Console with the five presets.
+  - **Data.** Zod loaders with ok/empty/error, plus the fixture banner.
+  - **Charts.** ChartFrame, TableView and the colour theme.
+- **Design additions:**
+  - `selection.window`, using the backtest window ids, so the "Ramadan 2026" preset differs from "Normal";
+  - six `PagePlaceholder` routes, so nav prefetches don't 404 and log console errors.
+- **Checks:** 74 Vitest + 8 Playwright pass. Initial JS is 216 KB gzip (KI-15: chart-heavy pages should use d3 + SVG or lazy Recharts).
+- **Next:** Part 6. Overview (recommendation, KPI tiles from `backtest.json`, mini frontier) and Demand Lab (series chart, the Hidden Demand Reveal, the Real-data tab, the ablation chart).

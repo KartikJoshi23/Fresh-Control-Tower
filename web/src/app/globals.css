@@ -573,3 +573,85 @@ body {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* Pages (Parts 6–9) */
+.chart-svg {
+  display: block;
+  overflow: visible;
+  font-family: var(--font-sans);
+}
+.chart-svg:focus-visible {
+  outline: 2px solid var(--accent);
+}
+.chart-tip-anchor {
+  position: absolute;
+  top: 8px;
+  pointer-events: none;
+  z-index: 5;
+}
+.stat-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+.stat-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+.reveal-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.reveal-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.recommendation {
+  padding: 18px 20px;
+  border-color: var(--hairline-strong);
+}
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+.kpi-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 14px 16px;
+}
+.kpi-value {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+.kpi-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.tablist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid var(--hairline);
+}
+.tab {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--ink-secondary);
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+.tab[aria-selected="true"] {
+  color: var(--ink-primary);
+  border-bottom-color: var(--accent);
+}

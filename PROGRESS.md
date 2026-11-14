@@ -133,18 +133,18 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | — | ⬜ | | |
-| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | — | ⬜ | | |
-| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | — | ⬜ | | |
-| P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | — | ⬜ | | |
-| P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | — | ⬜ | | Use fixtures until P4-06 |
-| P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | — | ⬜ | | |
-| P8-01 | Live Ops (feed replay, Live Shelf Grid modes, alerts, purchase-order log, approval modes) | P5-01…P5-05 | — | ⬜ | | |
-| P8-02 | AHP/entropy/TOPSIS in TypeScript + Rank Race + sensitivity strip | P5-05 | — | ⬜ | | TOPSIS parity |
-| P8-03 | Route Globe (R3F, lazy-loaded) + SVG fallback | P8-02 | — | ⬜ | | The only WebGL scene |
-| P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | — | ⬜ | | |
-| P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | — | ⬜ | | |
-| P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | — | ⬜ | | |
+| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | Overview: recommendation (lowest-cost policy for the scenario window), 5 KPI tiles vs baseline with icon+text deltas and P10–P90, Hidden Demand Reveal, mini frontier |
+| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | HiddenDemandReveal: draggable veil + slider/keyboard, gap shading, live units/AED counter, AI recovered share; on Overview and Demand Lab |
+| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | Demand Lab: series (true/recorded/recovered + AI P10–P90, festival shades), legacy-vs-AI forecast toggle with in-browser bias vs truth, stockout strip; Real-data tab (REAL); ablation chart |
+| P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | Anurag | 🟨 | feat/P7-scenario-studio | |
+| P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | Anurag | 🟨 | feat/P7-scenario-studio | Use fixtures until P4-06 |
+| P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | Anurag | 🟨 | feat/P7-scenario-studio | |
+| P8-01 | Live Ops (feed replay, Live Shelf Grid modes, alerts, purchase-order log, approval modes) | P5-01…P5-05 | Anurag | 🟨 | feat/P8-live-sourcing | |
+| P8-02 | AHP/entropy/TOPSIS in TypeScript + Rank Race + sensitivity strip | P5-05 | Anurag | 🟨 | feat/P8-live-sourcing | TOPSIS parity |
+| P8-03 | Route Globe (R3F, lazy-loaded) + SVG fallback | P8-02 | Anurag | 🟨 | feat/P8-live-sourcing | The only WebGL scene |
+| P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
+| P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
+| P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
 | P9-04 | Vercel production deploy | P9-03, L-04 | — | ⬜ | | |
 
 ### Phase 6: screenshots and report (lead-gated, one section at a time)
@@ -287,3 +287,4 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-14 · P4-01…P4-06 · branch feat/P4-decisions · last commit 36fa5ba · Part 4 complete: 200-run backtests, frontier, impact, 40 series, live feed, golden cases; docs/06; CR-002; 138 pytest + 61 vitest pass, 52/52 artefacts valid, 0 fixtures; PR #3 opened, rows 🟦 · next: lead merges PR #3; then Part 5 (P5-01 app shell: TopNav, layout grid, GlassPanel) on feat/P5-web-foundation — build against the real artefacts (no fixtures remain)
 - 2026-11-14 · docs sync · branch main · refreshed §1 Status, the §2 status note (approvals unchanged), §6 (KI-2/5/9 resolved; KI-10…KI-14 added) and §7 (new Part 2–4 files) after Parts 2–3 merged; handover in docs/progress/anurag.md; flagged to the lead on PR #3 · next: claim P5-01
 - 2026-11-14 · P5-01…P5-05 · branch feat/P5-web-foundation · last commit 5d1cc92 · Part 5 done: shell (TopNav, grid, GlassPanel), Scenario Console + URL sync (adds selection.window), Zod loaders + DataState, ProvenanceChip + PlaceholderBanner, chart primitives; 6 placeholder routes; 74 Vitest + 8 e2e pass; JS 216 KB gzip (KI-15); PR #4 opened (stacked on #3), rows 🟦 · next: lead merges #3 then #4 (retarget #4 to main after #3); then Part 6 (Overview + Demand Lab, Hidden Demand Reveal) on feat/P6-overview-demand
+- 2026-11-14 · P6-01…P6-03 · branch feat/P6-overview-demand · Overview + Demand Lab + Hidden Demand Reveal, d3/SVG chart kit; 78 Vitest + 10 e2e; PR #5 (stacked on #4), rows 🟦 · next: Part 7 (TS engine port + parity, Scenario Studio, Surge Planner) on feat/P7-scenario-studio

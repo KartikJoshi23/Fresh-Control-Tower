@@ -2,7 +2,7 @@
 
 /**
  * TopNav (docs/design-system.md §2, §6): the ONLY navigation. Horizontal top bar, sticky, 64 px.
- * Logo + 7 links + the Scenario button + active-scenario chips. Below 768 px the links move into a
+ * Logo + 7 links + the Scenario button + active-scenario chips. Below 1024 px the links move into a
  * drop-down sheet from the top. There is no sidebar anywhere.
  */
 import { Menu, SlidersHorizontal, X } from "lucide-react";

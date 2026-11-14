@@ -38,3 +38,16 @@ describe("Hidden Demand Reveal", () => {
     expect(t).toEqual({ hiddenUnits: 8, hiddenAED: 20, recoveredShare: 7 / 8 });
   });
 });
+
+describe("Live Ops approvals", async () => {
+  const { approvalOf } = await import("@/app/live/LiveOps");
+  const po = { id: "po-1", createdAt: "2026-03-10T06:00", supplierId: "s", storeId: "a", skuId: "b", qty: 10, etaAt: "2026-03-11T06:00", reason: "r" };
+  it("guardrails keep auto orders automatic and hold flagged ones", () => {
+    expect(approvalOf({ ...po, approval: "auto" }, "guardrails", {})).toBe("auto");
+    expect(approvalOf({ ...po, approval: "needs_approval" }, "guardrails", {})).toBe("needs_approval");
+  });
+  it("approve-everything holds every order until a person decides", () => {
+    expect(approvalOf({ ...po, approval: "auto" }, "all", {})).toBe("needs_approval");
+    expect(approvalOf({ ...po, approval: "auto" }, "all", { "po-1": "rejected" })).toBe("rejected");
+  });
+});

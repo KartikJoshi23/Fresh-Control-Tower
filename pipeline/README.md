@@ -47,11 +47,15 @@ python -m pytest pipeline
 | `calibrate.py` | Part 1 ✅ | Write `data/processed/calibration.json` |
 | `calendar_uae.py`, `weather.py` | Part 1 ✅ | Build `calendar.json` and `weather.json` from `data/external/*` |
 | `geography.py`, `reference.py` | Part 1 ✅ | Places, the 8 fictional supplier routes and `routes.json`; emission factors and shelf lives |
-| `generate.py`, `simulate.py` | Part 2 | Generate the synthetic UAE world; run the hourly P0 baseline simulation; produce the fidelity report |
-| `recover.py`, `forecast.py`, `spikes.py` | Part 3 | Demand recovery, quantile forecasts, spike detection, the masking test and the ablation |
-| `optimise.py`, `mcdm.py`, `backtest.py`, `impact.py` | Part 4 | Replenishment policy, the surge planner, AHP/entropy/TOPSIS, Monte Carlo backtests, impact |
-| `export.py`, `engine_reference.py` | Part 4 | Write the `web/public/data/*` artefacts and the golden test cases |
-| `run.py` (CLI) | Part 1 ✅, extended later | `python pipeline/run.py --step {clean,calibrate,calendar,weather,routes,meta,part1}`. Later parts add generate, train, backtest and export. |
+| `world.py`, `generate.py`, `simulate.py`, `fidelity.py` | Part 2 ✅ | The fictional operator and supplier terms; the synthetic UAE world; the hourly engine and P0; the fidelity report (`docs/04`) |
+| `recover.py`, `masking.py` | Part 3 ✅ | Demand recovery; the FreshRetailNet-50K masking and forecast-bias tests → `realdata.json` (`docs/05`) |
+| `forecast.py`, `spikes.py` | Part 3 ✅ | Nine quantile models, baselines and the KQ2 ablation → `ablation.json`; the spike detector |
+| `optimise.py`, `mcdm.py` | Part 4 🟦 | AI policies P1–P3, costs, τ and the surge planner; AHP/entropy/TOPSIS → `mcdm.json` (`docs/06`) |
+| `backtest.py`, `impact.py` | Part 4 🟦 | The 200-run Monte Carlo over the 2026 stress windows → `backtest.json`, `frontier.json`; `impact.json` |
+| `export.py`, `engine_reference.py` | Part 4 🟦 | Hero `series/*`, `live/feed.json` and `meta.json`; the browser-engine spec and its golden cases |
+| `run.py` (CLI) | Parts 1–4 | `--step part1` … `part4`, or one step: `generate`, `simulate`, `fidelity`, `recover`, `realdata`, `forecast`, `ablation`, `spikes`, `mcdm`, `tau`, `backtest [--runs N]`, `export` (full list in the file's docstring) |
+
+**Full rebuild from a fresh clone** (about 35 min; `realdata` skips without `Datasets/FreshRetailNet-50K/`): `python pipeline/run.py --step part2`, then `--step part3`, then `--step part4`. Parts 2–4 need only the committed `calibration.json` and `data/external/*`.
 
 ## Rules
 

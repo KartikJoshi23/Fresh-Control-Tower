@@ -18,7 +18,7 @@
 1. **[PROGRESS.md](PROGRESS.md)**: current phase, the exact next step, the task board, decisions and blockers.
 2. **[implementation-plan.md](implementation-plan.md)**: the approved plan (v1.1, audited).
 3. **[docs/](docs/)**:
-   - decision records: [01 problem](docs/01-problem-selection.md), [02 datasets](docs/02-dataset-selection.md), [03 inspection](docs/03-data-inspection.md);
+   - decision records: [01 problem](docs/01-problem-selection.md), [02 datasets](docs/02-dataset-selection.md), [03 inspection](docs/03-data-inspection.md), [04 synthetic world](docs/04-synthetic-world.md), [05 models](docs/05-models.md), [06 decisions](docs/06-decisions.md);
    - the [design system](docs/design-system.md);
    - the [data contracts](docs/contracts/README.md);
    - [change requests](docs/decisions/README.md).

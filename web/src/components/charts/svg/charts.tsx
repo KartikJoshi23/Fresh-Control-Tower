@@ -25,7 +25,11 @@ export function useWidth<T extends HTMLElement>(fallback = 640) {
 }
 
 const fmt = (v: number) => (Math.abs(v) >= 100 ? Math.round(v).toLocaleString("en-US") : v.toLocaleString("en-US", { maximumFractionDigits: 1 }));
-const parse = (d: string) => new Date(`${d}T00:00:00`);
+/** Dates are "YYYY-MM-DD" (daily) or "YYYY-MM-DDTHH:mm" (hourly, Gulf local time as written). */
+const parse = (d: string) => new Date(d.includes("T") ? d : `${d}T00:00:00`);
+const tickLabel = (t: Date, hourly: boolean) => hourly
+  ? `${t.toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ${String(t.getHours()).padStart(2, "0")}:00`
+  : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" });
 
 export interface TimeSeries {
   id: string;
@@ -94,7 +98,7 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
         ))}
         {ticks.map((t) => (
           <text key={+t} x={x(t)} y={height - 8} textAnchor="middle" fill={CHART.inkMuted} fontSize={11}>
-            {t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" })}
+            {tickLabel(t, dates[0].includes("T"))}
           </text>
         ))}
         {band ? <path d={bandPath} fill={band.color} opacity={0.18} /> : null}
@@ -106,7 +110,8 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
       </svg>
       {hover !== null ? (
         <div className="chart-tip-anchor" style={{ left: Math.min(width - 190, Math.max(0, x(parse(dates[hover])) + 12)) }}>
-          <ChartTooltip title={parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+          <ChartTooltip title={dates[hover].includes("T") ? `${parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} ${dates[hover].slice(11)}`
+            : parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
             rows={[
               ...series.map((s) => ({ label: s.label, value: s.values[hover] === null ? "—" : formatY(s.values[hover] as number), color: s.color })),
               ...(band && band.lo[hover] !== null ? [{ label: band.label, value: `${formatY(band.lo[hover] as number)}–${formatY(band.hi[hover] as number)}`, color: band.color }] : []),

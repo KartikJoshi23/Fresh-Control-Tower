@@ -54,3 +54,48 @@ test("Scenario Studio recomputes in the browser and the Surge Planner responds t
   await expect(page).toHaveURL(/moq=300/);
   expect(errors).toEqual([]);
 });
+
+test("Live Ops replays the simulated feed with alerts and human approvals", async ({ page }) => {
+  const errors = watchConsole(page);
+  await page.goto("/live/");
+  await expect(page.getByTestId("shelf-grid").getByRole("button")).toHaveCount(20);
+  const clock = page.getByTestId("sim-time");
+  const start = await clock.textContent();
+  await page.getByRole("slider", { name: "Simulated time" }).fill("150");
+  await expect(clock).not.toHaveText(start ?? "");
+  await expect(page.getByTestId("alert-list").locator("li").first()).toBeVisible();
+  await page.getByRole("radio", { name: "Hours of cover" }).click();
+  await expect(page.getByTestId("shelf-grid")).toContainText("h");
+  await page.getByLabel("Approval mode").selectOption("all");
+  const approve = page.getByTestId("po-log").getByRole("button", { name: /^Approve order/ });
+  const before = await approve.count();
+  expect(before).toBeGreaterThan(0);
+  await approve.first().click();
+  await expect(approve).toHaveCount(before - 1);
+  await page.getByTestId("play-button").click();
+  await expect(clock).not.toHaveText(await clock.textContent() ?? "", { timeout: 5000 });
+  await page.getByTestId("play-button").click();
+  expect(errors).toEqual([]);
+});
+
+test("Sourcing re-ranks suppliers by weights and conditions, with a route map", async ({ page }) => {
+  const errors = watchConsole(page);
+  await page.goto("/sourcing/?sku=strawberries-250g");
+  await expect(page.getByTestId("rank-race").getByRole("listitem")).toHaveCount(9);
+  await expect(page.getByTestId("sourcing-recommendation")).toContainText("Strawberries");
+  const race = await page.getByTestId("rank-race").getAttribute("aria-label");
+  expect(race).toBeTruthy();
+  const order = async () => (await page.getByTestId("rank-race").getByRole("listitem").evaluateAll((els) =>
+    els.map((e) => e.getAttribute("aria-label")).sort().join("|")));
+  const ahpOrder = await order();
+  await page.getByRole("radio", { name: "Data-driven (entropy)" }).click();
+  await expect(page).toHaveURL(/w=entropy/);
+  expect(await order()).not.toEqual(ahpOrder);
+  await page.getByRole("radio", { name: "Hormuz 2026" }).click();
+  await expect(page).toHaveURL(/dis=hormuz2026/);
+  await page.getByRole("radio", { name: "Flat map" }).click();
+  await expect(page.getByTestId("route-map-flat")).toBeVisible();
+  await expect(page.getByTestId("route-globe")).toContainText("routes are disrupted");
+  await expect(page.getByTestId("sensitivity-strip")).toBeVisible();
+  expect(errors).toEqual([]);
+});

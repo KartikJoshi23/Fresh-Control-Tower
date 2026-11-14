@@ -103,3 +103,13 @@ regenerate the golden file (`python -m freshpipe.export`) and keep both in step.
 - `useEngine` runs `compute.ts` in a Web Worker (`worker.ts`) and falls back to the main thread if the worker
   cannot start. The page shows the recompute time and its p95.
 - `surge.ts` ports `plan_surge` (the Surge Planner) and shares its worked example with the Python test.
+
+## Live Ops, Sourcing and the Route Globe (Part 8)
+
+- `live/feed.json` (1.25 MB, 72 KB gzipped) is only requested by `/live`. The clock is simulated; label it so.
+- `src/lib/mcdm/mcdm.ts` ports AHP, entropy and TOPSIS from `pipeline/freshpipe/mcdm.py`. Its parity file
+  `tests/fixtures/golden/mcdm_cases.json` is written by `python pipeline/run.py --step mcdm` from `mcdm.json` itself.
+- The Route Globe is the only WebGL scene. `RouteGlobe3D.tsx` is loaded with `next/dynamic` (`ssr: false`), so
+  three.js stays out of every other route. Without WebGL, or with reduced motion, the flat SVG map is shown.
+- `node scripts/js-budget.mjs` (after `npm run build`) prints the initial gzip JS per route against the 250 KB
+  target and 300 KB limit, and lists the lazy chunks.

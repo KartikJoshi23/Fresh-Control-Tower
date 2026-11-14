@@ -282,6 +282,8 @@ def step_mcdm() -> None:
     write_artefact("mcdm.json", body, provenance="CALIBRATED_SYNTHETIC",
                    sources=["desnz2025-ghg-factors", "goharbakhsh2026-hormuz", "sohail2026-gulf-business"],
                    seed=load_config()["seed"], pretty=True)
+    _write_json(repo_path("web_data").parent.parent / "tests" / "fixtures" / "golden" / "mcdm_cases.json",
+                mcdm.golden_cases(json.loads((repo_path("web_data") / "mcdm.json").read_text(encoding="utf-8"))))
     LOG.info("mcdm: AHP CR %.3f; normal ranking %s", body["ahp"]["cr"],
              sorted(mcdm.ranking().items(), key=lambda kv: -kv[1])[:3])
 

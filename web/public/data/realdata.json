@@ -1,38 +1,124 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase3-inspection (re-created as pipeline code in Part 3)",
-  "seed": null,
-  "isFixture": true,
+  "generatedAt": "2026-11-14T18:35:33+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "isFixture": false,
   "provenance": "REAL",
-  "sources": ["dingdong2025-frn50k", "dingdong2026-frnlt", "wang2025-freshretailnet"],
+  "sources": [
+    "dingdong2025-frn50k",
+    "dingdong2026-frnlt",
+    "wang2025-freshretailnet"
+  ],
   "entries": [
     {
       "datasetId": "frn-50k",
       "label": "FreshRetailNet-50K (training split)",
-      "period": { "start": "2024-03-28", "end": "2024-06-25" },
-      "stockoutShareByHour": [0.3873, 0.3752, 0.3489, 0.3016, 0.2366, 0.1399, 0.023, 0.0096, 0.0168, 0.0323, 0.0559, 0.0856, 0.112, 0.1311, 0.1453, 0.1658, 0.2079, 0.2637, 0.3079, 0.3372, 0.3617, 0.3851, 0.395, 0.3945],
+      "period": {
+        "start": "2024-03-28",
+        "end": "2024-06-25"
+      },
+      "stockoutShareByHour": [
+        0.3873,
+        0.3752,
+        0.3489,
+        0.3016,
+        0.2366,
+        0.1399,
+        0.023,
+        0.0096,
+        0.0168,
+        0.0323,
+        0.0559,
+        0.0856,
+        0.112,
+        0.1311,
+        0.1453,
+        0.1658,
+        0.2079,
+        0.2637,
+        0.3079,
+        0.3372,
+        0.3617,
+        0.3851,
+        0.395,
+        0.3945
+      ],
       "oosHoursShare": 0.1988,
       "daysWithStockoutShare": 0.4427,
       "allDayOutageShare": 0.0404,
-      "censoring": { "morningSalesSoldOutLater": 0.574, "morningSalesNoStockout": 0.392, "ratio": 1.464 },
-      "masking": { "method": "Not run yet (Part 3)", "recoveryWape": null, "recoveryWpe": null, "naiveForecastWpe": null, "recoveredForecastWpe": null }
+      "censoring": {
+        "morningSalesSoldOutLater": 0.5743,
+        "morningSalesNoStockout": 0.392,
+        "ratio": 1.465
+      },
+      "masking": {
+        "method": "Profile recovery (alpha 0.1, set on the synthetic world). Masking: 642,130 fully in-stock series-days (13 May-25 Jun 2024 window: days 61-90) masked from a first stockout hour drawn from the real distribution to midnight; recoveryWape/Wpe score the hidden demand per series-day. Forecast bias: the same gradient-boosted model trained on raw sales vs recovered demand, scored on in-stock hours of the 7-day evaluation split.",
+        "recoveryWape": 0.5835,
+        "recoveryWpe": 0.0193,
+        "naiveForecastWpe": -0.1894,
+        "recoveredForecastWpe": -0.0042
+      }
     },
     {
       "datasetId": "frn-lt",
       "label": "FreshRetailNet-LT (training split)",
-      "period": { "start": "2023-06-05", "end": "2025-07-13" },
-      "stockoutShareByHour": [0.412, 0.4003, 0.3633, 0.3013, 0.2262, 0.1298, 0.028, 0.0141, 0.0214, 0.0371, 0.0622, 0.0924, 0.1185, 0.1369, 0.1503, 0.1718, 0.22, 0.2845, 0.3326, 0.3626, 0.3874, 0.4084, 0.4176, 0.4179],
+      "period": {
+        "start": "2023-06-05",
+        "end": "2025-07-13"
+      },
+      "stockoutShareByHour": [
+        0.412,
+        0.4003,
+        0.3633,
+        0.3013,
+        0.2262,
+        0.1298,
+        0.028,
+        0.0141,
+        0.0214,
+        0.0371,
+        0.0622,
+        0.0924,
+        0.1185,
+        0.1369,
+        0.1503,
+        0.1718,
+        0.22,
+        0.2845,
+        0.3326,
+        0.3626,
+        0.3874,
+        0.4084,
+        0.4176,
+        0.4179
+      ],
       "oosHoursShare": 0.2216,
       "daysWithStockoutShare": 0.482,
       "allDayOutageShare": 0.0545,
-      "censoring": { "morningSalesSoldOutLater": 0.85, "morningSalesNoStockout": 0.695, "ratio": 1.223 },
-      "masking": { "method": "Not run yet (Part 3)", "recoveryWape": null, "recoveryWpe": null, "naiveForecastWpe": null, "recoveredForecastWpe": null }
+      "censoring": {
+        "morningSalesSoldOutLater": 0.8495,
+        "morningSalesNoStockout": 0.6955,
+        "ratio": 1.2215
+      },
+      "masking": {
+        "method": "Not run on FRN-LT: the plan's masking test uses FRN-50K.",
+        "recoveryWape": null,
+        "recoveryWpe": null,
+        "naiveForecastWpe": null,
+        "recoveredForecastWpe": null
+      }
     }
   ],
-  "paperReference": { "naiveWpe": -0.0737, "bestRecoveryWape": 0.2762, "sourceId": "wang2025-freshretailnet" },
+  "paperReference": {
+    "naiveWpe": -0.0737,
+    "bestRecoveryWape": 0.2762,
+    "sourceId": "wang2025-freshretailnet"
+  },
   "notes": [
-    "Values were measured in Phase 3 (docs/03-data-inspection.md). Part 3 regenerates this file from pipeline code and adds the masking test.",
-    "Stockout shares by hour exclude all-day outages. Sales in FreshRetailNet are scaled, so only ratios and shares are reported."
+    "Stockout shares by hour exclude all-day outages. Sales in FreshRetailNet are scaled, so only ratios and shares are reported.",
+    "Masking floor: even knowing each day's true total, splitting it by the intraday profile gives a hidden-demand WAPE of 31.4%; hour-level WAPE is 114% because 62% of in-stock trading hours sell nothing.",
+    "Forecast WAPE on in-stock hours: 35.0% (raw sales) vs 32.1% (recovered). On fully in-stock days only, the raw-sales bias is -8.6%: those days are quieter than average, so that view under-states the bias.",
+    "The paper's figures (TFT on raw sales, WPE -7.37%; best masked-recovery WAPE 27.62%, TimesNet) use its own protocols and deep models; compare directions, not exact values."
   ]
 }

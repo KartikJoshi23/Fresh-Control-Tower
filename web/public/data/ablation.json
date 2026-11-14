@@ -1,18 +1,61 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
-  "seed": null,
-  "isFixture": true,
+  "generatedAt": "2026-11-14T18:45:55+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "isFixture": false,
   "provenance": "PRECOMPUTED",
-  "sources": ["fixture-placeholder"],
-  "evaluation": "Placeholder until Part 3 (test window, hero series).",
-  "full": { "wape": 0.3, "wpe": -0.01 },
+  "sources": [],
+  "evaluation": "1-7 day P50 forecast, Jan-Oct 2026 test window, scored against the known true demand of the synthetic world. Each row drops one feature group (or, for stock status, trains on recorded sales) and shows the change against the full model. Supplier lead time is an input to the ordering decision, not to the demand forecast, so it is not ablated here.",
+  "full": {
+    "wape": 0.3054,
+    "wpe": -0.0594
+  },
   "groups": [
-    { "id": "sales-history", "label": "Sales history only", "description": "Lags and rolling means of recorded sales.", "wape": 0.41, "wpe": -0.08, "deltaWape": 0.11, "deltaWpe": -0.07 },
-    { "id": "stock-status", "label": "Stock status / demand recovery", "description": "Hourly stock flags used to recover hidden demand.", "wape": 0.35, "wpe": -0.06, "deltaWape": 0.05, "deltaWpe": -0.05 },
-    { "id": "calendar", "label": "Calendar and festivals", "description": "Weekday, Ramadan, Eid and holiday features.", "wape": 0.36, "wpe": -0.02, "deltaWape": 0.06, "deltaWpe": -0.01 },
-    { "id": "promotions", "label": "Promotions and price", "description": "Discount depth and promotion flags.", "wape": 0.32, "wpe": -0.01, "deltaWape": 0.02, "deltaWpe": 0.0 },
-    { "id": "weather", "label": "Weather", "description": "Real daily temperature and precipitation.", "wape": 0.31, "wpe": -0.01, "deltaWape": 0.01, "deltaWpe": 0.0 }
+    {
+      "id": "history-only",
+      "label": "Sales history only",
+      "description": "Lags, rolling means and series identity; no calendar, promotions or weather.",
+      "wape": 0.3417,
+      "wpe": -0.0923,
+      "deltaWape": 0.0363,
+      "deltaWpe": -0.0329
+    },
+    {
+      "id": "stock-status",
+      "label": "Stock status (demand recovery)",
+      "description": "Trained on recorded sales instead of recovered demand: the model cannot tell an empty shelf from no demand.",
+      "wape": 0.4246,
+      "wpe": -0.3102,
+      "deltaWape": 0.1192,
+      "deltaWpe": -0.2508
+    },
+    {
+      "id": "calendar",
+      "label": "Calendar and festivals",
+      "description": "Without weekday, Ramadan and Eid timing, holidays and the summer break.",
+      "wape": 0.3356,
+      "wpe": -0.0702,
+      "deltaWape": 0.0302,
+      "deltaWpe": -0.0108
+    },
+    {
+      "id": "promotions",
+      "label": "Promotions and price",
+      "description": "Without the announced promotion depth and the shelf price.",
+      "wape": 0.318,
+      "wpe": -0.0683,
+      "deltaWape": 0.0126,
+      "deltaWpe": -0.0089
+    },
+    {
+      "id": "weather",
+      "label": "Weather",
+      "description": "Without the real UAE daily temperature and rain.",
+      "wape": 0.3054,
+      "wpe": -0.0619,
+      "deltaWape": 0.0,
+      "deltaWpe": -0.0025
+    }
   ]
 }

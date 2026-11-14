@@ -96,7 +96,7 @@
 |---|---|---|---|---|---|---|
 | P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). 18 tests (`test_generate_world.py`): worked examples, anchors, same seed = same world, catalog.json regenerates |
 | P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | Code done; ledger invariants asserted in-engine. 11 hand-worked tests (`test_generate_simulate.py`): FIFO, P0 order, deliveries, expiry, censoring |
-| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). 6 tests (`test_generate_fidelity.py`): committed report reproduces from the seed. docs/04 pending |
+| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). 6 tests (`test_generate_fidelity.py`): committed report reproduces from the seed. Write-up: `docs/04-synthetic-world.md` |
 
 ### Phase 5, Part 3: models (Track A)
 
@@ -185,6 +185,9 @@
 | D-18 | 2026-11-13 | 8 fictional suppliers on real routes (local, GCC road, sea via Hormuz, Khor Fakkan or Suez, air) | Covers all four archetypes and the three chokepoints in the evidence | pipeline/freshpipe/geography.py |
 | D-19 | 2026-11-13 | Vegetable time stamps are parsed in two formats | The 132 "unparseable" stamps are valid times without milliseconds | docs/03 §6 C10 |
 | D-20 | 2026-11-13 | The Hormuz shock is modelled through availability and lead times, not prices | Goharbakhsh et al. (2026) find food-price effects statistically insignificant (p > 0.05) | calibration.json anchors |
+| D-21 | 2026-11-14 | P0 covers L + R − 1 days (22:00 review, 06:00 dawn delivery) with a weekday-aware 28-day moving average | The night between review and delivery carries almost no demand; same-weekday averages match the legacy practice | docs/04 §5 (decided by Kartik) |
+| D-22 | 2026-11-14 | P0 adds a shrink allowance, a one-case presentation minimum and a flat +25% promotion uplift; the buffer stays at 20%. A 9th supplier, `sup-local-bakery` (archetype `local`), is added | Fixes the zero-sales trap of a pure moving average; bakery is a daily local delivery | docs/04 §4–5 (decided by Kartik) |
+| D-23 | 2026-11-14 | Spike bands are checked on true demand (recorded sales shown alongside); the spoilage band applies to the two vegetable categories only | Spikes are a demand property the festival-blind P0 caps; real loss data covers vegetables only | docs/04 §6 (decided by Kartik) |
 
 ## 5. Open questions and blockers
 
@@ -196,6 +199,7 @@
 | Q5 | Name for the fictional operator (check it is not a real UAE business) | Kartik | P5-01 | Open |
 | Q6 | Harvard variant SP Jain expects | Kartik | Phase 6 | Open |
 | Q7 | Course policy on acknowledging AI-assisted work | Kartik | Phase 6 | Open |
+| CR-001 | `series.ts`: the `waste` comment should read "quality culls on receipt plus expiry" (comment only, no schema change) | Kartik (approve) | P4-06 | Proposed: `docs/decisions/CR-001-series-waste-definition.md` |
 
 ## 6. Known issues
 

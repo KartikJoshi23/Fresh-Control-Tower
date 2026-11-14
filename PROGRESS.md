@@ -112,12 +112,12 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P4-01 | `optimise.py`: τ simulation-optimisation + shelf-life guard | P3-03 | Anurag | 🟨 | feat/P4-decisions | Worked newsvendor check; stacked on PR #2 |
-| P4-02 | Surge planner (known spikes) and unannounced-spike response | P4-01, P3-05 | Anurag | 🟨 | feat/P4-decisions | Plan §4.2–4.3; stacked on PR #2 |
-| P4-03 | `mcdm.py`: AHP, entropy, TOPSIS, sensitivity, allocation LP → `mcdm.json` | P1-06 | Anurag | 🟨 | feat/P4-decisions | Reproduce a published TOPSIS example; stacked on PR #2 |
-| P4-04 | `backtest.py`: Monte Carlo P0–P3 × stress windows → `backtest.json`, `frontier.json` | P4-01, P4-02, P4-03 | Anurag | 🟨 | feat/P4-decisions | 200 runs; stacked on PR #2 |
-| P4-05 | `impact.py` → `impact.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | Labelled illustrative; stacked on PR #2 |
-| P4-06 | `export.py` + `engine_reference.py` + golden cases; `live/feed.json`, `series/*`, `meta.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | Replaces all fixtures; stacked on PR #2 |
+| P4-01 | `optimise.py`: τ simulation-optimisation + shelf-life guard | P3-03 | Anurag | 🟨 | feat/P4-decisions | AI order-up-to + shelf-life guard; per-SKU τ on 2025 H2 (out-of-sample forecasts): median 0.85, −12.7% cost vs best single τ; newsvendor CR 0.40 checked |
+| P4-02 | Surge planner (known spikes) and unannounced-spike response | P4-01, P3-05 | Anurag | 🟨 | feat/P4-decisions | plan_surge (latest safe order, sellable window, split, shortfall, minimum warning) + P2 store-level surge response; worked tests |
+| P4-03 | `mcdm.py`: AHP, entropy, TOPSIS, sensitivity, allocation LP → `mcdm.json` | P1-06 | Anurag | 🟨 | feat/P4-decisions | mcdm.json: AHP CR 0.025; entropy + TOPSIS reproduce arXiv:2407.09931 Ex. 2 to 6 dp; LP = greedy; CR-002 raised (archetype `local`) |
+| P4-04 | `backtest.py`: Monte Carlo P0–P3 × stress windows → `backtest.json`, `frontier.json` | P4-01, P4-02, P4-03 | Anurag | 🟨 | feat/P4-decisions | 200 paired runs, 2026: P3 vs P0 lost sales −93.7%, cost −71.6% (lower in 200/200 runs, every window); waste kg +64% (rate 3.2→3.6%); at equal availability AI waste −41% (frontier) |
+| P4-05 | `impact.py` → `impact.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | impact.json (illustrative, annualised): cost AED 9.05 M → 2.57 M; waste 93 t → 153 t; CO2e 424 t → 616 t (≈ flat per unit sold); food rescue 9.8 t |
+| P4-06 | `export.py` + `engine_reference.py` + golden cases; `live/feed.json`, `series/*`, `meta.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | 40 series files, live/feed.json, meta.json, golden engine_cases.json (24 cases; mulberry32 = JS); 52/52 artefacts valid, 0 fixtures |
 
 ### Phase 5, Part 5: web foundation (Track B; can start in parallel with Part 1)
 
@@ -200,6 +200,7 @@
 | Q6 | Harvard variant SP Jain expects | Kartik | Phase 6 | Open |
 | Q7 | Course policy on acknowledging AI-assisted work | Kartik | Phase 6 | Open |
 | CR-001 | `series.ts`: the `waste` comment should read "quality culls on receipt plus expiry" (comment only, no schema change) | Kartik (approve) | P4-06 | Proposed: `docs/decisions/CR-001-series-waste-definition.md` |
+| CR-002 | `mcdm.ts`: rename archetype `local_farm` → `local` (the bakery is not a farm; D-22) | Kartik (approve) | P8-02 | Proposed: `docs/decisions/CR-002-mcdm-archetype-local.md` |
 
 ## 6. Known issues
 

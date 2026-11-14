@@ -1,6 +1,6 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-14T19:02:57+04:00",
+  "generatedAt": "2026-11-14T19:24:57+04:00",
   "generator": "freshpipe 0.1.0",
   "seed": 2026,
   "isFixture": false,
@@ -18,60 +18,60 @@
     {
       "id": "baseline-cost",
       "label": "Baseline (P0) total cost",
-      "valueAED": 9055300.0,
+      "valueAED": 9046180.0,
       "kind": "baseline"
     },
     {
       "id": "lost-margin-goodwill",
       "label": "Fewer lost sales (margin + goodwill)",
-      "valueAED": -7503112.0,
+      "valueAED": -7469682.0,
       "kind": "delta"
     },
     {
       "id": "waste",
       "label": "Waste cost",
-      "valueAED": 490695.0,
+      "valueAED": 480093.0,
       "kind": "delta"
     },
     {
       "id": "holding",
       "label": "Holding cost",
-      "valueAED": 114229.0,
+      "valueAED": 113511.0,
       "kind": "delta"
     },
     {
       "id": "expedite",
       "label": "Expediting and sourcing premium",
-      "valueAED": 406218.0,
+      "valueAED": 403781.0,
       "kind": "delta"
     },
     {
       "id": "ai-cost",
       "label": "AI (P3) total cost",
-      "valueAED": 2563330.0,
+      "valueAED": 2573883.0,
       "kind": "total"
     }
   ],
   "waste": {
-    "baselineKg": 93105.0,
-    "aiKg": 152484.0,
-    "foodRescueKg": 9911.0
+    "baselineKg": 93255.0,
+    "aiKg": 153167.0,
+    "foodRescueKg": 9774.0
   },
   "co2e": {
-    "baselineKg": 420222.0,
-    "aiKg": 614799.0,
+    "baselineKg": 423793.0,
+    "aiKg": 615770.0,
     "byComponent": [
       {
         "id": "food-waste",
         "label": "Wasted food",
-        "baselineKg": 147876.0,
-        "aiKg": 201110.0
+        "baselineKg": 149040.0,
+        "aiKg": 201519.0
       },
       {
         "id": "transport",
         "label": "Transport",
-        "baselineKg": 272346.0,
-        "aiKg": 413688.0
+        "baselineKg": 274753.0,
+        "aiKg": 414251.0
       }
     ]
   },

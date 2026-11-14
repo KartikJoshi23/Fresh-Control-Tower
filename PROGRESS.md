@@ -112,12 +112,12 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P4-01 | `optimise.py`: τ simulation-optimisation + shelf-life guard | P3-03 | — | ⬜ | | Worked newsvendor check |
-| P4-02 | Surge planner (known spikes) and unannounced-spike response | P4-01, P3-05 | — | ⬜ | | Plan §4.2–4.3 |
-| P4-03 | `mcdm.py`: AHP, entropy, TOPSIS, sensitivity, allocation LP → `mcdm.json` | P1-06 | — | ⬜ | | Reproduce a published TOPSIS example |
-| P4-04 | `backtest.py`: Monte Carlo P0–P3 × stress windows → `backtest.json`, `frontier.json` | P4-01, P4-02, P4-03 | — | ⬜ | | 200 runs |
-| P4-05 | `impact.py` → `impact.json` | P4-04 | — | ⬜ | | Labelled illustrative |
-| P4-06 | `export.py` + `engine_reference.py` + golden cases; `live/feed.json`, `series/*`, `meta.json` | P4-04 | — | ⬜ | | Replaces all fixtures |
+| P4-01 | `optimise.py`: τ simulation-optimisation + shelf-life guard | P3-03 | Anurag | 🟨 | feat/P4-decisions | Worked newsvendor check; stacked on PR #2 |
+| P4-02 | Surge planner (known spikes) and unannounced-spike response | P4-01, P3-05 | Anurag | 🟨 | feat/P4-decisions | Plan §4.2–4.3; stacked on PR #2 |
+| P4-03 | `mcdm.py`: AHP, entropy, TOPSIS, sensitivity, allocation LP → `mcdm.json` | P1-06 | Anurag | 🟨 | feat/P4-decisions | Reproduce a published TOPSIS example; stacked on PR #2 |
+| P4-04 | `backtest.py`: Monte Carlo P0–P3 × stress windows → `backtest.json`, `frontier.json` | P4-01, P4-02, P4-03 | Anurag | 🟨 | feat/P4-decisions | 200 runs; stacked on PR #2 |
+| P4-05 | `impact.py` → `impact.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | Labelled illustrative; stacked on PR #2 |
+| P4-06 | `export.py` + `engine_reference.py` + golden cases; `live/feed.json`, `series/*`, `meta.json` | P4-04 | Anurag | 🟨 | feat/P4-decisions | Replaces all fixtures; stacked on PR #2 |
 
 ### Phase 5, Part 5: web foundation (Track B; can start in parallel with Part 1)
 

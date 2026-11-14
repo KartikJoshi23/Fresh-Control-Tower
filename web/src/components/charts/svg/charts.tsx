@@ -7,7 +7,7 @@
  */
 import { scaleBand, scaleLinear, scaleTime } from "d3-scale";
 import { area, line } from "d3-shape";
-import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { ChartTooltip } from "@/components/charts/primitives/ChartTooltip";
 import { CHART } from "@/components/charts/primitives/theme";
@@ -172,9 +172,11 @@ export interface XYCurve {
 }
 
 /** Curves on two linear axes (for example availability vs waste), with an optional "you are here" marker. */
-export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabel, formatX = fmt, formatY = fmt }: {
+export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabel, formatX = fmt, formatY = fmt, pick }: {
   curves: XYCurve[]; xLabel: string; yLabel: string; height?: number; ariaLabel: string;
   marker?: { x: number; y: number; label: string; color: string }; formatX?: (v: number) => string; formatY?: (v: number) => string;
+  /** Drag (or click) along one curve: reports the index of the nearest point. Pair it with an accessible control. */
+  pick?: { curveId: string; onIndex: (index: number) => void };
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const m = { t: 12, r: 16, b: 40, l: 52 };
@@ -183,9 +185,28 @@ export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabe
   const x = scaleLinear().domain([Math.min(...xs), Math.max(...xs)]).nice().range([m.l, width - m.r]);
   const y = scaleLinear().domain([Math.min(0, ...ys), Math.max(...ys) * 1.1]).nice().range([height - m.b, m.t]);
   const path = (pts: XYCurve["points"]) => line<XYCurve["points"][number]>().x((p) => x(p.x)).y((p) => y(p.y))([...pts].sort((a, b) => a.x - b.x)) ?? "";
+  const [dragging, setDragging] = useState(false);
+  const nearest = (e: PointerEvent<SVGSVGElement>) => {
+    const curve = curves.find((c) => c.id === pick?.curveId);
+    if (!curve || !pick) return;
+    const box = e.currentTarget.getBoundingClientRect();
+    const px = e.clientX - box.left;
+    const py = e.clientY - box.top;
+    let best = 0;
+    curve.points.forEach((p, i) => {
+      const d = (x(p.x) - px) ** 2 + (y(p.y) - py) ** 2;
+      const b = (x(curve.points[best].x) - px) ** 2 + (y(curve.points[best].y) - py) ** 2;
+      if (d < b) best = i;
+    });
+    pick.onIndex(best);
+  };
   return (
     <div ref={ref} className="w-full">
-      <svg width={width} height={height} role="img" aria-label={ariaLabel} className="chart-svg">
+      <svg width={width} height={height} role="img" aria-label={ariaLabel} className="chart-svg"
+        style={pick ? { cursor: dragging ? "grabbing" : "grab", touchAction: "none" } : undefined}
+        onPointerDown={pick ? (e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging(true); nearest(e); } : undefined}
+        onPointerMove={pick ? (e) => { if (dragging) nearest(e); } : undefined}
+        onPointerUp={pick ? () => setDragging(false) : undefined}>
         {y.ticks(4).map((t) => (
           <g key={t}>
             <line x1={m.l} x2={width - m.r} y1={y(t)} y2={y(t)} stroke={CHART.grid} />

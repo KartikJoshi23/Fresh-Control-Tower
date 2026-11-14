@@ -113,3 +113,14 @@ regenerate the golden file (`python -m freshpipe.export`) and keep both in step.
   three.js stays out of every other route. Without WebGL, or with reduced motion, the flat SVG map is shown.
 - `node scripts/js-budget.mjs` (after `npm run build`) prints the initial gzip JS per route against the 250 KB
   target and 300 KB limit, and lists the lazy chunks.
+
+## Impact, Roadmap and the QA sweep (Part 9)
+
+- `/impact` reads `impact.json`, `frontier.json` and `backtest.json`. Dragging the frontier marker (or the slider) sets
+  `policy.serviceTarget`, so the choice carries to the Scenario Studio. The tornado is illustrative and labelled so.
+- `/roadmap` quotes only results from the artefacts; rollout costs are deliberately not estimated.
+- `npx playwright test e2e/qa.spec.ts` checks every route at 375, 768 and 1440 px (no horizontal scroll, no console
+  errors) and runs axe (WCAG 2.1 A/AA; serious and critical issues fail). Lighthouse is not a dependency: run it in
+  Chrome DevTools on the deployed site and record the scores in PROGRESS.md.
+- Anything with `position: absolute` (including `.sr-only` text) inside a scrolling table needs a positioned parent,
+  or it escapes the scroll box and widens the page on phones.

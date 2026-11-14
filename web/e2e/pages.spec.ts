@@ -66,7 +66,7 @@ test("Live Ops replays the simulated feed with alerts and human approvals", asyn
   await expect(page.getByTestId("alert-list").locator("li").first()).toBeVisible();
   await page.getByRole("radio", { name: "Hours of cover" }).click();
   await expect(page.getByTestId("shelf-grid")).toContainText("h");
-  await page.getByLabel("Approval mode").selectOption("all");
+  await page.getByLabel("Approval mode").selectOption("manual");
   const approve = page.getByTestId("po-log").getByRole("button", { name: /^Approve order/ });
   const before = await approve.count();
   expect(before).toBeGreaterThan(0);

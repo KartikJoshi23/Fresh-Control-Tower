@@ -117,7 +117,7 @@ function Studio({ series, catalog, mcdm }: { series: SeriesFile; catalog: Catalo
             { key: "f", label: "Fill rate P10–P90", value: (n) => `${fmtShare(result.results[n.key].mc.fillRate.p10)} – ${fmtShare(result.results[n.key].mc.fillRate.p90)}` },
             { key: "c", label: "Cost P10–P90", value: (n) => `${fmtAED(result.results[n.key].mc.totalCostAED.p10)} – ${fmtAED(result.results[n.key].mc.totalCostAED.p90)}` }]} /> : null}>
           {result ? (
-            <div className="table-scroll"><table className="data-table" data-testid="option-table">
+            <div className="table-scroll" tabIndex={0} role="region" aria-label="Table (scrolls if wide)"><table className="data-table" data-testid="option-table">
               <thead><tr><th scope="col">Option</th><th scope="col" className="num">Fill rate</th><th scope="col" className="num">Lost</th>
                 <th scope="col" className="num">Waste</th><th scope="col" className="num">Total cost</th></tr></thead>
               <tbody>{named.map((n) => {

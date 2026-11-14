@@ -56,10 +56,16 @@ export function useFeedIndex(feed: LiveFeedFile) {
   }, [feed]);
 }
 
-/** Effective approval of a purchase order under the chosen mode and the user's decisions. */
-export function approvalOf(po: Po, mode: "guardrails" | "all", decisions: Record<string, "approved" | "rejected">) {
+export type ApprovalMode = "auto" | "exceptions" | "manual";
+
+/**
+ * Effective approval of a purchase order (plan §6.1: Auto within guardrails / Approve exceptions / Manual).
+ * The feed flags orders outside the guardrails as `needs_approval`; routine orders are `auto`.
+ */
+export function approvalOf(po: Po, mode: ApprovalMode, decisions: Record<string, "approved" | "rejected">) {
   if (decisions[po.id]) return decisions[po.id];
-  if (mode === "all" || po.approval === "needs_approval") return "needs_approval";
+  if (mode === "manual") return "needs_approval";
+  if (po.approval === "needs_approval") return mode === "auto" ? "blocked" : "needs_approval";
   return po.approval;
 }
 
@@ -93,7 +99,7 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
   const { hour, setHour, playing, setPlaying } = useClock(hours.length, scenario.ui.liveSpeed);
   const [mode, setMode] = useState<"status" | "cover">("status");
   const [onlySerious, setOnlySerious] = useState(false);
-  const [approvalMode, setApprovalMode] = useState<"guardrails" | "all">("guardrails");
+  const [approvalMode, setApprovalMode] = useState<ApprovalMode>("exceptions");
   const [decisions, setDecisions] = useState<Record<string, "approved" | "rejected">>({});
   const [focus, setFocus] = useState<{ storeId: string; skuId: string }>({ storeId: feed.storeIds[0], skuId: feed.skuIds[0] });
   const now = hours[hour];
@@ -160,7 +166,7 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
                 {m === "status" ? "Status" : "Hours of cover"}</button>
             ))}
           </div>
-          <div className="table-scroll">
+          <div className="table-scroll" tabIndex={0} role="region" aria-label="Table (scrolls if wide)">
             <table className="shelf-grid" data-testid="shelf-grid">
               <thead><tr><th scope="col">SKU</th>{feed.storeIds.map((s) => <th key={s} scope="col">{store(s)}</th>)}</tr></thead>
               <tbody>{feed.skuIds.map((sk) => (
@@ -174,10 +180,10 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
                       <td key={st}>
                         <button type="button" className="shelf-cell" aria-pressed={selected} data-status={c.status}
                           style={mode === "cover" ? { background: bin.color } : undefined}
-                          aria-label={`${sku(sk)} at ${store(st)}: ${c.status.replace("_", " ")}, ${c.onHand} on hand, ${c.coverHours ?? "no"} hours of cover`}
                           onClick={() => setFocus({ storeId: st, skuId: sk })}>
                           {mode === "status" ? <StatusBadge status={SHELF_STATUS[c.status]} /> : <span className="text-ink">{bin.label}</span>}
-                          <span className="text-ink-muted tabular-nums">{fmtInt(c.onHand)} on hand</span>
+                          {" "}<span className="text-ink-muted tabular-nums">{fmtInt(c.onHand)} on hand</span>
+                          <span className="sr-only">: {sku(sk)} at {store(st)}, {c.coverHours ?? "no"} hours of cover</span>
                         </button>
                       </td>
                     );
@@ -244,19 +250,20 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
       </GlassPanel>
 
       <div className="col-span-12">
-        <ChartFrame title="Purchase orders" subtitle="Newest first. Guardrails approve routine orders automatically and hold unusual ones for a person."
+        <ChartFrame title="Purchase orders" subtitle="Newest first. Routine orders inside the guardrails go through automatically; the mode decides what happens to the rest."
           provenance="SIMULATED_FEED"
           table={<TableView caption="Purchase orders so far" rows={placed.slice(-40).reverse()} columns={[{ key: "t", label: "Created", value: (p) => p.createdAt },
             { key: "s", label: "Store", value: (p) => store(p.storeId) }, { key: "k", label: "SKU", value: (p) => sku(p.skuId) },
             { key: "q", label: "Qty", value: (p) => p.qty, numeric: true }, { key: "a", label: "Approval", value: (p) => approvalOf(p, approvalMode, decisions).replace("_", " ") }]} />}>
           <div className="flex flex-wrap items-end gap-4 mb-3">
-            <div className="w-[300px]">
+            <div className="w-[320px] max-w-full">
               <Select label="Approval mode" value={approvalMode} onChange={setApprovalMode} options={[
-                { value: "guardrails", label: "Guardrails: auto-approve routine orders" }, { value: "all", label: "A person approves every order" }]} />
+                { value: "auto", label: "Auto within guardrails (block exceptions)" }, { value: "exceptions", label: "Approve exceptions" },
+                { value: "manual", label: "Manual: a person approves every order" }]} />
             </div>
             <p className="text-ink-muted text-sm">{fmtInt(placed.length)} orders so far · {fmtInt(pending.length)} waiting</p>
           </div>
-          <div className="table-scroll">
+          <div className="table-scroll" tabIndex={0} role="region" aria-label="Table (scrolls if wide)">
             <table className="data-table" data-testid="po-log">
               <thead><tr><th scope="col">Created</th><th scope="col">Store</th><th scope="col">SKU</th><th scope="col" className="num">Qty</th>
                 <th scope="col">Supplier</th><th scope="col">Arrives</th><th scope="col">Why</th><th scope="col">Approval</th></tr></thead>
@@ -272,7 +279,8 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
                         <button type="button" className="preset" onClick={() => decide(p.id, "approved")} aria-label={`Approve order ${p.id}`}>Approve</button>
                         <button type="button" className="preset" onClick={() => decide(p.id, "rejected")} aria-label={`Reject order ${p.id}`}>Reject</button>
                       </span>
-                    ) : <StatusBadge status={a === "rejected" ? "critical" : "good"} label={a === "auto" ? "Auto-approved" : a === "approved" ? "Approved" : "Rejected"} />}</td>
+                    ) : <StatusBadge status={a === "rejected" || a === "blocked" ? "critical" : "good"}
+                      label={a === "auto" ? "Auto-approved" : a === "approved" ? "Approved" : a === "blocked" ? "Blocked by guardrail" : "Rejected"} />}</td>
                   </tr>
                 );
               })}</tbody>

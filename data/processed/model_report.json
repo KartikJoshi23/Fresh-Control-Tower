@@ -195,5 +195,423 @@
       "evaluation": "7-day evaluation split (2024-06-26 to 2024-07-02), scored on in-stock hours only",
       "recovered_vs_raw_train_volume": 0.3024
     }
+  },
+  "forecast": {
+    "model": "HistGradientBoostingRegressor(quantile)",
+    "hyperparameters": {
+      "max_iter": 400,
+      "learning_rate": 0.05,
+      "max_leaf_nodes": 31,
+      "min_samples_leaf": 100,
+      "l2_regularization": 1.0
+    },
+    "fitted_on": "2023-01-01 to 2025-12-31",
+    "test": "2026-01-01 to 2026-10-31",
+    "evaluated_against": "true demand (synthetic ground truth)",
+    "buckets": {
+      "1-7": {
+        "ai_recovered": {
+          "wape": 0.3054,
+          "wpe": -0.0594,
+          "coverage_p10_p90": 0.7789,
+          "pinball_p10": 0.0555,
+          "pinball_p50": 0.1527,
+          "pinball_p90": 0.0872
+        },
+        "seasonal_naive": {
+          "wape": 0.4439,
+          "wpe": -0.0143
+        },
+        "moving_average_28d": {
+          "wape": 0.3595,
+          "wpe": -0.0143
+        },
+        "ets": {
+          "wape": 0.3446,
+          "wpe": -0.0137,
+          "params": {
+            "alpha_median": 0.0636,
+            "gamma_median": 0.0
+          }
+        },
+        "ai_trained_on_recorded_sales": {
+          "wape": 0.4246,
+          "wpe": -0.3102,
+          "coverage_p10_p90": 0.5298,
+          "pinball_p10": 0.0659,
+          "pinball_p50": 0.2123,
+          "pinball_p90": 0.2255
+        },
+        "legacy_ma28_on_recorded_sales": {
+          "wape": 0.4476,
+          "wpe": -0.3156
+        }
+      },
+      "8-14": {
+        "ai_recovered": {
+          "wape": 0.3039,
+          "wpe": -0.064,
+          "coverage_p10_p90": 0.7837,
+          "pinball_p10": 0.0554,
+          "pinball_p50": 0.152,
+          "pinball_p90": 0.0866
+        },
+        "seasonal_naive": {
+          "wape": 0.4455,
+          "wpe": -0.0145
+        },
+        "moving_average_28d": {
+          "wape": 0.3666,
+          "wpe": -0.0135
+        },
+        "ets": {
+          "wape": 0.351,
+          "wpe": -0.013,
+          "params": {
+            "alpha_median": 0.0636,
+            "gamma_median": 0.0
+          }
+        }
+      },
+      "15-35": {
+        "ai_recovered": {
+          "wape": 0.3047,
+          "wpe": -0.0715,
+          "coverage_p10_p90": 0.7844,
+          "pinball_p10": 0.0553,
+          "pinball_p50": 0.1523,
+          "pinball_p90": 0.0872
+        },
+        "seasonal_naive": {
+          "wape": 0.4671,
+          "wpe": -0.0115
+        },
+        "moving_average_28d": {
+          "wape": 0.3769,
+          "wpe": -0.011
+        },
+        "ets": {
+          "wape": 0.3638,
+          "wpe": -0.0105,
+          "params": {
+            "alpha_median": 0.0636,
+            "gamma_median": 0.0
+          }
+        }
+      }
+    },
+    "by_category_1_7": {
+      "leafy-greens": {
+        "wape": 0.3005,
+        "wpe": -0.0602,
+        "coverage_p10_p90": 0.7788,
+        "pinball_p10": 0.0553,
+        "pinball_p50": 0.1503,
+        "pinball_p90": 0.0831
+      },
+      "berries": {
+        "wape": 0.3021,
+        "wpe": -0.0674,
+        "coverage_p10_p90": 0.7884,
+        "pinball_p10": 0.0561,
+        "pinball_p50": 0.1511,
+        "pinball_p90": 0.0831
+      },
+      "stone-fruit": {
+        "wape": 0.3171,
+        "wpe": -0.0411,
+        "coverage_p10_p90": 0.7825,
+        "pinball_p10": 0.0599,
+        "pinball_p50": 0.1586,
+        "pinball_p90": 0.0857
+      },
+      "salad-vegetables": {
+        "wape": 0.2992,
+        "wpe": -0.0544,
+        "coverage_p10_p90": 0.7852,
+        "pinball_p10": 0.0548,
+        "pinball_p50": 0.1496,
+        "pinball_p90": 0.0844
+      },
+      "dairy": {
+        "wape": 0.3065,
+        "wpe": -0.0521,
+        "coverage_p10_p90": 0.7774,
+        "pinball_p10": 0.0551,
+        "pinball_p50": 0.1532,
+        "pinball_p90": 0.0891
+      },
+      "bakery": {
+        "wape": 0.3032,
+        "wpe": -0.0659,
+        "coverage_p10_p90": 0.7723,
+        "pinball_p10": 0.0552,
+        "pinball_p50": 0.1516,
+        "pinball_p90": 0.0867
+      },
+      "poultry": {
+        "wape": 0.303,
+        "wpe": -0.0607,
+        "coverage_p10_p90": 0.776,
+        "pinball_p10": 0.0555,
+        "pinball_p50": 0.1515,
+        "pinball_p90": 0.0842
+      },
+      "dates": {
+        "wape": 0.3227,
+        "wpe": -0.0904,
+        "coverage_p10_p90": 0.7792,
+        "pinball_p10": 0.0584,
+        "pinball_p50": 0.1613,
+        "pinball_p90": 0.098
+      },
+      "fruit": {
+        "wape": 0.3118,
+        "wpe": -0.058,
+        "coverage_p10_p90": 0.7713,
+        "pinball_p10": 0.056,
+        "pinball_p50": 0.1559,
+        "pinball_p90": 0.0907
+      }
+    },
+    "by_window_1_7": {
+      "ramadan_2026": {
+        "range": [
+          "2026-02-18",
+          "2026-03-19"
+        ],
+        "ai_recovered": {
+          "wape": 0.3228,
+          "wpe": -0.1383,
+          "coverage_p10_p90": 0.722,
+          "pinball_p10": 0.0566,
+          "pinball_p50": 0.1614,
+          "pinball_p90": 0.1023
+        },
+        "ai_trained_on_recorded_sales": {
+          "wape": 0.4199,
+          "wpe": -0.3605
+        },
+        "seasonal_naive": {
+          "wape": 0.4648,
+          "wpe": -0.0709
+        }
+      },
+      "stockpiling_2026": {
+        "range": [
+          "2026-03-01",
+          "2026-03-07"
+        ],
+        "ai_recovered": {
+          "wape": 0.3646,
+          "wpe": -0.2806,
+          "coverage_p10_p90": 0.6138,
+          "pinball_p10": 0.0589,
+          "pinball_p50": 0.1823,
+          "pinball_p90": 0.1328
+        },
+        "ai_trained_on_recorded_sales": {
+          "wape": 0.4723,
+          "wpe": -0.4428
+        },
+        "seasonal_naive": {
+          "wape": 0.4254,
+          "wpe": -0.2518
+        }
+      },
+      "hormuz_2026": {
+        "range": [
+          "2026-03-01",
+          "2026-05-31"
+        ],
+        "ai_recovered": {
+          "wape": 0.3144,
+          "wpe": -0.0561,
+          "coverage_p10_p90": 0.7636,
+          "pinball_p10": 0.0566,
+          "pinball_p50": 0.1572,
+          "pinball_p90": 0.0919
+        },
+        "ai_trained_on_recorded_sales": {
+          "wape": 0.4345,
+          "wpe": -0.3206
+        },
+        "seasonal_naive": {
+          "wape": 0.4786,
+          "wpe": 0.0259
+        }
+      },
+      "summer_2026": {
+        "range": [
+          "2026-07-01",
+          "2026-08-31"
+        ],
+        "ai_recovered": {
+          "wape": 0.3022,
+          "wpe": -0.0421,
+          "coverage_p10_p90": 0.7895,
+          "pinball_p10": 0.055,
+          "pinball_p50": 0.1511,
+          "pinball_p90": 0.0835
+        },
+        "ai_trained_on_recorded_sales": {
+          "wape": 0.4513,
+          "wpe": -0.3271
+        },
+        "seasonal_naive": {
+          "wape": 0.4236,
+          "wpe": -0.0053
+        }
+      },
+      "normal_2026": {
+        "range": [
+          "2026-01-05",
+          "2026-02-10"
+        ],
+        "ai_recovered": {
+          "wape": 0.2977,
+          "wpe": -0.0455,
+          "coverage_p10_p90": 0.7962,
+          "pinball_p10": 0.0552,
+          "pinball_p50": 0.1488,
+          "pinball_p90": 0.0805
+        },
+        "ai_trained_on_recorded_sales": {
+          "wape": 0.3184,
+          "wpe": -0.1615
+        },
+        "seasonal_naive": {
+          "wape": 0.4302,
+          "wpe": -0.0175
+        }
+      }
+    }
+  },
+  "ablation": {
+    "evaluation": "1-7 day P50 forecast, Jan-Oct 2026 test window, scored against the known true demand of the synthetic world. Each row drops one feature group (or, for stock status, trains on recorded sales) and shows the change against the full model. Supplier lead time is an input to the ordering decision, not to the demand forecast, so it is not ablated here.",
+    "full": {
+      "wape": 0.3054,
+      "wpe": -0.0594
+    },
+    "groups": [
+      {
+        "id": "history-only",
+        "label": "Sales history only",
+        "description": "Lags, rolling means and series identity; no calendar, promotions or weather.",
+        "wape": 0.3417,
+        "wpe": -0.0923,
+        "deltaWape": 0.0363,
+        "deltaWpe": -0.0329
+      },
+      {
+        "id": "stock-status",
+        "label": "Stock status (demand recovery)",
+        "description": "Trained on recorded sales instead of recovered demand: the model cannot tell an empty shelf from no demand.",
+        "wape": 0.4246,
+        "wpe": -0.3102,
+        "deltaWape": 0.1192,
+        "deltaWpe": -0.2508
+      },
+      {
+        "id": "calendar",
+        "label": "Calendar and festivals",
+        "description": "Without weekday, Ramadan and Eid timing, holidays and the summer break.",
+        "wape": 0.3356,
+        "wpe": -0.0702,
+        "deltaWape": 0.0302,
+        "deltaWpe": -0.0108
+      },
+      {
+        "id": "promotions",
+        "label": "Promotions and price",
+        "description": "Without the announced promotion depth and the shelf price.",
+        "wape": 0.318,
+        "wpe": -0.0683,
+        "deltaWape": 0.0126,
+        "deltaWpe": -0.0089
+      },
+      {
+        "id": "weather",
+        "label": "Weather",
+        "description": "Without the real UAE daily temperature and rain.",
+        "wape": 0.3054,
+        "wpe": -0.0619,
+        "deltaWape": 0.0,
+        "deltaWpe": -0.0025
+      }
+    ]
+  },
+  "spikes": {
+    "item": {
+      "params": {
+        "r": 2.0,
+        "h": 18.0,
+        "ratio_min": 2.6
+      },
+      "validation": {
+        "detection_rate": 0.1951,
+        "median_delay_hours": 7.0,
+        "false_alarms_per_store_week": 0.875,
+        "positives": 1589
+      },
+      "test": {
+        "detection_rate": 0.1167,
+        "median_delay_hours": 7.0,
+        "false_alarms_per_store_week": 1.1225,
+        "positives": 4480
+      },
+      "test_by_magnitude": {
+        "1.25-1.5x": 0.0251,
+        "1.5-2x": 0.1205,
+        "2-3x": 0.3267,
+        "3x+": 0.7297
+      },
+      "test_by_kind": {
+        "item_spike": {
+          "detection_rate": 0.1972,
+          "median_delay_hours": 7.0,
+          "false_alarms_per_store_week": 2.0148,
+          "positives": 1080
+        },
+        "store_surge": {
+          "detection_rate": 0.1586,
+          "median_delay_hours": 7.0,
+          "false_alarms_per_store_week": 2.0983,
+          "positives": 1160
+        },
+        "stockpiling": {
+          "detection_rate": 0.0563,
+          "median_delay_hours": 6.5,
+          "false_alarms_per_store_week": 2.2652,
+          "positives": 2240
+        }
+      },
+      "test_censored_stream": {
+        "detection_rate": 0.0384,
+        "median_delay_hours": 4.0,
+        "false_alarms_per_store_week": 0.5066,
+        "positives": 4480
+      }
+    },
+    "store": {
+      "params": {
+        "r": 2.0,
+        "h": 35.0,
+        "ratio_min": 1.3
+      },
+      "validation": {
+        "detection_rate": 0.7826,
+        "median_delay_hours": 2.0,
+        "false_alarms_per_store_week": 0.1236,
+        "positives": 23
+      },
+      "test": {
+        "detection_rate": 0.5412,
+        "median_delay_hours": 3.0,
+        "false_alarms_per_store_week": 0.19,
+        "positives": 85
+      },
+      "note": "Store-level false alarms are capped at 1 per store per 7 weeks (one alarm covers 40 SKUs)."
+    }
   }
 }

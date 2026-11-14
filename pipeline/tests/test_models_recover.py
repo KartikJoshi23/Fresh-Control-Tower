@@ -154,3 +154,19 @@ def test_masking_test_reproduces_the_committed_numbers() -> None:
     m = next(e for e in doc["entries"] if e["datasetId"] == "frn-50k")["masking"]
     result = masking.masking_test(masking.load_cube(repo_path("frn50k_train")), seed=2026)
     assert (result["hidden_wape"], result["hidden_wpe"]) == (m["recoveryWape"], m["recoveryWpe"])
+
+
+def test_synthetic_recovery_reproduces_the_committed_report() -> None:
+    # Regenerates the world and the P0 run from the seed (about 10 s), then re-runs profile recovery.
+    from freshpipe import generate, simulate
+    from freshpipe.config import load_config
+
+    config = load_config()
+    world = generate.generate_world(config)
+    run = simulate.simulate(world, simulate.BaselinePolicy.from_config(config), config=config)
+    h = run.horizon
+    rec, report = recover.recover_p0(world, run.sales_h[:, h], run.oos_h[:, h], config, with_ml=False)
+    committed = json.loads((repo_path("processed") / "model_report.json").read_text(encoding="utf-8"))["recovery"]
+    assert report["alpha"] == committed["alpha"]
+    assert report["profile"] == committed["profile"]
+    assert report["oracle_validation"] == committed["oracle_validation"]

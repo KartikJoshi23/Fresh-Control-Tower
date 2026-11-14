@@ -40,11 +40,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from freshpipe import (calendar_uae, calibrate, clean, fidelity, generate, geography, ingest, masking,  # noqa: E402
-                       recover, simulate, weather)
+from freshpipe import (calendar_uae, calibrate, clean, fidelity, forecast, generate, geography, ingest,  # noqa: E402
+                       masking, recover, simulate, spikes, weather)
 from freshpipe.artefacts import write_artefact, write_meta  # noqa: E402
 from freshpipe.config import load_config, repo_path  # noqa: E402
-from freshpipe.world import catalog_body  # noqa: E402
+from freshpipe.world import STORES, catalog_body  # noqa: E402
 
 LOG = logging.getLogger("freshpipe")
 FRN_DATASETS = {"frn50k": "frn50k_train", "frnlt": "frnlt_train"}
@@ -188,6 +188,9 @@ def step_recover() -> None:
 def step_realdata() -> None:
     """Masking and forecast-bias tests on the REAL FreshRetailNet-50K data (P3-02) -> realdata.json."""
     config = load_config()
+    if not (repo_path("frn50k_train").is_file() and repo_path("frn50k_eval").is_file()):
+        LOG.warning("realdata skipped: FreshRetailNet-50K is not in Datasets/ (the committed realdata.json is kept)")
+        return
     train = masking.load_cube(repo_path("frn50k_train"))
     mask = masking.masking_test(train, seed=config["seed"])
     bias = masking.forecast_bias_test(train, masking.load_cube(repo_path("frn50k_eval")), seed=config["seed"])
@@ -199,6 +202,57 @@ def step_realdata() -> None:
     _update_model_report("realdata", {"masking": mask, "forecast_bias": bias})
     LOG.info("realdata: masking %s; bias raw %s -> recovered %s", mask["hidden_wape"],
              bias["raw_sales"]["wpe_in_stock_hours"], bias["recovered"]["wpe_in_stock_hours"])
+
+
+def _recovered_and_recorded() -> tuple["np.ndarray", "np.ndarray"]:
+    recovered = np.load(repo_path("synthetic") / "recovered.npz")["daily"].astype(float)
+    recorded = np.load(repo_path("synthetic") / "p0_hourly.npz")["sales_h"].sum(axis=2).astype(float)
+    return recovered, recorded
+
+
+def step_forecast() -> None:
+    """Nine quantile models + the naive variant + baselines, scored on 2026 (P3-03)."""
+    config = load_config()
+    world = generate.load_world()
+    recovered, recorded = _recovered_and_recorded()
+    run = forecast.forecast_world(world, recovered, recorded, config)
+    np.savez_compressed(repo_path("synthetic") / "forecasts.npz", quantiles=run.quantiles, naive=run.naive_quantiles,
+                        buckets=np.array(forecast.BUCKETS), quantile_levels=np.array(forecast.QUANTILES))
+    _update_model_report("forecast", run.report)
+    LOG.info("forecast 1-7 days: %s", json.dumps(run.report["buckets"]["1-7"]["ai_recovered"]))
+
+
+def step_ablation() -> None:
+    """Feature-group ablation for KQ2 (P3-04) -> ablation.json."""
+    config = load_config()
+    world = generate.load_world()
+    recovered, recorded = _recovered_and_recorded()
+    body = forecast.ablation(world, recovered, recorded, config)
+    write_artefact("ablation.json", body, provenance="PRECOMPUTED", sources=[], seed=config["seed"], pretty=True)
+    _update_model_report("ablation", body)
+    LOG.info("ablation: %s", [(g["id"], g["deltaWape"]) for g in body["groups"]])
+
+
+def step_spikes() -> None:
+    """Tune the spike detector on 2025 H2 and score it on 2026 (P3-05)."""
+    config = load_config()
+    world = generate.load_world()
+    hourly = np.load(repo_path("synthetic") / "p0_hourly.npz")
+    sales_h, oos = hourly["sales_h"], hourly["oos_h"]
+    recovered, _ = _recovered_and_recorded()
+    inp = forecast.world_forecast_inputs(world, config)
+    fit = np.asarray(inp.dates <= pd.Timestamp(config["splits"]["train_end"]))
+    train = np.asarray(inp.dates <= pd.Timestamp(config["splits"]["validation_end"]))
+    p50_val = forecast.fit_predict(recovered, inp, fit, bucket=0, quantiles=(0.5,), seed=config["seed"])[0]
+    p50_test = np.load(repo_path("synthetic") / "forecasts.npz")["quantiles"][0, 1].astype(float)
+    ri = recover.world_inputs(world, config)
+    prof = recover.day_profiles(recover.estimate_profiles(sales_h, oos, ri["groups"], ri["special_day"], ri["fit"]),
+                                ri["special_day"])
+    h = world.horizon
+    report = spikes.detector_report(world.demand_h[:, h], sales_h, p50_val, p50_test, prof, world.event_kind[:, h],
+                                    world.multiplier[:, h], train & ~fit, ~train, n_stores=len(STORES))
+    _update_model_report("spikes", report)
+    LOG.info("spikes item %s; store %s", json.dumps(report["item"]["test"]), json.dumps(report["store"]["test"]))
 
 
 STEPS = {
@@ -213,10 +267,13 @@ STEPS = {
     "fidelity": step_fidelity,
     "recover": step_recover,
     "realdata": step_realdata,
+    "forecast": step_forecast,
+    "ablation": step_ablation,
+    "spikes": step_spikes,
 }
 PART1 = ("clean", "calibrate", "calendar", "weather", "routes", "meta")
 PART2 = ("routes", "generate", "simulate", "fidelity")
-PART3 = ("recover", "realdata")
+PART3 = ("recover", "realdata", "forecast", "ablation", "spikes")
 PARTS = {"part1": PART1, "part2": PART2, "part3": PART3}
 
 

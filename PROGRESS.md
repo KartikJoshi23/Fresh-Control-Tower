@@ -104,9 +104,9 @@
 |---|---|---|---|---|---|---|
 | P3-01 | `recover.py`: profile and ML demand recovery | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1. Profile recovery chosen (ML tried: worse). Synthetic test 2026: daily bias −32.4% → −1.5%; hidden-demand WAPE 30.5% (oracle floor 14%; target 25% missed, reported) · 10 tests |
 | P3-02 | Masking test on real FreshRetailNet-50K data → `realdata.json` | P1-01 | Anurag | 🟨 | feat/P3-models | `masking.py` → realdata.json (REAL). Masking: hidden WAPE 58.4%, WPE +1.9% (oracle 31.4%). Forecast WPE: raw −18.9% → recovered −0.4% (paper −7.37% → +0.57%) |
-| P3-03 | `forecast.py`: 9 quantile models + baselines (seasonal-naive, MA, ETS) | P3-01 | Anurag | 🟨 | feat/P3-models | WAPE, bias, coverage. Stacked on PR #1 |
-| P3-04 | Ablation (KQ2) → `ablation.json` | P3-03 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
-| P3-05 | `spikes.py`: detector + evaluation (delay, false alarms) | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
+| P3-03 | `forecast.py`: 9 quantile models + baselines (seasonal-naive, MA, ETS) | P3-01 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1. 9 HGB quantile models; 2026 test vs true demand: 1-7 d WAPE 30.5% (seasonal-naive 44.4%, MA 36.0%, ETS 34.5%), coverage 77.9%; P50 WPE −5.9%; trained on recorded sales: WPE −31.0% |
+| P3-04 | Ablation (KQ2) → `ablation.json` | P3-03 | Anurag | 🟨 | feat/P3-models | ablation.json (not a fixture). ΔWAPE without: stock status +11.9 pts, history only +3.6, calendar +3.0, promotions +1.3, weather 0.0 |
+| P3-05 | `spikes.py`: detector + evaluation (delay, false alarms) | P2-02 | Anurag | 🟨 | feat/P3-models | Store level (2026): detection 54%, median delay 3 h, 0.19 false alarms/store-week ✅. Item level: 12% (73% of ≥3× spikes), delay 7 h, 1.1 FA/store-week; censored P0 stream: 4% |
 
 ### Phase 5, Part 4: optimisation, MCDM, backtests, exports (Track A)
 
@@ -271,3 +271,4 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · continuing Kartik's Part 2 WIP (a6e80fc); baseline green (web check ✅, 58 pytest + 12 skips) · 35 Part 2 tests added (93 pytest pass); `--step part2` reproduces the committed artefacts bit-for-bit (only `generatedAt` differs) · next: docs/04-synthetic-world.md, log D-21…D-23, CR-001 (series.ts waste comment), PR
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · last commit 15d3a6d · docs/04 written; D-21…D-23 logged; CR-001 raised; checks green (93 pytest, web check); PR #1 opened, rows 🟦 · next: lead reviews and merges PR #1; meanwhile Part 3 on feat/P3-models, stacked on the Part 2 branch
 - 2026-11-14 · P3-01, P3-02 · branch feat/P3-models · recover.py + masking.py + run steps `recover`, `realdata`; realdata.json regenerated from code (not a fixture); 104 pytest pass · next: forecast.py (P3-03), ablation (P3-04), spikes.py (P3-05)
+- 2026-11-14 · P3-03…P3-05 · branch feat/P3-models · forecast.py (9 quantile models, baselines, ablation), spikes.py, run steps forecast/ablation/spikes; ablation.json generated; 121 pytest pass · next: docs/05-models.md, PR for Part 3

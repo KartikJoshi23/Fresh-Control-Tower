@@ -102,11 +102,11 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P3-01 | `recover.py`: profile and ML demand recovery | P2-02 | — | ⬜ | | |
-| P3-02 | Masking test on real FreshRetailNet-50K data → `realdata.json` | P1-01 | — | ⬜ | | Compare with the paper's −7.37% |
-| P3-03 | `forecast.py`: 9 quantile models + baselines (seasonal-naive, MA, ETS) | P3-01 | — | ⬜ | | WAPE, bias, coverage |
-| P3-04 | Ablation (KQ2) → `ablation.json` | P3-03 | — | ⬜ | | |
-| P3-05 | `spikes.py`: detector + evaluation (delay, false alarms) | P2-02 | — | ⬜ | | |
+| P3-01 | `recover.py`: profile and ML demand recovery | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
+| P3-02 | Masking test on real FreshRetailNet-50K data → `realdata.json` | P1-01 | Anurag | 🟨 | feat/P3-models | Compare with the paper's −7.37% |
+| P3-03 | `forecast.py`: 9 quantile models + baselines (seasonal-naive, MA, ETS) | P3-01 | Anurag | 🟨 | feat/P3-models | WAPE, bias, coverage Stacked on PR #1 (Part 2) |
+| P3-04 | Ablation (KQ2) → `ablation.json` | P3-03 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
+| P3-05 | `spikes.py`: detector + evaluation (delay, false alarms) | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
 
 ### Phase 5, Part 4: optimisation, MCDM, backtests, exports (Track A)
 

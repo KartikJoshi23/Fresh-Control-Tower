@@ -15,13 +15,13 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 5: development. **Part 1 (data foundation) done and merged into `main`.** |
-| **Gate** | ▶ "continue" given for Part 2 (2026-11-13). Next stop: after Part 2 |
-| **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass; CI green on the branch (run 43463725418) |
-| **Exact next step** | Finish Part 2 on `feat/P2-synthetic-world`: write `pipeline/tests/test_world.py`, `test_generate.py`, `test_simulate.py`, `test_fidelity.py`; write `docs/04-synthetic-world.md`; log decisions D-21–D-23 (see §9 entry); push, CI green, merge `--no-ff`. Run: `python pipeline/run.py --step part2` |
-| **Last integrated commit on `main`** | `ff47bb7` (merge of Part 1; earlier commits are listed in §9) |
-| **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` |
-| **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
+| **Current phase** | Phase 5: development. **Parts 1–3 merged into `main`. Part 4 in review ([PR #3](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/3), CI green). Track A (the Python pipeline) is complete.** |
+| **Gate** | Parts 2 and 3 were merged by the lead (PRs #1, #2). Next stop: the lead reviews and merges PR #3 (Part 4). Phase 6 stays locked (§2). |
+| **Last completed step** | Part 4 on `feat/P4-decisions`: AI ordering policies P1–P3, MCDM, a 200-run Monte Carlo, frontier, impact and exports. **All 52 files in `web/public/data` are pipeline output, and none is a fixture.** 138 pytest + 61 Vitest pass. |
+| **Exact next step** | **Lead:** merge PR #3; decide CR-001 and CR-002 (§5); answer Q1–Q7. **Web track:** Part 5 (P5-01 app shell, then P5-02…P5-05), built against the real artefacts; Parts 6–8 can start once Part 5 is merged. **Report writers (Phase 6):** read `docs/04`–`06` first. Some targets were missed, and the waste/CO2e story needs the per-unit and equal-availability framing (KI-13). |
+| **Last integrated commit on `main`** | `3d8725e` (merge of PR #2, Part 3); earlier merges: `b0f26fe` (PR #1, Part 2), `ff47bb7` (Part 1) |
+| **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` via pull requests. Open pull requests with `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls` (KI-14). |
+| **Updated** | 2026-11-14 by Anurag, via Claude Code. §1, the §2 status note, §6 and §7 were refreshed factually and flagged to the lead on PR #3; the §2 gate approvals are unchanged. |
 
 ## 2. Phase gates
 
@@ -31,7 +31,7 @@
 | 2 Dataset | ✅ Complete | Lead confirmed the datasets are in the root folder | 2026-11-13 |
 | 3 Inspection and plan | ✅ Approved (v1.1 after audit) | "Plan approved, begin setup" (given with the repository link) | 2026-11-13 |
 | 4 Repository setup and kit | ✅ Approved | "Kit approved" | 2026-11-13 |
-| 5 Development (Parts 1–9) | 🟢 Open (Part 1 ✅ merged; Part 2 in progress) | "continue" after **each** part | 2026-11-13 |
+| 5 Development (Parts 1–9) | 🟢 Open (Parts 1–3 ✅ merged; Part 4 🟦 PR #3; Part 5 next) | "continue" after **each** part | 2026-11-13 |
 | 6 Screenshots and report | 🔒 | "continue" after **each** section | — |
 | 7 NotebookLM prompt | 🔒 | Lead's review | — |
 
@@ -123,28 +123,28 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | — | ⬜ | | `docs/design-system.md` |
-| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | — | ⬜ | | |
-| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | — | ⬜ | | Plan §2.5; Suspense |
-| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | — | ⬜ | | |
-| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | — | ⬜ | | Data-viz rules |
+| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | TopNav (horizontal only, 64 px, top sheet < 768 px, accent active link), 12-col page grid (max 1440, 16/24 gutters), GlassPanel chart/deco with solid fallback; placeholder pages for the 6 other routes (owners replace) |
+| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | ProvenanceChip (monochrome, glyph + label + tooltip) and PlaceholderBanner (fixture registry: shows if ANY loaded artefact isFixture); e2e proves both states |
+| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | Zustand store + URL codec (short stable keys, clamped, junk ignored) + replaceState sync + Scenario Console drawer (all §2.5 groups, 5 presets, Esc/focus) + active chips; adds `selection.window` (plan §2.5 dateWindow = backtest window ids) |
+| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | loadArtefact/loadSeries: fetch → Zod → ok/empty/error (never throws, never logs), cached; DataState panels; contract failure → error panel with zero console errors (e2e) |
+| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | Anurag | 🟦 | feat/P5-web-foundation · [PR #4](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/4) (stacked on #3) | ChartFrame (title, provenance, legend ≥ 2 series, table toggle + global table view), TableView, ChartTooltip, theme (entity colours, no hue cycling). Initial JS 216 KB gzip (KI-15) |
 
 ### Phase 5, Parts 6–9: pages (Track B)
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | — | ⬜ | | |
-| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | — | ⬜ | | |
-| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | — | ⬜ | | |
-| P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | — | ⬜ | | |
-| P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | — | ⬜ | | Use fixtures until P4-06 |
-| P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | — | ⬜ | | |
-| P8-01 | Live Ops (feed replay, Live Shelf Grid modes, alerts, purchase-order log, approval modes) | P5-01…P5-05 | — | ⬜ | | |
-| P8-02 | AHP/entropy/TOPSIS in TypeScript + Rank Race + sensitivity strip | P5-05 | — | ⬜ | | TOPSIS parity |
-| P8-03 | Route Globe (R3F, lazy-loaded) + SVG fallback | P8-02 | — | ⬜ | | The only WebGL scene |
-| P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | — | ⬜ | | |
-| P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | — | ⬜ | | |
-| P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | — | ⬜ | | |
+| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | Overview: recommendation (lowest-cost policy for the scenario window), 5 KPI tiles vs baseline with icon+text deltas and P10–P90, Hidden Demand Reveal, mini frontier |
+| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | HiddenDemandReveal: draggable veil + slider/keyboard, gap shading, live units/AED counter, AI recovered share; on Overview and Demand Lab |
+| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟦 | feat/P6-overview-demand · [PR #5](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/5) (stacked on #4) | Demand Lab: series (true/recorded/recovered + AI P10–P90, festival shades), legacy-vs-AI forecast toggle with in-browser bias vs truth, stockout strip; Real-data tab (REAL); ablation chart |
+| P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | Anurag | 🟨 | feat/P7-scenario-studio | |
+| P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | Anurag | 🟨 | feat/P7-scenario-studio | Use fixtures until P4-06 |
+| P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | Anurag | 🟨 | feat/P7-scenario-studio | |
+| P8-01 | Live Ops (feed replay, Live Shelf Grid modes, alerts, purchase-order log, approval modes) | P5-01…P5-05 | Anurag | 🟨 | feat/P8-live-sourcing | |
+| P8-02 | AHP/entropy/TOPSIS in TypeScript + Rank Race + sensitivity strip | P5-05 | Anurag | 🟨 | feat/P8-live-sourcing | TOPSIS parity |
+| P8-03 | Route Globe (R3F, lazy-loaded) + SVG fallback | P8-02 | Anurag | 🟨 | feat/P8-live-sourcing | The only WebGL scene |
+| P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
+| P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
+| P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
 | P9-04 | Vercel production deploy | P9-03, L-04 | — | ⬜ | | |
 
 ### Phase 6: screenshots and report (lead-gated, one section at a time)
@@ -207,14 +207,20 @@
 | # | Issue | Impact | Plan |
 |---|---|---|---|
 | KI-1 | `npm audit` lists moderate advisories in **dev-only** tooling (for example, the eslint 9 deprecation). Production dependencies: 0 vulnerabilities. | None for users | Review in P9-03 |
-| KI-2 | Every file in `web/public/data` is a **fixture** (`isFixture: true`) | Must never appear as results | P5-02 banner; P4-06 replaces them; R-00 guard |
+| KI-2 | ✅ Resolved in P4-06 (PR #3): every file in `web/public/data` is now pipeline output (`isFixture: false`, 52/52 valid). | — | Keep the PlaceholderBanner (P5-02) and the R-00 guard as safety nets |
 | KI-3 | CI cannot see the raw data, so data tests skip there | CI covers fixtures and logic only | Data part owners run `python -m pytest pipeline` locally and log the result |
 | KI-4 | ✅ Verified in Part 1: *Sustainability* (2026) authors (Goharbakhsh, Rahbari, Aghabayk) and the −95.1% figure (abstract via Crossref); DESNZ OGL v3.0; Poore and Nemecek DOI; Ma (2024) = Mingpu Ma; AED 6 bn = 2022 statement by the UAE minister (Khaleej Times) | Resolved | — |
-| KI-5 | `realdata.json` holds Phase 3 inspection numbers; the masking fields are null | None (it is a fixture) | Regenerated in P3-02 |
+| KI-5 | ✅ Resolved in P3-02 (PR #2): `realdata.json` is regenerated from code with the masking and forecast-bias results | — | — |
 | KI-6 | `biber --validate-datamodel` warns about 4 undated web sources | None (Harvard "n.d." is intended) | — |
 | KI-7 | School summer-break windows (2023–2026) come from news reports (`verified = false`) | Timing of a synthetic demand pattern only | Check against MoE calendars before the report cites them |
 | KI-8 | FoodKeeper's server refuses scripted downloads (HTTP 403) | Shelf-life values were read in a browser and recorded with product IDs | Re-check by hand if FoodKeeper updates |
-| KI-9 | No pull request for Part 1: the `gh` CLI token is invalid | The merge is a local `--no-ff` merge after green CI | Lead: run `gh auth login` to enable pull requests |
+| KI-9 | ✅ Resolved: since Part 2, pull requests are opened through the GitHub REST API (see KI-14), and the lead merges them on GitHub | — | — |
+| KI-10 | `--step realdata` (P3-02) needs `Datasets/FreshRetailNet-50K/` (115 MB, from Hugging Face, no login). The data-marked reproduction test also needs FRN-LT and Kaggle (`conftest.py` checks all raw files) | Without them the step skips and keeps the committed `realdata.json` | Re-run with all datasets locally before the report freezes the numbers |
+| KI-11 | Slow steps: `--step backtest` (200 Monte Carlo runs) takes about 22 min; `--step part4` about 25 min; `--step part3` about 7 min | None | Use `--runs 2` for a quick preview; commit only the 200-run outputs |
+| KI-12 | `live/feed.json` is 1.25 MB raw (72 KB gzipped); the series files are about 145 KB each (17 KB gzipped) | Page weight on `/live` | P8-01 loads it lazily on `/live` only; trim the window if LCP misses its budget |
+| KI-13 | **Honest results to carry into the report:** recovery WAPE 30.5% vs the 25% target; item-level spike delay 7 h vs ≤ 4 h (store level meets it); under the AI, absolute waste kg is +64% and CO2e +45%, because it serves 30 points more demand (waste per kg received is about flat; at equal availability waste is −41%) | Phase 6 must not overclaim | `docs/05-models.md` §1 and `docs/06-decisions.md` §1 and §4 give the wording and the numbers |
+| KI-14 | GitHub GraphQL is blocked from Claude Code sessions, so `gh pr create` fails | — | `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls -f title=… -f head=… -f base=main -F body=@file` |
+| KI-15 | Shell initial JS is 216 KB gzip per route (React + Next.js about 155 KB, Zod + shell about 45 KB) against a 250 KB target and a 300 KB hard limit (plan §6.6) | Recharts on a page would exceed the target | Parts 6–9: prefer custom SVG with `d3-scale`/`d3-shape` (pinned); lazy-load Recharts (`next/dynamic`) below the fold; measure with the gzip check in P9-03 |
 
 ## 7. File ownership map
 
@@ -222,10 +228,10 @@
 |---|---|---|
 | `implementation-plan.md`, `docs/design-system.md`, `web/src/styles/tokens.css`, `web/src/lib/contracts/**`, `docs/contracts/**` | Lead | Frozen: change request only |
 | `web/package.json`, `web/package-lock.json`, `pipeline/requirements.txt`, `pipeline/config.yaml` | Lead | Change request only |
-| `pipeline/freshpipe/{ingest,clean,calibrate,calendar_uae,weather}.py`, `pipeline/run.py`, `data/external/**`, `data/processed/calibration.json` | Part 1 owner | |
-| `pipeline/freshpipe/{generate,simulate}.py`, `data/processed/fidelity_report.json` | Part 2 owner | |
-| `pipeline/freshpipe/{recover,forecast,spikes}.py` | Part 3 owner | |
-| `pipeline/freshpipe/{optimise,mcdm,backtest,impact,export,engine_reference}.py`, `web/public/data/**` (from P4-06), `web/tests/fixtures/golden/**` | Part 4 owner | |
+| `pipeline/freshpipe/{ingest,clean,calibrate,calendar_uae,weather}.py`, `pipeline/run.py`, `data/external/**`, `data/processed/calibration.json` | Part 1 owner | `run.py`: each later part adds only its own `step_*` functions and its `PART<n>` tuple |
+| `pipeline/freshpipe/{world,generate,simulate,fidelity}.py`, `data/processed/fidelity_report.json`, `pipeline/tests/test_generate*.py`, `docs/04-synthetic-world.md` | Part 2 owner (Kartik → Anurag) | `simulate.py` also has the P2/P3 same-day top-up channel (Part 4); P0 must stay bit-identical (golden test) |
+| `pipeline/freshpipe/{recover,masking,forecast,spikes}.py`, `pipeline/tests/test_models*.py`, `data/processed/model_report.json` (shared by Parts 3–4, one section per step), `docs/05-models.md` | Part 3 owner (Anurag) | |
+| `pipeline/freshpipe/{optimise,mcdm,backtest,impact,export,engine_reference}.py`, `pipeline/tests/test_decisions.py`, `web/public/data/**` (from P4-06), `web/tests/fixtures/golden/**`, `docs/06-decisions.md` | Part 4 owner (Anurag) | `engine_reference.py` is the spec the Part 7 TypeScript engine must match (golden cases, 1e-6) |
 | `web/src/app/layout.tsx`, `web/src/app/globals.css`, `web/src/components/{layout,ui}/**`, `web/src/components/charts/primitives/**`, `web/src/lib/{state,data}/**` | Part 5 owner | |
 | `web/src/app/page.tsx`, `web/src/app/demand/**`, `web/src/components/signature/HiddenDemandReveal*` | Part 6 owner | |
 | `web/src/app/scenarios/**`, `web/src/lib/engine/**`, `web/src/components/signature/SurgePlanner*` | Part 7 owner | |
@@ -234,6 +240,7 @@
 | `report/**`, `screenshots/**` | Lead (Phase 6) | |
 | `PROGRESS.md` | Everyone | Own rows and own §9 subsection only |
 | `docs/progress/<name>.md` | That person | Append-only |
+| `docs/decisions/CR-*.md` | The person who raised it; the lead records the decision | |
 
 ## 8. Run locally
 
@@ -278,3 +285,6 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-14 · P4-01…P4-06 (WIP) · branch feat/P4-decisions · optimise.py (P1-P3 policies, costs, newsvendor, surge planner), mcdm.py (AHP CR 0.025; entropy + TOPSIS reproduce arXiv:2407.09931 Ex. 2 to 6 dp), backtest.py, impact.py, export.py, engine_reference.py (mulberry32 bit-identical to JS); simulate.py gains the noon top-up channel (P0 unchanged); 52/52 artefacts valid, 0 fixtures; backtest.json/frontier.json/impact.json are a 2-run preview · next: commit the 200-run Monte Carlo, docs/06-decisions.md, PR
 - 2026-11-14 · P3-01…P3-05 · branch main · last commit 3d8725e (merge of PR #2 by Kartik) · Part 3 rows set to ✅ · next: PR #3 (Part 4) retargeted to main
 - 2026-11-14 · P4-01…P4-06 · branch feat/P4-decisions · last commit 36fa5ba · Part 4 complete: 200-run backtests, frontier, impact, 40 series, live feed, golden cases; docs/06; CR-002; 138 pytest + 61 vitest pass, 52/52 artefacts valid, 0 fixtures; PR #3 opened, rows 🟦 · next: lead merges PR #3; then Part 5 (P5-01 app shell: TopNav, layout grid, GlassPanel) on feat/P5-web-foundation — build against the real artefacts (no fixtures remain)
+- 2026-11-14 · docs sync · branch main · refreshed §1 Status, the §2 status note (approvals unchanged), §6 (KI-2/5/9 resolved; KI-10…KI-14 added) and §7 (new Part 2–4 files) after Parts 2–3 merged; handover in docs/progress/anurag.md; flagged to the lead on PR #3 · next: claim P5-01
+- 2026-11-14 · P5-01…P5-05 · branch feat/P5-web-foundation · last commit 5d1cc92 · Part 5 done: shell (TopNav, grid, GlassPanel), Scenario Console + URL sync (adds selection.window), Zod loaders + DataState, ProvenanceChip + PlaceholderBanner, chart primitives; 6 placeholder routes; 74 Vitest + 8 e2e pass; JS 216 KB gzip (KI-15); PR #4 opened (stacked on #3), rows 🟦 · next: lead merges #3 then #4 (retarget #4 to main after #3); then Part 6 (Overview + Demand Lab, Hidden Demand Reveal) on feat/P6-overview-demand
+- 2026-11-14 · P6-01…P6-03 · branch feat/P6-overview-demand · Overview + Demand Lab + Hidden Demand Reveal, d3/SVG chart kit; 78 Vitest + 10 e2e; PR #5 (stacked on #4), rows 🟦 · next: Part 7 (TS engine port + parity, Scenario Studio, Surge Planner) on feat/P7-scenario-studio

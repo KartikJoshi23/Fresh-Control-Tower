@@ -15,7 +15,14 @@ Usage, from the repository root:
     python pipeline/run.py --step simulate           # P0 baseline, hour by hour -> data/synthetic/p0_*
     python pipeline/run.py --step fidelity           # re-run P0 and check the bands -> data/processed/fidelity_report.json
 
-Later parts add steps (train, backtest, export).
+    python pipeline/run.py --step part3              # everything in Part 3, in order
+    python pipeline/run.py --step recover            # recover hidden demand in the P0 history -> data/synthetic/recovered.npz
+    python pipeline/run.py --step realdata           # FRN-50K masking + forecast-bias tests -> realdata.json (needs Datasets/)
+    python pipeline/run.py --step forecast           # quantile forecasts + baselines -> data/synthetic/forecasts.npz
+    python pipeline/run.py --step ablation           # feature-group ablation (KQ2) -> ablation.json
+    python pipeline/run.py --step spikes             # spike detector, tuned on 2025, scored on 2026
+
+Later parts add steps (backtest, export).
 """
 
 from __future__ import annotations
@@ -30,9 +37,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from freshpipe import calendar_uae, calibrate, clean, fidelity, generate, geography, ingest, simulate, weather  # noqa: E402
+from freshpipe import (calendar_uae, calibrate, clean, fidelity, generate, geography, ingest, masking,  # noqa: E402
+                       recover, simulate, weather)
 from freshpipe.artefacts import write_artefact, write_meta  # noqa: E402
 from freshpipe.config import load_config, repo_path  # noqa: E402
 from freshpipe.world import catalog_body  # noqa: E402
@@ -152,6 +161,46 @@ def step_fidelity() -> None:
         raise SystemExit(f"fidelity bands failed: {failed}")
 
 
+def _update_model_report(section: str, payload: object) -> None:
+    """Merge one section into data/processed/model_report.json (Part 3 metrics, report Appendix B)."""
+    path = repo_path("processed") / "model_report.json"
+    report = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"reportVersion": "1.0"}
+    report[section] = payload
+    _write_json(path, report)
+
+
+def _load_p0() -> tuple[generate.World, "np.ndarray", "np.ndarray"]:
+    world = generate.load_world()
+    hourly = np.load(repo_path("synthetic") / "p0_hourly.npz")
+    return world, hourly["sales_h"], hourly["oos_h"]
+
+
+def step_recover() -> None:
+    """Recover hidden demand in the P0 history (P3-01) and score it against the known truth."""
+    config = load_config()
+    world, sales_h, oos = _load_p0()
+    rec, report = recover.recover_p0(world, sales_h, oos, config)
+    np.savez_compressed(repo_path("synthetic") / "recovered.npz", daily=rec.daily.astype(np.float32))
+    _update_model_report("recovery", report)
+    LOG.info("recovery (%s): %s", rec.method, json.dumps(report["profile"]["test"]))
+
+
+def step_realdata() -> None:
+    """Masking and forecast-bias tests on the REAL FreshRetailNet-50K data (P3-02) -> realdata.json."""
+    config = load_config()
+    train = masking.load_cube(repo_path("frn50k_train"))
+    mask = masking.masking_test(train, seed=config["seed"])
+    bias = masking.forecast_bias_test(train, masking.load_cube(repo_path("frn50k_eval")), seed=config["seed"])
+    period = {"start": str(train.dates[0].date()), "end": str(train.dates[-1].date())}
+    calibration = json.loads((repo_path("processed") / "calibration.json").read_text(encoding="utf-8"))
+    write_artefact("realdata.json", masking.realdata_body(calibration, period, mask, bias), provenance="REAL",
+                   sources=["dingdong2025-frn50k", "dingdong2026-frnlt", "wang2025-freshretailnet"],
+                   seed=config["seed"], pretty=True)
+    _update_model_report("realdata", {"masking": mask, "forecast_bias": bias})
+    LOG.info("realdata: masking %s; bias raw %s -> recovered %s", mask["hidden_wape"],
+             bias["raw_sales"]["wpe_in_stock_hours"], bias["recovered"]["wpe_in_stock_hours"])
+
+
 STEPS = {
     "clean": step_clean,
     "calibrate": step_calibrate,
@@ -162,10 +211,13 @@ STEPS = {
     "generate": step_generate,
     "simulate": step_simulate,
     "fidelity": step_fidelity,
+    "recover": step_recover,
+    "realdata": step_realdata,
 }
 PART1 = ("clean", "calibrate", "calendar", "weather", "routes", "meta")
 PART2 = ("routes", "generate", "simulate", "fidelity")
-PARTS = {"part1": PART1, "part2": PART2}
+PART3 = ("recover", "realdata")
+PARTS = {"part1": PART1, "part2": PART2, "part3": PART3}
 
 
 def main(argv: list[str] | None = None) -> int:

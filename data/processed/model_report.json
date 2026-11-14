@@ -1,0 +1,199 @@
+{
+  "reportVersion": "1.0",
+  "recovery": {
+    "alpha": 0.1,
+    "alpha_sweep_validation": {
+      "0.0": {
+        "hidden_wape": 0.2921,
+        "hidden_wpe": 0.0032,
+        "hourly_wape": 0.627,
+        "stockout_day_wape": 0.0927,
+        "daily_wpe": 0.0007,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      },
+      "0.05": {
+        "hidden_wape": 0.2741,
+        "hidden_wpe": -0.032,
+        "hourly_wape": 0.6139,
+        "stockout_day_wape": 0.087,
+        "daily_wpe": -0.0067,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      },
+      "0.1": {
+        "hidden_wape": 0.2699,
+        "hidden_wpe": -0.0581,
+        "hourly_wape": 0.6087,
+        "stockout_day_wape": 0.0857,
+        "daily_wpe": -0.0121,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      },
+      "0.2": {
+        "hidden_wape": 0.2739,
+        "hidden_wpe": -0.0944,
+        "hourly_wape": 0.6062,
+        "stockout_day_wape": 0.087,
+        "daily_wpe": -0.0197,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      },
+      "0.4": {
+        "hidden_wape": 0.2894,
+        "hidden_wpe": -0.1382,
+        "hourly_wape": 0.6083,
+        "stockout_day_wape": 0.0919,
+        "daily_wpe": -0.0288,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      }
+    },
+    "profile": {
+      "validation": {
+        "hidden_wape": 0.2699,
+        "hidden_wpe": -0.0581,
+        "hourly_wape": 0.6087,
+        "stockout_day_wape": 0.0857,
+        "daily_wpe": -0.0121,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      },
+      "test": {
+        "hidden_wape": 0.3047,
+        "hidden_wpe": -0.0422,
+        "hourly_wape": 0.6144,
+        "stockout_day_wape": 0.1446,
+        "daily_wpe": -0.0148,
+        "naive_daily_wpe": -0.3237,
+        "stockout_series_days": 67783
+      },
+      "all": {
+        "hidden_wape": 0.28,
+        "hidden_wpe": -0.0559,
+        "hourly_wape": 0.5995,
+        "stockout_day_wape": 0.1019,
+        "daily_wpe": -0.0138,
+        "naive_daily_wpe": -0.2207,
+        "stockout_series_days": 280560
+      }
+    },
+    "oracle_validation": {
+      "hidden_wape": 0.1387,
+      "hourly_wape": 0.6042
+    },
+    "ml": {
+      "validation": {
+        "hidden_wape": 0.3289,
+        "hidden_wpe": 0.0698,
+        "hourly_wape": 0.6616,
+        "stockout_day_wape": 0.1044,
+        "daily_wpe": 0.0145,
+        "naive_daily_wpe": -0.1827,
+        "stockout_series_days": 36341
+      },
+      "test": {
+        "hidden_wape": 0.4684,
+        "hidden_wpe": 0.2793,
+        "hourly_wape": 0.7612,
+        "stockout_day_wape": 0.2222,
+        "daily_wpe": 0.0978,
+        "naive_daily_wpe": -0.3237,
+        "stockout_series_days": 67783
+      },
+      "all": {
+        "hidden_wape": 0.3686,
+        "hidden_wpe": 0.1309,
+        "hourly_wape": 0.6802,
+        "stockout_day_wape": 0.1342,
+        "daily_wpe": 0.0323,
+        "naive_daily_wpe": -0.2207,
+        "stockout_series_days": 280560
+      }
+    },
+    "chosen": "profile"
+  },
+  "realdata": {
+    "masking": {
+      "series_days_masked": 642130,
+      "masked_hours_share_of_day_sales": 0.3775,
+      "alpha": 0.1,
+      "alpha_sensitivity_validation": {
+        "0.0": {
+          "hidden_wape": 0.6729,
+          "hidden_wpe": 0.0028,
+          "hourly_wape": 1.1683,
+          "oracle_hidden_wape": 0.318
+        },
+        "0.1": {
+          "hidden_wape": 0.5939,
+          "hidden_wpe": 0.0519,
+          "hourly_wape": 1.1658,
+          "oracle_hidden_wape": 0.318
+        },
+        "0.2": {
+          "hidden_wape": 0.5661,
+          "hidden_wpe": 0.0769,
+          "hourly_wape": 1.1678,
+          "oracle_hidden_wape": 0.318
+        },
+        "0.4": {
+          "hidden_wape": 0.546,
+          "hidden_wpe": 0.1033,
+          "hourly_wape": 1.1724,
+          "oracle_hidden_wape": 0.318
+        },
+        "0.8": {
+          "hidden_wape": 0.5381,
+          "hidden_wpe": 0.126,
+          "hourly_wape": 1.179,
+          "oracle_hidden_wape": 0.318
+        }
+      },
+      "hidden_wape": 0.5835,
+      "hidden_wpe": 0.0193,
+      "hourly_wape": 1.1422,
+      "oracle_hidden_wape": 0.3142,
+      "first_hour_distribution": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0083,
+        0.0193,
+        0.0397,
+        0.0607,
+        0.0761,
+        0.0693,
+        0.0594,
+        0.0595,
+        0.0743,
+        0.1094,
+        0.1324,
+        0.1055,
+        0.0712,
+        0.0586,
+        0.0561,
+        0.0,
+        0.0
+      ]
+    },
+    "forecast_bias": {
+      "raw_sales": {
+        "wpe_in_stock_hours": -0.1894,
+        "wape_in_stock_hours": 0.3499,
+        "wpe_fully_in_stock_days": -0.0855
+      },
+      "recovered": {
+        "wpe_in_stock_hours": -0.0042,
+        "wape_in_stock_hours": 0.3213,
+        "wpe_fully_in_stock_days": 0.1045
+      },
+      "evaluation": "7-day evaluation split (2024-06-26 to 2024-07-02), scored on in-stock hours only",
+      "recovered_vs_raw_train_volume": 0.3024
+    }
+  }
+}

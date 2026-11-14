@@ -102,9 +102,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P3-01 | `recover.py`: profile and ML demand recovery | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
-| P3-02 | Masking test on real FreshRetailNet-50K data → `realdata.json` | P1-01 | Anurag | 🟨 | feat/P3-models | Compare with the paper's −7.37% |
-| P3-03 | `forecast.py`: 9 quantile models + baselines (seasonal-naive, MA, ETS) | P3-01 | Anurag | 🟨 | feat/P3-models | WAPE, bias, coverage Stacked on PR #1 (Part 2) |
+| P3-01 | `recover.py`: profile and ML demand recovery | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1. Profile recovery chosen (ML tried: worse). Synthetic test 2026: daily bias −32.4% → −1.5%; hidden-demand WAPE 30.5% (oracle floor 14%; target 25% missed, reported) · 10 tests |
+| P3-02 | Masking test on real FreshRetailNet-50K data → `realdata.json` | P1-01 | Anurag | 🟨 | feat/P3-models | `masking.py` → realdata.json (REAL). Masking: hidden WAPE 58.4%, WPE +1.9% (oracle 31.4%). Forecast WPE: raw −18.9% → recovered −0.4% (paper −7.37% → +0.57%) |
+| P3-03 | `forecast.py`: 9 quantile models + baselines (seasonal-naive, MA, ETS) | P3-01 | Anurag | 🟨 | feat/P3-models | WAPE, bias, coverage. Stacked on PR #1 |
 | P3-04 | Ablation (KQ2) → `ablation.json` | P3-03 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
 | P3-05 | `spikes.py`: detector + evaluation (delay, false alarms) | P2-02 | Anurag | 🟨 | feat/P3-models | Stacked on PR #1 (Part 2) |
 
@@ -270,3 +270,4 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 ### Anurag
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · continuing Kartik's Part 2 WIP (a6e80fc); baseline green (web check ✅, 58 pytest + 12 skips) · 35 Part 2 tests added (93 pytest pass); `--step part2` reproduces the committed artefacts bit-for-bit (only `generatedAt` differs) · next: docs/04-synthetic-world.md, log D-21…D-23, CR-001 (series.ts waste comment), PR
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · last commit 15d3a6d · docs/04 written; D-21…D-23 logged; CR-001 raised; checks green (93 pytest, web check); PR #1 opened, rows 🟦 · next: lead reviews and merges PR #1; meanwhile Part 3 on feat/P3-models, stacked on the Part 2 branch
+- 2026-11-14 · P3-01, P3-02 · branch feat/P3-models · recover.py + masking.py + run steps `recover`, `realdata`; realdata.json regenerated from code (not a fixture); 104 pytest pass · next: forecast.py (P3-03), ablation (P3-04), spikes.py (P3-05)

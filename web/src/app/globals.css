@@ -655,3 +655,10 @@ body {
   color: var(--ink-primary);
   border-bottom-color: var(--accent);
 }
+.surge-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 13px;
+}

@@ -90,3 +90,16 @@ The six non-Overview routes hold `PagePlaceholder` stand-ins from Part 5. Each p
 **Tests:**
 - `tests/shell.test.ts` (Vitest): the URL codec, presets, chips, navigation and loader states.
 - `e2e/shell.spec.ts` (Playwright): the top bar at 1440 and 375 px, Console → URL → links, the placeholder banner, contract errors as panels, zero console errors.
+
+## The in-browser engine (Part 7)
+
+`src/lib/engine/engine.ts` is a line-for-line port of `pipeline/freshpipe/engine_reference.py`; the Python
+docstring is the specification. `tests/engine.test.ts` checks all golden cases in
+`tests/fixtures/golden/engine_cases.json` (deterministic and Monte Carlo) to 1e-6. If you change one side,
+regenerate the golden file (`python -m freshpipe.export`) and keep both in step.
+
+- `scenario.ts` maps the shared scenario store onto engine inputs (spike date → planning day, heatwave
+  ×1.0139 per °C from the real-data calibration, Hormuz → sea lead-time multiplier, P0 vs AI).
+- `useEngine` runs `compute.ts` in a Web Worker (`worker.ts`) and falls back to the main thread if the worker
+  cannot start. The page shows the recompute time and its p95.
+- `surge.ts` ports `plan_surge` (the Surge Planner) and shares its worked example with the Python test.

@@ -38,3 +38,19 @@ test("Demand Lab: series, forecast toggle, real-data tab and ablation", async ({
   await expect(page.getByRole("tabpanel").getByRole("table")).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test("Scenario Studio recomputes in the browser and the Surge Planner responds to the spike", async ({ page }) => {
+  const errors = watchConsole(page);
+  await page.goto("/scenarios/?sp=1&spd=2026-02-21&spm=2.5&spl=3&spw=7");
+  await expect(page.getByTestId("option-table")).toContainText("Legacy rule (P0)");
+  await expect(page.getByTestId("recompute-time")).toContainText("ms");
+  await expect(page.getByTestId("surge-planner")).toBeVisible();
+  const flow = page.getByTestId("chart-frame").filter({ hasText: "Stock in and stock out" });
+  await flow.getByRole("button", { name: /as a table/ }).click();
+  const before = await flow.getByRole("table").textContent();
+  await page.getByLabel("Order on day").fill("4");
+  await page.getByLabel("Quantity (units)").fill("300");
+  await expect(flow.getByRole("table")).not.toHaveText(before ?? "");
+  await expect(page).toHaveURL(/moq=300/);
+  expect(errors).toEqual([]);
+});

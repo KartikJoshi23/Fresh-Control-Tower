@@ -94,9 +94,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik → Anurag | 🟦 | feat/P2-synthetic-world · [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1) | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). 18 tests (`test_generate_world.py`): worked examples, anchors, same seed = same world, catalog.json regenerates |
-| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik → Anurag | 🟦 | feat/P2-synthetic-world · [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1) | Code done; ledger invariants asserted in-engine. 11 hand-worked tests (`test_generate_simulate.py`): FIFO, P0 order, deliveries, expiry, censoring |
-| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik → Anurag | 🟦 | feat/P2-synthetic-world · [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1) | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). 6 tests (`test_generate_fidelity.py`): committed report reproduces from the seed. Write-up: `docs/04-synthetic-world.md` |
+| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik → Anurag | ✅ | feat/P2-synthetic-world (merged `b0f26fe`, [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1)) | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). 18 tests (`test_generate_world.py`): worked examples, anchors, same seed = same world, catalog.json regenerates |
+| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik → Anurag | ✅ | feat/P2-synthetic-world (merged `b0f26fe`, [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1)) | Code done; ledger invariants asserted in-engine. 11 hand-worked tests (`test_generate_simulate.py`): FIFO, P0 order, deliveries, expiry, censoring |
+| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik → Anurag | ✅ | feat/P2-synthetic-world (merged `b0f26fe`, [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1)) | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). 6 tests (`test_generate_fidelity.py`): committed report reproduces from the seed. Write-up: `docs/04-synthetic-world.md` |
 
 ### Phase 5, Part 3: models (Track A)
 
@@ -270,3 +270,4 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 ### Anurag
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · continuing Kartik's Part 2 WIP (a6e80fc); baseline green (web check ✅, 58 pytest + 12 skips) · 35 Part 2 tests added (93 pytest pass); `--step part2` reproduces the committed artefacts bit-for-bit (only `generatedAt` differs) · next: docs/04-synthetic-world.md, log D-21…D-23, CR-001 (series.ts waste comment), PR
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · last commit 15d3a6d · docs/04 written; D-21…D-23 logged; CR-001 raised; checks green (93 pytest, web check); PR #1 opened, rows 🟦 · next: lead reviews and merges PR #1; meanwhile Part 3 on feat/P3-models, stacked on the Part 2 branch
+- 2026-11-14 · P2-01…P2-03 · branch main · last commit b0f26fe (merge of PR #1 by Kartik) · Part 2 rows set to ✅ · next: PR #2 (Part 3) retargeted to main

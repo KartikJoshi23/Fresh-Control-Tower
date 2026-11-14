@@ -133,18 +133,18 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | — | ⬜ | | |
-| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | — | ⬜ | | |
-| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | — | ⬜ | | |
-| P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | — | ⬜ | | |
-| P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | — | ⬜ | | Use fixtures until P4-06 |
-| P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | — | ⬜ | | |
-| P8-01 | Live Ops (feed replay, Live Shelf Grid modes, alerts, purchase-order log, approval modes) | P5-01…P5-05 | — | ⬜ | | |
-| P8-02 | AHP/entropy/TOPSIS in TypeScript + Rank Race + sensitivity strip | P5-05 | — | ⬜ | | TOPSIS parity |
-| P8-03 | Route Globe (R3F, lazy-loaded) + SVG fallback | P8-02 | — | ⬜ | | The only WebGL scene |
-| P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | — | ⬜ | | |
-| P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | — | ⬜ | | |
-| P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | — | ⬜ | | |
+| P6-01 | Overview page (recommendation, KPI tiles, mini frontier) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
+| P6-02 | Hidden Demand Reveal (signature visual) | P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
+| P6-03 | Demand Lab page (series, festival bands, heat strip, Real-data tab, ablation) | P5-01…P5-05 | Anurag | 🟨 | feat/P6-overview-demand | |
+| P7-01 | TypeScript engine (inventory simulation, Monte Carlo, mulberry32) in a Web Worker | P5-03 | Anurag | 🟨 | feat/P7-scenario-studio | |
+| P7-02 | Engine parity tests vs Python golden cases | P7-01, P4-06 | Anurag | 🟨 | feat/P7-scenario-studio | Use fixtures until P4-06 |
+| P7-03 | Scenario Studio page + Surge Planner + option table + stock-in/stock-out flow | P7-01 | Anurag | 🟨 | feat/P7-scenario-studio | |
+| P8-01 | Live Ops (feed replay, Live Shelf Grid modes, alerts, purchase-order log, approval modes) | P5-01…P5-05 | Anurag | 🟨 | feat/P8-live-sourcing | |
+| P8-02 | AHP/entropy/TOPSIS in TypeScript + Rank Race + sensitivity strip | P5-05 | Anurag | 🟨 | feat/P8-live-sourcing | TOPSIS parity |
+| P8-03 | Route Globe (R3F, lazy-loaded) + SVG fallback | P8-02 | Anurag | 🟨 | feat/P8-live-sourcing | The only WebGL scene |
+| P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
+| P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
+| P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | Anurag | 🟨 | feat/P9-impact-roadmap-qa | |
 | P9-04 | Vercel production deploy | P9-03, L-04 | — | ⬜ | | |
 
 ### Phase 6: screenshots and report (lead-gated, one section at a time)

@@ -172,7 +172,8 @@ body {
   display: flex;
   gap: 2px;
 }
-@media (min-width: 768px) {
+/* Seven links need about 1000 px with the brand and the Scenario button; below that they live in the menu sheet. */
+@media (min-width: 1024px) {
   .nav-desktop {
     display: block;
   }
@@ -265,7 +266,7 @@ body {
 .menu-button {
   padding: 8px;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .menu-button {
     display: none;
   }
@@ -654,4 +655,202 @@ body {
 .tab[aria-selected="true"] {
   color: var(--ink-primary);
   border-bottom-color: var(--accent);
+}
+.surge-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+.preset[aria-checked="true"] {
+  border-color: var(--accent);
+}
+.range {
+  accent-color: var(--accent);
+}
+.shelf-grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  font-size: 13px;
+}
+.shelf-grid th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+.shelf-cell {
+  width: 100%;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  text-align: left;
+}
+.shelf-cell[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.alert-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hairline);
+}
+.alert-list li p {
+  grid-column: 1 / -1;
+  margin-top: 2px;
+}
+.rank-race {
+  position: relative;
+}
+.rank-row {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 34px;
+  display: grid;
+  grid-template-columns: 24px minmax(120px, 1.4fr) 2fr 52px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  transition: transform 500ms ease;
+}
+.rank-row[data-compatible="false"] {
+  opacity: 0.45;
+}
+.rank-row[data-recommended="true"] .rank-name {
+  color: var(--ink-primary);
+  font-weight: 600;
+}
+.rank-row[data-recommended="true"] .rank-bar {
+  background: var(--seq-300);
+  box-shadow: 0 0 0 1px var(--seq-200);
+}
+.rank-num,
+.rank-score {
+  color: var(--ink-secondary);
+  text-align: right;
+}
+.rank-name {
+  color: var(--ink-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rank-track {
+  position: relative;
+  height: 12px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.rank-bar {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: 4px;
+  background: var(--seq-500);
+  transition: width 500ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rank-row,
+  .rank-bar {
+    transition: none;
+  }
+}
+.weight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.weight-list li {
+  display: grid;
+  grid-template-columns: 150px 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.sens-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+.sens-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+.sens-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.globe-stage {
+  height: 440px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.15);
+}
+.globe-stage:has([data-testid="route-map-flat"]) {
+  height: auto;
+}
+.globe-label {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.globe-label[data-disrupted="true"] {
+  color: var(--status-critical);
+}
+.legend-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.globe-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.globe-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.globe-overlay .globe-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}
+.globe-hub {
+  color: var(--accent);
+  margin-top: 16px;
+  margin-left: -36px;
+}
+.globe-origin {
+  color: var(--ink-muted);
 }

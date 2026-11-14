@@ -229,3 +229,13 @@ def test_impact_waterfall_adds_up() -> None:
     steps = doc["waterfall"]
     assert steps[0]["kind"] == "baseline" and steps[-1]["kind"] == "total"
     assert steps[0]["valueAED"] + sum(s["valueAED"] for s in steps[1:-1]) == pytest.approx(steps[-1]["valueAED"], abs=5)
+
+
+def test_mcdm_golden_cases_match_the_shipped_file() -> None:
+    # The browser's TOPSIS parity file is derived from mcdm.json itself (rounded metrics), so it stays in step.
+    body = json.loads((repo_path("web_data") / "mcdm.json").read_text(encoding="utf-8"))
+    golden = json.loads((repo_path("web_data").parent.parent / "tests" / "fixtures" / "golden" / "mcdm_cases.json")
+                        .read_text(encoding="utf-8"))
+    fresh = mcdm.golden_cases(body)
+    assert [c["ranks"] for c in fresh["cases"]] == [c["ranks"] for c in golden["cases"]]
+    assert np.allclose([c["closeness"] for c in fresh["cases"]], [c["closeness"] for c in golden["cases"]], atol=1e-9)

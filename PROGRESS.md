@@ -94,9 +94,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik | 🟨 | feat/P2-synthetic-world | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). Tests pending |
-| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik | 🟨 | feat/P2-synthetic-world | Code done; ledger invariants asserted in-engine. Unit tests pending |
-| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik | 🟨 | feat/P2-synthetic-world | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). Tests + docs/04 pending |
+| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). 18 tests (`test_generate_world.py`): worked examples, anchors, same seed = same world, catalog.json regenerates |
+| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | Code done; ledger invariants asserted in-engine. 11 hand-worked tests (`test_generate_simulate.py`): FIFO, P0 order, deliveries, expiry, censoring |
+| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik → Anurag | 🟨 | feat/P2-synthetic-world | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). 6 tests (`test_generate_fidelity.py`): committed report reproduces from the seed. docs/04 pending |
 
 ### Phase 5, Part 3: models (Track A)
 
@@ -262,3 +262,7 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · Part 2 code pushed (tests/docs pending). Decisions to log: D-21 P0 coverage = L+R−1 days (22:00 review, 06:00 dawn delivery), weekday-aware 28-day MA; D-22 P0 adds shrink allowance, 1-case presentation minimum (fixes zero-sales trap) and flat +25% promo uplift, buffer stays 20%; D-23 spike bands checked on true demand (recorded sales shown alongside); spoilage band applied to vegetable categories only; added sup-local-bakery (9 suppliers, archetype 'local'). Waste = expiry + quality culls (series.ts comment to update) · next: tests, docs/04, merge
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->
+
+### Anurag
+- 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · continuing Kartik's Part 2 WIP (a6e80fc); baseline green (web check ✅, 58 pytest + 12 skips) · 35 Part 2 tests added (93 pytest pass); `--step part2` reproduces the committed artefacts bit-for-bit (only `generatedAt` differs) · next: docs/04-synthetic-world.md, log D-21…D-23, CR-001 (series.ts waste comment), PR
+

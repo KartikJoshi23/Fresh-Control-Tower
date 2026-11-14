@@ -123,11 +123,11 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | Anurag | 🟨 | feat/P5-web-foundation | `docs/design-system.md` |
-| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | |
-| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Plan §2.5; Suspense |
-| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | |
-| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Data-viz rules |
+| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | Anurag | 🟨 | feat/P5-web-foundation | TopNav (horizontal only, 64 px, top sheet < 768 px, accent active link), 12-col page grid (max 1440, 16/24 gutters), GlassPanel chart/deco with solid fallback; placeholder pages for the 6 other routes (owners replace) |
+| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | ProvenanceChip (monochrome, glyph + label + tooltip) and PlaceholderBanner (fixture registry: shows if ANY loaded artefact isFixture); e2e proves both states |
+| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Zustand store + URL codec (short stable keys, clamped, junk ignored) + replaceState sync + Scenario Console drawer (all §2.5 groups, 5 presets, Esc/focus) + active chips; adds `selection.window` (plan §2.5 dateWindow = backtest window ids) |
+| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | loadArtefact/loadSeries: fetch → Zod → ok/empty/error (never throws, never logs), cached; DataState panels; contract failure → error panel with zero console errors (e2e) |
+| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | ChartFrame (title, provenance, legend ≥ 2 series, table toggle + global table view), TableView, ChartTooltip, theme (entity colours, no hue cycling). Initial JS 216 KB gzip (KI-15) |
 
 ### Phase 5, Parts 6–9: pages (Track B)
 
@@ -220,6 +220,7 @@
 | KI-12 | `live/feed.json` is 1.25 MB raw (72 KB gzipped); the series files are about 145 KB each (17 KB gzipped) | Page weight on `/live` | P8-01 loads it lazily on `/live` only; trim the window if LCP misses its budget |
 | KI-13 | **Honest results to carry into the report:** recovery WAPE 30.5% vs the 25% target; item-level spike delay 7 h vs ≤ 4 h (store level meets it); under the AI, absolute waste kg is +64% and CO2e +45%, because it serves 30 points more demand (waste per kg received is about flat; at equal availability waste is −41%) | Phase 6 must not overclaim | `docs/05-models.md` §1 and `docs/06-decisions.md` §1 and §4 give the wording and the numbers |
 | KI-14 | GitHub GraphQL is blocked from Claude Code sessions, so `gh pr create` fails | — | `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls -f title=… -f head=… -f base=main -F body=@file` |
+| KI-15 | Shell initial JS is 216 KB gzip per route (React + Next.js about 155 KB, Zod + shell about 45 KB) against a 250 KB target and a 300 KB hard limit (plan §6.6) | Recharts on a page would exceed the target | Parts 6–9: prefer custom SVG with `d3-scale`/`d3-shape` (pinned); lazy-load Recharts (`next/dynamic`) below the fold; measure with the gzip check in P9-03 |
 
 ## 7. File ownership map
 

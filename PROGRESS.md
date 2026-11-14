@@ -123,11 +123,11 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | — | ⬜ | | `docs/design-system.md` |
-| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | — | ⬜ | | |
-| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | — | ⬜ | | Plan §2.5; Suspense |
-| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | — | ⬜ | | |
-| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | — | ⬜ | | Data-viz rules |
+| P5-01 | App shell: TopNav (no sidebar; mobile top sheet), layout grid, GlassPanel | Kit approved | Anurag | 🟨 | feat/P5-web-foundation | `docs/design-system.md` |
+| P5-02 | ProvenanceChip + PlaceholderBanner (`isFixture`) | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | |
+| P5-03 | Scenario store (Zustand) + URL sync + Scenario Console drawer + presets | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Plan §2.5; Suspense |
+| P5-04 | Data loaders (Zod) with loading, empty and error states | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | |
+| P5-05 | Chart primitives: frame, legend, tooltip, table view, status badge | P5-01 | Anurag | 🟨 | feat/P5-web-foundation | Data-viz rules |
 
 ### Phase 5, Parts 6–9: pages (Track B)
 

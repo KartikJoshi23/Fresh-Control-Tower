@@ -1,23 +1,139 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:00:00+04:00",
-  "generator": "phase4-fixture",
-  "seed": null,
-  "isFixture": true,
+  "generatedAt": "2026-11-14T19:02:57+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "isFixture": false,
   "provenance": "PRECOMPUTED",
-  "sources": ["fixture-placeholder"],
-  "scope": "Placeholder: all hero series over the test window.",
-  "curves": [
-    { "policyId": "P0", "points": [
-      { "serviceTarget": 0.8, "availabilityPct": 82, "wastePct": 9, "totalCostAED": 9800 },
-      { "serviceTarget": 0.9, "availabilityPct": 88, "wastePct": 12, "totalCostAED": 9600 },
-      { "serviceTarget": 0.97, "availabilityPct": 93, "wastePct": 16, "totalCostAED": 10400 }
-    ] },
-    { "policyId": "P1", "points": [
-      { "serviceTarget": 0.8, "availabilityPct": 87, "wastePct": 6.5, "totalCostAED": 7400 },
-      { "serviceTarget": 0.9, "availabilityPct": 92, "wastePct": 8, "totalCostAED": 7000 },
-      { "serviceTarget": 0.97, "availabilityPct": 96, "wastePct": 11, "totalCostAED": 7600 }
-    ] }
+  "sources": [
+    "dingdong2025-frn50k",
+    "yapwh2023-vegetables",
+    "desnz2025-ghg-factors",
+    "poore-nemecek2018"
   ],
-  "recommended": { "policyId": "P1", "serviceTarget": 0.9 }
+  "scope": "All 320 store-SKU series, Jan-Oct 2026 test window, generated demand (run 0). P0 points set the legacy buffer to z(τ) × 0.35; P1 points use one τ for every SKU.",
+  "curves": [
+    {
+      "policyId": "P0",
+      "points": [
+        {
+          "serviceTarget": 0.5,
+          "availabilityPct": 45.087,
+          "wastePct": 3.107,
+          "totalCostAED": 12456983.0
+        },
+        {
+          "serviceTarget": 0.6,
+          "availabilityPct": 57.817,
+          "wastePct": 3.098,
+          "totalCostAED": 9802638.0
+        },
+        {
+          "serviceTarget": 0.7,
+          "availabilityPct": 68.211,
+          "wastePct": 3.198,
+          "totalCostAED": 7768719.0
+        },
+        {
+          "serviceTarget": 0.75,
+          "availabilityPct": 72.299,
+          "wastePct": 3.202,
+          "totalCostAED": 6971991.0
+        },
+        {
+          "serviceTarget": 0.8,
+          "availabilityPct": 76.169,
+          "wastePct": 3.186,
+          "totalCostAED": 6184381.0
+        },
+        {
+          "serviceTarget": 0.85,
+          "availabilityPct": 79.604,
+          "wastePct": 3.417,
+          "totalCostAED": 5572974.0
+        },
+        {
+          "serviceTarget": 0.9,
+          "availabilityPct": 83.409,
+          "wastePct": 3.75,
+          "totalCostAED": 4909301.0
+        },
+        {
+          "serviceTarget": 0.95,
+          "availabilityPct": 87.083,
+          "wastePct": 4.194,
+          "totalCostAED": 4359622.0
+        },
+        {
+          "serviceTarget": 0.99,
+          "availabilityPct": 90.919,
+          "wastePct": 5.471,
+          "totalCostAED": 4039501.0
+        }
+      ]
+    },
+    {
+      "policyId": "P1",
+      "points": [
+        {
+          "serviceTarget": 0.5,
+          "availabilityPct": 91.027,
+          "wastePct": 3.226,
+          "totalCostAED": 3388021.0
+        },
+        {
+          "serviceTarget": 0.6,
+          "availabilityPct": 92.049,
+          "wastePct": 3.383,
+          "totalCostAED": 3221605.0
+        },
+        {
+          "serviceTarget": 0.7,
+          "availabilityPct": 92.81,
+          "wastePct": 3.492,
+          "totalCostAED": 3078453.0
+        },
+        {
+          "serviceTarget": 0.75,
+          "availabilityPct": 93.085,
+          "wastePct": 3.455,
+          "totalCostAED": 3030311.0
+        },
+        {
+          "serviceTarget": 0.8,
+          "availabilityPct": 93.401,
+          "wastePct": 3.664,
+          "totalCostAED": 3011769.0
+        },
+        {
+          "serviceTarget": 0.85,
+          "availabilityPct": 93.635,
+          "wastePct": 3.748,
+          "totalCostAED": 2988419.0
+        },
+        {
+          "serviceTarget": 0.9,
+          "availabilityPct": 93.885,
+          "wastePct": 3.947,
+          "totalCostAED": 2976366.0
+        },
+        {
+          "serviceTarget": 0.95,
+          "availabilityPct": 94.082,
+          "wastePct": 4.096,
+          "totalCostAED": 2998519.0
+        },
+        {
+          "serviceTarget": 0.99,
+          "availabilityPct": 94.34,
+          "wastePct": 4.493,
+          "totalCostAED": 3060585.0
+        }
+      ]
+    }
+  ],
+  "recommended": {
+    "policyId": "P1",
+    "serviceTarget": 0.85
+  }
 }

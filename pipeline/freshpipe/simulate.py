@@ -17,6 +17,7 @@ The P0 baseline (`BaselinePolicy`) is the legacy rule the AI is compared against
 **recorded sales**, which stockouts censor, so it produces the censored history that Part 3 learns from.
 
 Every day satisfies: opening + receipts - sales - waste = closing, where waste = handling loss + expiry.
+Receipts include any same-day top-ups (`expedited`), used by the AI-Intraday policies of Part 4.
 """
 
 from __future__ import annotations
@@ -37,6 +38,12 @@ from .world import CATEGORIES, SHORT_FILL, SKUS, rng_for, shelf_life_days, suppl
 
 RING = 16  # days of future deliveries tracked; must exceed the longest lead time plus the longest delay
 INITIAL_COVER = 1.2  # opening stock on the first simulated (warm-up) day, in days of expected demand per lead day
+#: Same-day top-up channel (AI-Intraday, P2/P3): a UAE wholesale market. An order placed at the end of the
+#: policy's `topup_hour` arrives at TOPUP_ARRIVAL_HOUR the same day; it is missed with TOPUP_P_MISS and short
+#: (SHORT_FILL) with TOPUP_P_SHORT. ASSUMPTION (Part 4, docs/06-decisions.md).
+TOPUP_ARRIVAL_HOUR = 16
+TOPUP_P_MISS = 0.02
+TOPUP_P_SHORT = 0.05
 
 STATUS_ON_TIME, STATUS_LATE, STATUS_MISSED = 0, 1, 2
 STATUS_NAMES = {STATUS_ON_TIME: "on_time", STATUS_LATE: "late", STATUS_MISSED: "missed"}
@@ -124,9 +131,13 @@ class State:
     weekday: np.ndarray             # (days,) Monday = 0
     params: SeriesParams
     promo: np.ndarray               # (n, days) announced promotion depth (0 = none); known in advance
+    sales_today: np.ndarray | None = None   # (n,) units sold so far today (seen by intraday policies)
 
 
 class Policy(Protocol):
+    """A replenishment policy. Optionally it also has `topup_hour` (int) and `topup(state) -> qty array`,
+    a same-day order placed at the end of that hour (see TOPUP_ARRIVAL_HOUR)."""
+
     name: str
 
     def orders(self, state: State) -> list[OrderBatch]:
@@ -271,8 +282,11 @@ def simulate(world: World, policy: Policy, *, config: dict | None = None, params
     oos_h = np.zeros((n, n_days, HOURS), dtype=bool)
     on_hand_h = np.zeros((n, n_days, HOURS), dtype=np.int32)
     ledger = {k: np.zeros((n, n_days), dtype=np.int64) for k in
-              ("opening", "receipts", "handling_loss", "expired", "sales", "closing", "ordered", "on_order")}
+              ("opening", "receipts", "handling_loss", "expired", "sales", "closing", "ordered", "on_order",
+               "expedited")}
     order_rows: list[np.ndarray] = []
+    topup_hour = getattr(policy, "topup_hour", None)
+    arriving_pm = np.zeros(n, dtype=np.int64)          # same-day top-up units due at TOPUP_ARRIVAL_HOUR
 
     for d in range(n_days):
         slot = d % RING
@@ -288,13 +302,30 @@ def simulate(world: World, policy: Policy, *, config: dict | None = None, params
                 on_order -= closing[:, slot]
                 arriving[:, slot] = 0
                 closing[:, slot] = 0
+            if topup_hour is not None and h == TOPUP_ARRIVAL_HOUR and arriving_pm.any():
+                culled = rng_handling.binomial(arriving_pm, rng_handling.beta(cull_a, cull_b))
+                stock[rows, fresh_bucket] += arriving_pm - culled
+                ledger["receipts"][:, d] += arriving_pm
+                ledger["handling_loss"][:, d] += culled
+                ledger["expedited"][:, d] += arriving_pm
+                arriving_pm[:] = 0
             stock, sold = consume_fifo(stock, demand_h[:, d, h])
             left = stock.sum(axis=1)
             sales_h[:, d, h] = sold
             on_hand_h[:, d, h] = left
             oos_h[:, d, h] = left == 0
+            if topup_hour is not None and h == topup_hour:
+                state = State(d, h, left, on_order.copy(), history, pre, weekday, params, promo,
+                              sales_h[:, d, :h + 1].sum(axis=1))
+                qty = np.maximum(np.asarray(policy.topup(state), dtype=np.int64), 0)
+                missed = rng_supply.random(n) < TOPUP_P_MISS
+                short = rng_supply.random(n) < TOPUP_P_SHORT
+                share = rng_supply.uniform(SHORT_FILL[0], SHORT_FILL[1], n)
+                arriving_pm += np.where(missed, 0, np.where(short, np.floor(qty * share + 0.5), qty)).astype(np.int64)
+                ledger["ordered"][:, d] += qty
             if h == review_hour:
-                state = State(d, h, left, on_order.copy(), history, pre, weekday, params, promo)
+                state = State(d, h, left, on_order.copy(), history, pre, weekday, params, promo,
+                              sales_h[:, d, :h + 1].sum(axis=1))
                 for batch in policy.orders(state):
                     order_rows.append(_place(batch, d, supply, rng_supply, arriving, closing, on_order))
                     ledger["ordered"][:, d] += batch.qty

@@ -613,5 +613,382 @@
       },
       "note": "Store-level false alarms are capped at 1 per store per 7 weeks (one alarm covers 40 SKUs)."
     }
+  },
+  "tau": {
+    "grid": [
+      0.5,
+      0.6,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      0.99
+    ],
+    "window": [
+      "2025-07-01",
+      "2025-12-31"
+    ],
+    "runs": 2,
+    "total_cost_by_tau_AED": [
+      1528906.0,
+      1429892.0,
+      1368168.0,
+      1336196.0,
+      1315747.0,
+      1311452.0,
+      1315818.0,
+      1345581.0,
+      1389480.0
+    ],
+    "best_uniform_tau": 0.85,
+    "per_sku_tau": {
+      "p10": 0.5,
+      "p50": 0.85,
+      "p90": 0.99
+    },
+    "cost_per_sku_vs_best_uniform": -0.1268
+  },
+  "backtest": {
+    "runs": 2,
+    "paired_vs_p0": {
+      "test-2026": {
+        "P1": {
+          "lostSalesChange": {
+            "p10": -0.817,
+            "p50": -0.816,
+            "p90": -0.816
+          },
+          "wasteChange": {
+            "p10": 0.464,
+            "p50": 0.491,
+            "p90": 0.518
+          },
+          "totalCostChange": {
+            "p10": -0.624,
+            "p50": -0.624,
+            "p90": -0.623
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P2": {
+          "lostSalesChange": {
+            "p10": -0.922,
+            "p50": -0.922,
+            "p90": -0.921
+          },
+          "wasteChange": {
+            "p10": 0.591,
+            "p50": 0.627,
+            "p90": 0.662
+          },
+          "totalCostChange": {
+            "p10": -0.704,
+            "p50": -0.703,
+            "p90": -0.702
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P3": {
+          "lostSalesChange": {
+            "p10": -0.938,
+            "p50": -0.938,
+            "p90": -0.938
+          },
+          "wasteChange": {
+            "p10": 0.607,
+            "p50": 0.638,
+            "p90": 0.668
+          },
+          "totalCostChange": {
+            "p10": -0.718,
+            "p50": -0.717,
+            "p90": -0.716
+          },
+          "lowerCostInRunsShare": 1.0
+        }
+      },
+      "normal": {
+        "P1": {
+          "lostSalesChange": {
+            "p10": -0.806,
+            "p50": -0.799,
+            "p90": -0.793
+          },
+          "wasteChange": {
+            "p10": 0.134,
+            "p50": 0.18,
+            "p90": 0.226
+          },
+          "totalCostChange": {
+            "p10": -0.42,
+            "p50": -0.415,
+            "p90": -0.411
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P2": {
+          "lostSalesChange": {
+            "p10": -0.916,
+            "p50": -0.911,
+            "p90": -0.905
+          },
+          "wasteChange": {
+            "p10": 0.194,
+            "p50": 0.24,
+            "p90": 0.285
+          },
+          "totalCostChange": {
+            "p10": -0.511,
+            "p50": -0.501,
+            "p90": -0.492
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P3": {
+          "lostSalesChange": {
+            "p10": -0.916,
+            "p50": -0.911,
+            "p90": -0.905
+          },
+          "wasteChange": {
+            "p10": 0.194,
+            "p50": 0.24,
+            "p90": 0.285
+          },
+          "totalCostChange": {
+            "p10": -0.511,
+            "p50": -0.501,
+            "p90": -0.492
+          },
+          "lowerCostInRunsShare": 1.0
+        }
+      },
+      "ramadan-2026": {
+        "P1": {
+          "lostSalesChange": {
+            "p10": -0.728,
+            "p50": -0.725,
+            "p90": -0.721
+          },
+          "wasteChange": {
+            "p10": 0.51,
+            "p50": 0.555,
+            "p90": 0.599
+          },
+          "totalCostChange": {
+            "p10": -0.587,
+            "p50": -0.58,
+            "p90": -0.574
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P2": {
+          "lostSalesChange": {
+            "p10": -0.886,
+            "p50": -0.884,
+            "p90": -0.883
+          },
+          "wasteChange": {
+            "p10": 0.725,
+            "p50": 0.796,
+            "p90": 0.866
+          },
+          "totalCostChange": {
+            "p10": -0.701,
+            "p50": -0.696,
+            "p90": -0.691
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P3": {
+          "lostSalesChange": {
+            "p10": -0.914,
+            "p50": -0.914,
+            "p90": -0.914
+          },
+          "wasteChange": {
+            "p10": 0.758,
+            "p50": 0.796,
+            "p90": 0.833
+          },
+          "totalCostChange": {
+            "p10": -0.728,
+            "p50": -0.725,
+            "p90": -0.721
+          },
+          "lowerCostInRunsShare": 1.0
+        }
+      },
+      "stockpiling": {
+        "P1": {
+          "lostSalesChange": {
+            "p10": -0.659,
+            "p50": -0.655,
+            "p90": -0.651
+          },
+          "wasteChange": {
+            "p10": 0.523,
+            "p50": 0.554,
+            "p90": 0.584
+          },
+          "totalCostChange": {
+            "p10": -0.56,
+            "p50": -0.557,
+            "p90": -0.554
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P2": {
+          "lostSalesChange": {
+            "p10": -0.86,
+            "p50": -0.858,
+            "p90": -0.856
+          },
+          "wasteChange": {
+            "p10": 0.745,
+            "p50": 0.884,
+            "p90": 1.023
+          },
+          "totalCostChange": {
+            "p10": -0.706,
+            "p50": -0.698,
+            "p90": -0.69
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P3": {
+          "lostSalesChange": {
+            "p10": -0.902,
+            "p50": -0.897,
+            "p90": -0.893
+          },
+          "wasteChange": {
+            "p10": 0.88,
+            "p50": 0.981,
+            "p90": 1.081
+          },
+          "totalCostChange": {
+            "p10": -0.749,
+            "p50": -0.738,
+            "p90": -0.726
+          },
+          "lowerCostInRunsShare": 1.0
+        }
+      },
+      "hormuz": {
+        "P1": {
+          "lostSalesChange": {
+            "p10": -0.683,
+            "p50": -0.682,
+            "p90": -0.682
+          },
+          "wasteChange": {
+            "p10": 0.481,
+            "p50": 0.497,
+            "p90": 0.514
+          },
+          "totalCostChange": {
+            "p10": -0.516,
+            "p50": -0.514,
+            "p90": -0.513
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P2": {
+          "lostSalesChange": {
+            "p10": -0.867,
+            "p50": -0.866,
+            "p90": -0.865
+          },
+          "wasteChange": {
+            "p10": 0.592,
+            "p50": 0.623,
+            "p90": 0.653
+          },
+          "totalCostChange": {
+            "p10": -0.657,
+            "p50": -0.654,
+            "p90": -0.652
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P3": {
+          "lostSalesChange": {
+            "p10": -0.909,
+            "p50": -0.909,
+            "p90": -0.909
+          },
+          "wasteChange": {
+            "p10": 0.631,
+            "p50": 0.68,
+            "p90": 0.728
+          },
+          "totalCostChange": {
+            "p10": -0.696,
+            "p50": -0.692,
+            "p90": -0.688
+          },
+          "lowerCostInRunsShare": 1.0
+        }
+      },
+      "summer": {
+        "P1": {
+          "lostSalesChange": {
+            "p10": -0.918,
+            "p50": -0.918,
+            "p90": -0.918
+          },
+          "wasteChange": {
+            "p10": 0.576,
+            "p50": 0.629,
+            "p90": 0.682
+          },
+          "totalCostChange": {
+            "p10": -0.721,
+            "p50": -0.72,
+            "p90": -0.719
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P2": {
+          "lostSalesChange": {
+            "p10": -0.966,
+            "p50": -0.965,
+            "p90": -0.964
+          },
+          "wasteChange": {
+            "p10": 0.722,
+            "p50": 0.797,
+            "p90": 0.871
+          },
+          "totalCostChange": {
+            "p10": -0.759,
+            "p50": -0.758,
+            "p90": -0.756
+          },
+          "lowerCostInRunsShare": 1.0
+        },
+        "P3": {
+          "lostSalesChange": {
+            "p10": -0.965,
+            "p50": -0.965,
+            "p90": -0.964
+          },
+          "wasteChange": {
+            "p10": 0.785,
+            "p50": 0.786,
+            "p90": 0.787
+          },
+          "totalCostChange": {
+            "p10": -0.759,
+            "p50": -0.757,
+            "p90": -0.754
+          },
+          "lowerCostInRunsShare": 1.0
+        }
+      }
+    }
   }
 }

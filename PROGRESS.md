@@ -18,7 +18,7 @@
 | **Current phase** | Phase 5: development. **Part 1 (data foundation) done and merged into `main`.** |
 | **Gate** | ▶ "continue" given for Part 2 (2026-11-13). Next stop: after Part 2 |
 | **Last completed step** | Part 1: cleaning (C1–C14), calibration, sourced UAE calendar, real weather, emission factors, shelf lives, routes; 70 pipeline tests pass; CI green on the branch (run 43463725418) |
-| **Exact next step** | Build **Part 2** (P2-01…P2-03: synthetic UAE world, P0 baseline simulation, fidelity report) on `feat/P2-synthetic-world`. Teammates: Track B **Part 5** (P5-01…) is open in parallel. |
+| **Exact next step** | Finish Part 2 on `feat/P2-synthetic-world`: write `pipeline/tests/test_world.py`, `test_generate.py`, `test_simulate.py`, `test_fidelity.py`; write `docs/04-synthetic-world.md`; log decisions D-21–D-23 (see §9 entry); push, CI green, merge `--no-ff`. Run: `python pipeline/run.py --step part2` |
 | **Last integrated commit on `main`** | `ff47bb7` (merge of Part 1; earlier commits are listed in §9) |
 | **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` |
 | **Updated** | 2026-11-13 by Kartik (lead), via Claude Code |
@@ -94,9 +94,9 @@
 
 | ID | Task | Depends on | Owner | Status | Branch / PR | Notes |
 |---|---|---|---|---|---|---|
-| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik | 🟨 | feat/P2-synthetic-world | Plan §3.4 |
-| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik | 🟨 | feat/P2-synthetic-world | Invariant tests |
-| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik | 🟨 | feat/P2-synthetic-world | Every band must pass |
+| P2-01 | `generate.py`: stores, SKUs, true demand (festivals, weather, promotions, spikes), suppliers → `catalog.json` | P1-02, P1-03, P1-04 | Kartik → Anurag | 🟦 | feat/P2-synthetic-world · [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1) | Code done (`world.py`, `generate.py`, catalog.json); anchors met (Ramadan share 19%, 2026 YoY +4.1%). 18 tests (`test_generate_world.py`): worked examples, anchors, same seed = same world, catalog.json regenerates |
+| P2-02 | `simulate.py`: hourly P0 baseline (censoring, ledger, FIFO waste) | P2-01 | Kartik → Anurag | 🟦 | feat/P2-synthetic-world · [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1) | Code done; ledger invariants asserted in-engine. 11 hand-worked tests (`test_generate_simulate.py`): FIFO, P0 order, deliveries, expiry, censoring |
+| P2-03 | Fidelity report vs calibration bands → `fidelity_report.json` | P2-02 | Kartik → Anurag | 🟦 | feat/P2-synthetic-world · [PR #1](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/1) | 12/12 bands + 2/2 anchors pass (seeds 2026, 42, 1234, 99). 6 tests (`test_generate_fidelity.py`): committed report reproduces from the seed. Write-up: `docs/04-synthetic-world.md` |
 
 ### Phase 5, Part 3: models (Track A)
 
@@ -185,6 +185,9 @@
 | D-18 | 2026-11-13 | 8 fictional suppliers on real routes (local, GCC road, sea via Hormuz, Khor Fakkan or Suez, air) | Covers all four archetypes and the three chokepoints in the evidence | pipeline/freshpipe/geography.py |
 | D-19 | 2026-11-13 | Vegetable time stamps are parsed in two formats | The 132 "unparseable" stamps are valid times without milliseconds | docs/03 §6 C10 |
 | D-20 | 2026-11-13 | The Hormuz shock is modelled through availability and lead times, not prices | Goharbakhsh et al. (2026) find food-price effects statistically insignificant (p > 0.05) | calibration.json anchors |
+| D-21 | 2026-11-14 | P0 covers L + R − 1 days (22:00 review, 06:00 dawn delivery) with a weekday-aware 28-day moving average | The night between review and delivery carries almost no demand; same-weekday averages match the legacy practice | docs/04 §5 (decided by Kartik) |
+| D-22 | 2026-11-14 | P0 adds a shrink allowance, a one-case presentation minimum and a flat +25% promotion uplift; the buffer stays at 20%. A 9th supplier, `sup-local-bakery` (archetype `local`), is added | Fixes the zero-sales trap of a pure moving average; bakery is a daily local delivery | docs/04 §4–5 (decided by Kartik) |
+| D-23 | 2026-11-14 | Spike bands are checked on true demand (recorded sales shown alongside); the spoilage band applies to the two vegetable categories only | Spikes are a demand property the festival-blind P0 caps; real loss data covers vegetables only | docs/04 §6 (decided by Kartik) |
 
 ## 5. Open questions and blockers
 
@@ -196,6 +199,7 @@
 | Q5 | Name for the fictional operator (check it is not a real UAE business) | Kartik | P5-01 | Open |
 | Q6 | Harvard variant SP Jain expects | Kartik | Phase 6 | Open |
 | Q7 | Course policy on acknowledging AI-assisted work | Kartik | Phase 6 | Open |
+| CR-001 | `series.ts`: the `waste` comment should read "quality culls on receipt plus expiry" (comment only, no schema change) | Kartik (approve) | P4-06 | Proposed: `docs/decisions/CR-001-series-waste-definition.md` |
 
 ## 6. Known issues
 
@@ -259,4 +263,10 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 
 - 2026-11-13 · Part 2 gate · branch main · last commit 950917d · "continue" given by the lead; P2-01…P2-03 claimed · next: build Part 2 on feat/P2-synthetic-world
 
+- 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · Part 2 code pushed (tests/docs pending). Decisions to log: D-21 P0 coverage = L+R−1 days (22:00 review, 06:00 dawn delivery), weekday-aware 28-day MA; D-22 P0 adds shrink allowance, 1-case presentation minimum (fixes zero-sales trap) and flat +25% promo uplift, buffer stays 20%; D-23 spike bands checked on true demand (recorded sales shown alongside); spoilage band applied to vegetable categories only; added sup-local-bakery (9 suppliers, archetype 'local'). Waste = expiry + quality culls (series.ts comment to update) · next: tests, docs/04, merge
+
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->
+
+### Anurag
+- 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · continuing Kartik's Part 2 WIP (a6e80fc); baseline green (web check ✅, 58 pytest + 12 skips) · 35 Part 2 tests added (93 pytest pass); `--step part2` reproduces the committed artefacts bit-for-bit (only `generatedAt` differs) · next: docs/04-synthetic-world.md, log D-21…D-23, CR-001 (series.ts waste comment), PR
+- 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · last commit 15d3a6d · docs/04 written; D-21…D-23 logged; CR-001 raised; checks green (93 pytest, web check); PR #1 opened, rows 🟦 · next: lead reviews and merges PR #1; meanwhile Part 3 on feat/P3-models, stacked on the Part 2 branch

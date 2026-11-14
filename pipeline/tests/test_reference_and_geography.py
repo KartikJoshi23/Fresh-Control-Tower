@@ -44,8 +44,8 @@ def test_haversine_matches_the_known_london_paris_distance() -> None:
 
 def test_routes_use_known_places_and_declare_their_chokepoints() -> None:
     places = {p.id: p for p in geography.PLACES}
-    assert len(geography.SUPPLIER_ROUTES) == 8
-    assert {r.archetype for r in geography.SUPPLIER_ROUTES} == {"local_farm", "gcc_overland", "sea_import", "air_import"}
+    assert len(geography.SUPPLIER_ROUTES) == 9
+    assert {r.archetype for r in geography.SUPPLIER_ROUTES} == {"local", "gcc_overland", "sea_import", "air_import"}
     for route in geography.SUPPLIER_ROUTES:
         assert all(p in places for p in route.place_ids)
         assert set(route.chokepoint_ids) == {p for p in route.place_ids if places[p].kind == "chokepoint"}

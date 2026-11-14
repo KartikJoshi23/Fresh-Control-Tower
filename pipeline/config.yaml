@@ -35,12 +35,60 @@ world:
   skus: 40
   hero_stores: 4
   hero_skus_per_store: 10
+  warmup_days: 56         # simulated before the horizon and discarded (the P0 rule needs 28 days of history)
+  receiving_hour: 6       # dawn deliveries arrive at 06:00
+  review_hour: 22         # nightly order review, after the 21:00-21:59 hour
+  handling_concentration: 3.0   # TUNED: batch-to-batch spread of quality culls (beta concentration; lower = lumpier)
 
-# P0 legacy rule (plan §3.4)
+  # Basis labels: ANCHOR = matches a cited figure; ASSUMPTION = no public source;
+  # TUNED = set so a fidelity band is met (docs/04-synthetic-world.md).
+  demand:
+    noise_cv: 0.34                   # TUNED: unanticipated day-to-day noise (negative binomial) -> CV and morning-ratio bands
+    store_shock_sd: 0.11             # TUNED: common daily shock per store (log sd) -> background spike bands
+    store_affinity_sd: 0.15          # ASSUMPTION: store x SKU mix (log sd)
+    hourly_concentration: 100        # ASSUMPTION: Dirichlet concentration of the intraday split
+    item_spike_rate: 0.012           # TUNED: background spikes per SKU-day
+    item_spike_median: 1.8           # TUNED
+    item_spike_log_sd: 0.30          # TUNED
+    store_event_rate_per_year: 5.0   # TUNED: store-wide surge days per store per year
+    store_event_median: 1.7          # TUNED
+    store_event_log_sd: 0.25         # TUNED
+
+  festivals:
+    ramadan_share_target: 0.19       # ANCHOR: Ramadan ~19% of annual MENA FMCG sales (NielsenIQ, via Communicate 2026)
+    ramadan_season_days_before: 14   # Interpretation of that figure: an 8-week season =
+    ramadan_season_days: 56          #   2 weeks before Ramadan + Ramadan + the Eid al-Fitr week
+    ramadan_during_share: 0.25       # ASSUMPTION: sustained Ramadan uplift, as a share of the eve-of-Ramadan peak
+    eid_fitr_pre_share: 0.6          # ASSUMPTION: pre-Eid al-Fitr peak, as a share of the eve-of-Ramadan peak
+    eid_adha_pre_share: 0.5          # ASSUMPTION: same for Eid al-Adha
+    eid_dip_scale: 0.5               # ASSUMPTION: share of the real FRN-LT Spring Festival dip applied to Eid holidays
+    national_day_peak: 0.15          # ASSUMPTION: uplift on the eve of National Day
+    summer_dip: 0.10                 # ASSUMPTION: demand dip in the school summer break (residents travel)
+
+  promotions:                        # chain-wide, announced in advance
+    episodes_per_year: 16            # TUNED: about 30% of days on promotion (FreshRetailNet: 39-52% discounted days)
+    min_days: 3
+    max_days: 7
+    depths: [0.10, 0.15, 0.20, 0.25, 0.30]
+
+  stockpiling_2026:                  # unannounced crisis stockpiling wave
+    start: "2026-03-01"              # ASSUMPTION: the source says only that volumes peaked in March 2026
+    shape: [0.6, 1.0, 0.8, 0.5, 0.3, 0.15, 0.05]
+    ramadan_yoy_target: 0.041        # ANCHOR: UAE Ramadan 2026 FMCG volume +4.1% (Worldpanel, via Rana 2026)
+
+  hormuz_2026:                       # supply disruption; delivery terms in freshpipe/world.py
+    start: "2026-03-01"              # Goharbakhsh et al. (2026): the March-May 2026 peak
+    end: "2026-05-31"
+
+# P0 legacy rule (plan §3.4; clarified in decision D-21)
 baseline_policy:
   moving_average_days: 28
+  weekday_aware: true      # average of the last four same weekdays inside the 28-day window
   safety_buffer: 0.20
   review_period_days: 1
+  shrink_allowance: true           # gross orders up for the category's known handling loss (CUMCM convention)
+  minimum_presentation_cases: 1    # never plan below one case on the shelf
+  promo_uplift: 0.25               # ASSUMPTION: flat planned uplift for any announced promotion, whatever its depth
 
 # Forecasting (plan §3.6)
 forecast:

@@ -1,0 +1,542 @@
+{
+  "reportVersion": "1.0",
+  "generatedAt": "2026-11-13T22:03:39+04:00",
+  "generator": "freshpipe 0.1.0",
+  "seed": 2026,
+  "provenance": "CALIBRATED_SYNTHETIC",
+  "policy": "P0",
+  "world": {
+    "stores": 8,
+    "skus": 40,
+    "categories": 9,
+    "series": 320,
+    "days": 1400,
+    "horizon": {
+      "start": "2023-01-01",
+      "end": "2026-10-31"
+    },
+    "hourlySteps": 10752000
+  },
+  "summary": {
+    "checks": 12,
+    "passed": 12,
+    "allPassed": true,
+    "anchors": 2,
+    "anchorsPassed": 2
+  },
+  "checks": [
+    {
+      "id": "oos_hours_share",
+      "label": "Share of trading hours (06:00-21:59) out of stock",
+      "synthetic": 0.2099,
+      "band": {
+        "min": 0.15,
+        "max": 0.25
+      },
+      "pass": true,
+      "basis": "emergent",
+      "real": {
+        "frn50k": 0.1988,
+        "frnlt": 0.2216
+      },
+      "measuredOn": "stock flags",
+      "note": ""
+    },
+    {
+      "id": "days_with_stockout_share",
+      "label": "SKU-days with at least one stockout hour",
+      "synthetic": 0.411,
+      "band": {
+        "min": 0.35,
+        "max": 0.5
+      },
+      "pass": true,
+      "basis": "emergent",
+      "real": {
+        "frn50k": 0.4427,
+        "frnlt": 0.482
+      },
+      "measuredOn": "stock flags",
+      "note": ""
+    },
+    {
+      "id": "all_day_outage_share",
+      "label": "SKU-days out of stock for all 16 trading hours",
+      "synthetic": 0.0543,
+      "band": {
+        "min": 0.02,
+        "max": 0.06
+      },
+      "pass": true,
+      "basis": "tuned",
+      "real": {
+        "frn50k": 0.0404,
+        "frnlt": 0.0545
+      },
+      "measuredOn": "stock flags",
+      "note": ""
+    },
+    {
+      "id": "stockout_share_07h",
+      "label": "Out of stock at 07:00 (excluding all-day outages)",
+      "synthetic": 0.0047,
+      "band": {
+        "max": 0.05
+      },
+      "pass": true,
+      "basis": "emergent",
+      "real": {
+        "frn50k": 0.0096,
+        "frnlt": 0.0141
+      },
+      "measuredOn": "stock flags",
+      "note": ""
+    },
+    {
+      "id": "stockout_share_20h",
+      "label": "Out of stock at 20:00 (excluding all-day outages)",
+      "synthetic": 0.3618,
+      "band": {
+        "min": 0.25,
+        "max": 0.4
+      },
+      "pass": true,
+      "basis": "emergent",
+      "real": {
+        "frn50k": 0.3617,
+        "frnlt": 0.3874
+      },
+      "measuredOn": "stock flags",
+      "note": ""
+    },
+    {
+      "id": "morning_demand_ratio",
+      "label": "Morning sales on days that sell out after 14:00 vs fully in-stock days",
+      "synthetic": 1.4304,
+      "band": {
+        "min": 1.15,
+        "max": 1.5
+      },
+      "pass": true,
+      "basis": "emergent",
+      "real": {
+        "frn50k": 1.465,
+        "frnlt": 1.2215
+      },
+      "measuredOn": "recorded hourly sales",
+      "note": ""
+    },
+    {
+      "id": "weekend_day_index",
+      "label": "Weekend day index (Saturday and Sunday vs the weekly mean)",
+      "synthetic": 1.1783,
+      "band": {
+        "min": 1.15,
+        "max": 1.3
+      },
+      "pass": true,
+      "basis": "emergent",
+      "real": {
+        "frn50k": 1.1776,
+        "frnlt": 1.1871
+      },
+      "measuredOn": "recorded daily sales",
+      "note": "UAE weekend (Saturday-Sunday) vs the FreshRetailNet weekend."
+    },
+    {
+      "id": "series_cv",
+      "label": "Median coefficient of variation of daily sales per series",
+      "synthetic": 0.4254,
+      "band": {
+        "min": 0.4,
+        "max": 0.7
+      },
+      "pass": true,
+      "basis": "tuned",
+      "real": {
+        "frn50k": 0.4786,
+        "frnlt": 0.5343
+      },
+      "measuredOn": "recorded daily sales",
+      "note": "Over the full 1,400-day horizon."
+    },
+    {
+      "id": "background_spike_p95",
+      "label": "Store day ÷ 28-day median, 95th percentile",
+      "synthetic": 1.4468,
+      "band": {
+        "min": 1.4,
+        "max": 1.8
+      },
+      "pass": true,
+      "basis": "tuned",
+      "real": {
+        "kaggle": 1.6433
+      },
+      "measuredOn": "true store demand (generator)",
+      "note": "The band is a property of demand (plan §3.3). The Kaggle store bought stock daily and could stock up before known peaks, so its sales show demand spikes; the festival-blind P0 rule caps them in recorded sales (here 1.357)."
+    },
+    {
+      "id": "background_spike_p99",
+      "label": "Store day ÷ 28-day median, 99th percentile",
+      "synthetic": 1.9316,
+      "band": {
+        "min": 1.8,
+        "max": 2.4
+      },
+      "pass": true,
+      "basis": "tuned",
+      "real": {
+        "kaggle": 2.0776
+      },
+      "measuredOn": "true store demand (generator)",
+      "note": "The band is a property of demand (plan §3.3). The Kaggle store bought stock daily and could stock up before known peaks, so its sales show demand spikes; the festival-blind P0 rule caps them in recorded sales (here 1.506)."
+    },
+    {
+      "id": "spoilage_leafy-greens",
+      "label": "Baseline spoilage, leafy-greens (% of received kg)",
+      "synthetic": 12.2527,
+      "band": {
+        "min": 6.0,
+        "max": 14.0
+      },
+      "pass": true,
+      "basis": "tuned",
+      "real": {
+        "kaggle_target": 12.48
+      },
+      "measuredOn": "simulated waste and receipts",
+      "note": "Handling loss 12.24% + expiry 0.02%."
+    },
+    {
+      "id": "spoilage_salad-vegetables",
+      "label": "Baseline spoilage, salad-vegetables (% of received kg)",
+      "synthetic": 7.6388,
+      "band": {
+        "min": 6.0,
+        "max": 14.0
+      },
+      "pass": true,
+      "basis": "tuned",
+      "real": {
+        "kaggle_target": 7.71
+      },
+      "measuredOn": "simulated waste and receipts",
+      "note": "Handling loss 7.62% + expiry 0.02%."
+    }
+  ],
+  "anchors": [
+    {
+      "id": "ramadan_share",
+      "label": "Ramadan-season share of annual demand (8-week season)",
+      "target": 0.19,
+      "synthetic": 0.19,
+      "tolerance": 0.005,
+      "source": "communicate2026-nielseniq",
+      "pass": true,
+      "note": "Solved Ramadan amplitude 1.158595; years [2023, 2024, 2025]."
+    },
+    {
+      "id": "ramadan_2026_yoy",
+      "label": "Ramadan 2026 vs Ramadan 2025 mean daily volume",
+      "target": 0.041,
+      "synthetic": 0.041,
+      "tolerance": 0.002,
+      "source": "rana2026-worldpanel",
+      "pass": true,
+      "note": "Without the stockpiling wave: -0.022916; solved wave amplitude 0.728689."
+    }
+  ],
+  "diagnostics": {
+    "stockout_share_by_hour": {
+      "synthetic": [
+        0.4004,
+        0.4033,
+        0.4048,
+        0.406,
+        0.4073,
+        0.4125,
+        0.0,
+        0.0047,
+        0.0147,
+        0.0318,
+        0.0542,
+        0.0755,
+        0.095,
+        0.1159,
+        0.1441,
+        0.1849,
+        0.2378,
+        0.282,
+        0.3137,
+        0.3394,
+        0.3618,
+        0.3772,
+        0.3866,
+        0.3919
+      ],
+      "frn50k": [
+        0.3873,
+        0.3752,
+        0.3489,
+        0.3016,
+        0.2366,
+        0.1399,
+        0.023,
+        0.0096,
+        0.0168,
+        0.0323,
+        0.0559,
+        0.0856,
+        0.112,
+        0.1311,
+        0.1453,
+        0.1658,
+        0.2079,
+        0.2637,
+        0.3079,
+        0.3372,
+        0.3617,
+        0.3851,
+        0.395,
+        0.3945
+      ]
+    },
+    "first_stockout_hour_share": {
+      "synthetic": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0124,
+        0.0267,
+        0.0453,
+        0.0593,
+        0.0564,
+        0.0516,
+        0.0555,
+        0.0745,
+        0.1084,
+        0.1402,
+        0.1172,
+        0.0839,
+        0.0682,
+        0.0594,
+        0.0409,
+        0.0,
+        0.0
+      ],
+      "frn50k": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0548,
+        0.0078,
+        0.0183,
+        0.0376,
+        0.0574,
+        0.0719,
+        0.0655,
+        0.0561,
+        0.0562,
+        0.0703,
+        0.1034,
+        0.1252,
+        0.0998,
+        0.0673,
+        0.0554,
+        0.0531,
+        0.0,
+        0.0
+      ],
+      "correlation": 0.8046
+    },
+    "sales_share_in_stockout_hours": {
+      "synthetic": 0.0333,
+      "frn50k": 0.0251,
+      "frnlt": 0.027
+    },
+    "in_stock_intraday_profile_max_abs_diff": 0.00297,
+    "weekly_index_recorded_sales": [
+      0.9094,
+      0.9011,
+      0.9052,
+      0.8923,
+      1.0355,
+      1.1744,
+      1.1821
+    ],
+    "series_cv_recorded_sales": {
+      "p10": 0.3532,
+      "p50": 0.4254,
+      "p90": 0.469
+    },
+    "store_spikes_recorded_sales": {
+      "p50": 0.9997,
+      "p90": 1.2752,
+      "p95": 1.357,
+      "p99": 1.506,
+      "max": 2.058
+    },
+    "store_spikes_true_demand": {
+      "p50": 0.9997,
+      "p90": 1.3285,
+      "p95": 1.4468,
+      "p99": 1.9316,
+      "max": 4.992
+    },
+    "item_spikes_recorded_sales": {
+      "p50": 1.0,
+      "p90": 1.6226,
+      "p95": 1.8649,
+      "p99": 2.449
+    },
+    "item_spikes_kaggle": {
+      "p50": 1.0,
+      "p90": 1.8354,
+      "p95": 2.2259,
+      "p99": 3.4525,
+      "n_item_days": 40281
+    },
+    "lost_demand_share": 0.2207,
+    "spoilage_pct_by_category": {
+      "bakery": {
+        "handling": 2.1,
+        "expiry": 0.03,
+        "total": 2.12
+      },
+      "berries": {
+        "handling": 6.05,
+        "expiry": 0.39,
+        "total": 6.44
+      },
+      "dairy": {
+        "handling": 1.0,
+        "expiry": 0.0,
+        "total": 1.0
+      },
+      "dates": {
+        "handling": 1.01,
+        "expiry": 0.0,
+        "total": 1.01
+      },
+      "fruit": {
+        "handling": 2.98,
+        "expiry": 0.0,
+        "total": 2.98
+      },
+      "leafy-greens": {
+        "handling": 12.24,
+        "expiry": 0.02,
+        "total": 12.25
+      },
+      "poultry": {
+        "handling": 1.48,
+        "expiry": 1.04,
+        "total": 2.52
+      },
+      "salad-vegetables": {
+        "handling": 7.62,
+        "expiry": 0.02,
+        "total": 7.64
+      },
+      "stone-fruit": {
+        "handling": 4.04,
+        "expiry": 0.23,
+        "total": 4.27
+      }
+    },
+    "stockout_day_share_by_category": {
+      "bakery": 0.4292,
+      "berries": 0.5269,
+      "dairy": 0.3125,
+      "dates": 0.3872,
+      "fruit": 0.4113,
+      "leafy-greens": 0.4401,
+      "poultry": 0.3442,
+      "salad-vegetables": 0.3913,
+      "stone-fruit": 0.4756
+    },
+    "stress_windows": {
+      "before_hormuz_sea_air_skus": {
+        "availability": 0.7891,
+        "fill_rate": 0.7708,
+        "stockout_day_share": 0.4137
+      },
+      "hormuz_2026_sea_air_skus": {
+        "availability": 0.1919,
+        "fill_rate": 0.1838,
+        "stockout_day_share": 0.9147
+      },
+      "ramadan_2026_all": {
+        "availability": 0.6283,
+        "fill_rate": 0.5867,
+        "stockout_day_share": 0.6531
+      },
+      "summer_2025_all": {
+        "availability": 0.8378,
+        "fill_rate": 0.8407,
+        "stockout_day_share": 0.3491
+      }
+    }
+  },
+  "tunedParameters": [
+    {
+      "parameter": "world.demand.noise_cv = 0.34",
+      "file": "pipeline/config.yaml",
+      "target": "series_cv, morning_demand_ratio"
+    },
+    {
+      "parameter": "world.promotions.episodes_per_year = 16",
+      "file": "pipeline/config.yaml",
+      "target": "series_cv (announced promotions add variation the P0 rule partly anticipates)"
+    },
+    {
+      "parameter": "world.demand.store_shock_sd = 0.11; store_event_rate_per_year = 5; store_event_median = 1.7",
+      "file": "pipeline/config.yaml",
+      "target": "background_spike_p95, background_spike_p99"
+    },
+    {
+      "parameter": "world.demand.item_spike_* (rate 0.012, median 1.8x)",
+      "file": "pipeline/config.yaml",
+      "target": "item-level spike quantiles (diagnostic only)"
+    },
+    {
+      "parameter": "world.handling_concentration = 3",
+      "file": "pipeline/config.yaml",
+      "target": "morning_demand_ratio (batch-to-batch quality variation)"
+    },
+    {
+      "parameter": "Category.handling_loss: leafy greens 12.4%, salad vegetables 7.6%",
+      "file": "pipeline/freshpipe/world.py",
+      "target": "spoilage_leafy-greens, spoilage_salad-vegetables (real Kaggle loss rates)"
+    },
+    {
+      "parameter": "SupplyTerms.p_miss (normal terms) = 0.7-1.0%",
+      "file": "pipeline/freshpipe/world.py",
+      "target": "all_day_outage_share"
+    },
+    {
+      "parameter": "baseline_policy.minimum_presentation_cases = 1; shrink_allowance; promo_uplift = 0.25",
+      "file": "pipeline/config.yaml",
+      "target": "removes the zero-sales trap of the legacy rule (decision D-22); safety_buffer stays at the plan's 20%"
+    }
+  ],
+  "assumptions": [
+    "The operator, its stores, prices, case packs, base demand levels and suppliers are fictional (world.py).",
+    "Ramadan-season interpretation of NielsenIQ's 19%: an 8-week season (2 weeks before Ramadan, Ramadan, the Eid al-Fitr week).",
+    "Category weights for Ramadan, Eid al-Adha and stockpiling, the Eid dip scale (0.5 of the real FRN-LT Spring Festival dip), the National Day eve uplift and the summer-break dip (-10%).",
+    "Weather coefficients (REAL, FRN-LT) are applied to deviations from the UAE seasonal norm, capped at ±6 °C and 20 mm.",
+    "Promotions: 16 chain-wide episodes per SKU per year (about 30% of days), 3-7 days, 10-30% off; the response uses the REAL FRN-LT coefficients. The P0 rule plans a flat +25% for any promotion.",
+    "The 2026 stockpiling wave starts on 1 March 2026 and lasts 7 days; its size is anchored to Worldpanel's +4.1%.",
+    "Hormuz 2026 delivery terms (late, short and missed deliveries for sea and air importers, March-May 2026).",
+    "Handling-loss rates outside the two vegetable categories (the real loss data covers vegetables only).",
+    "The Ramadan intraday profile shift (calibration.json, flagged there)."
+  ]
+}

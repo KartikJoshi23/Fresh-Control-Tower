@@ -1,6 +1,6 @@
 {
   "contractVersion": "1.0.0",
-  "generatedAt": "2026-11-13T20:26:44+04:00",
+  "generatedAt": "2026-11-13T22:03:18+04:00",
   "generator": "freshpipe 0.1.0",
   "seed": null,
   "isFixture": false,
@@ -60,6 +60,13 @@
       "lon": 55.2
     },
     {
+      "id": "origin-dubai-bakery",
+      "name": "UAE commercial bakery (fictional site)",
+      "kind": "origin",
+      "lat": 24.98,
+      "lon": 55.17
+    },
+    {
       "id": "origin-muscat",
       "name": "Muscat, Oman",
       "kind": "origin",
@@ -109,6 +116,16 @@
       "mode": "local_truck",
       "placeIds": [
         "origin-dubai-farm",
+        "uae-dubai"
+      ],
+      "chokepointIds": []
+    },
+    {
+      "id": "route-local-bakery",
+      "supplierId": "sup-local-bakery",
+      "mode": "local_truck",
+      "placeIds": [
+        "origin-dubai-bakery",
         "uae-dubai"
       ],
       "chokepointIds": []

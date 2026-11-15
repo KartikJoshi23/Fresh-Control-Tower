@@ -81,7 +81,7 @@ def test_metrics_worked_example() -> None:
 
 def test_evaluate_scores_the_hidden_part() -> None:
     truth = np.full((1, 1, 24), 2.0)
-    sales, oos, prof = cube(1)
+    sales, oos, _ = cube(1)
     oos[0, 0, 12:] = True
     sales[0, 0, 12:] = 0.0
     rec = recover.Recovery("test", np.zeros((1, 1)), np.where(oos, 3.0, sales))   # 3 per hidden hour vs 2
@@ -165,7 +165,7 @@ def test_synthetic_recovery_reproduces_the_committed_report() -> None:
     world = generate.generate_world(config)
     run = simulate.simulate(world, simulate.BaselinePolicy.from_config(config), config=config)
     h = run.horizon
-    rec, report = recover.recover_p0(world, run.sales_h[:, h], run.oos_h[:, h], config, with_ml=False)
+    _, report = recover.recover_p0(world, run.sales_h[:, h], run.oos_h[:, h], config, with_ml=False)
     committed = json.loads((repo_path("processed") / "model_report.json").read_text(encoding="utf-8"))["recovery"]
     assert report["alpha"] == committed["alpha"]
     assert report["profile"] == committed["profile"]

@@ -126,7 +126,7 @@ def masking_test(cube: FrnCube, seed: int, alpha: float = recover.DEFAULT_ALPHA,
     nothing is tuned on the real data. A sweep over `sensitivity` on separate validation masks (days 31-60)
     shows the WAPE-bias trade-off. Profiles use days 1-60; the scored test masks are days 61-90.
     """
-    n, d, _ = cube.sales.shape
+    _, d, _ = cube.sales.shape
     groups = group_codes(cube.keys)
     day = np.arange(d)
     fit = day < FIT_DAYS

@@ -14,14 +14,13 @@ Everything is CALIBRATED SYNTHETIC and PRECOMPUTED.
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 
 from . import mcdm
-from .generate import HOURS, World
+from .generate import World
 from .optimise import AIPolicy, CostModel, TAU_GRID, per_series_cost, run_costs, smart_sourcing_suppliers
 from .simulate import BaselinePolicy, SeriesParams, SupplyModel, simulate
 from .reference import food_factor, transport_factor

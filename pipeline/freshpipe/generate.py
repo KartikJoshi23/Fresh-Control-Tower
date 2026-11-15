@@ -190,7 +190,7 @@ def festival_parts(dates: pd.DatetimeIndex, events: list[Event], calibration: di
             label[i] = "ramadan-pre"
         eid = eid_fitr_starts.get(event.start.year)
         last = (min(event.end, eid - timedelta(days=1)) if eid else event.end)
-        for i, o in days(event.start, range((last - event.start).days + 1)):
+        for i, _ in days(event.start, range((last - event.start).days + 1)):
             ramadan_unit[:, i] += w_ramadan[:, 0] * params["ramadan_during_share"]
             label[i] = "ramadan"
         for i, o in days(event.start, range((event.end - event.start).days + 1)):

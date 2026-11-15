@@ -4,7 +4,7 @@
  * Form controls for the Scenario Console. Native inputs for keyboard and screen-reader support;
  * the accent colour styles chrome only (focus, toggles), never data.
  */
-import { useId } from "react";
+import { type CSSProperties, useId } from "react";
 
 interface SliderProps {
   label: string;
@@ -26,7 +26,8 @@ export function Slider({ label, value, min, max, step, onChange, format = String
         <output htmlFor={id} className="tabular-nums text-ink">{format(value)}</output>
       </label>
       <input id={id} type="range" min={min} max={max} step={step} value={value} disabled={disabled}
-        onChange={(e) => onChange(Number(e.target.value))} />
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{ "--fill": `${((value - min) / (max - min || 1)) * 100}%` } as CSSProperties} />
     </div>
   );
 }

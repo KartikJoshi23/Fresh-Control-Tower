@@ -4,13 +4,19 @@
  * Lightweight SVG charts on d3-scale + d3-shape (no Recharts: keeps routes inside the JS budget, KI-15).
  * Rules (plan §6.5): 2 px lines, no dual axes, recessive grids, ink-coloured text, crosshair tooltip on
  * lines (mouse and keyboard: focus the chart, then ←/→), per-mark values on bars.
+ * CR-003 polish: solid lines draw in on mount (pathLength + CSS), the AI series carries a soft glow, the
+ * crosshair shows a ringed marker per series, and bars grow from the baseline. All CSS; reduced motion stops it.
  */
 import { scaleBand, scaleLinear, scaleTime } from "d3-scale";
 import { area, line } from "d3-shape";
 import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { ChartTooltip } from "@/components/charts/primitives/ChartTooltip";
-import { CHART } from "@/components/charts/primitives/theme";
+import { CHART, ENTITY_COLOR } from "@/components/charts/primitives/theme";
+
+/** Class names for a series line: draw-in for solid lines, glow for the AI entity. */
+const lineClass = (color: string, dashed?: boolean) =>
+  ["chart-line", dashed ? "" : "chart-line-draw", color === ENTITY_COLOR.ai ? "chart-line-glow" : ""].filter(Boolean).join(" ");
 
 export function useWidth<T extends HTMLElement>(fallback = 640) {
   const ref = useRef<T>(null);
@@ -86,7 +92,7 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
         {shades.map((s) => (
           <g key={s.label + s.start}>
             <rect x={x(parse(s.start))} y={m.t} width={Math.max(2, x(parse(s.end)) - x(parse(s.start)))} height={height - m.t - m.b}
-              fill="rgba(255,255,255,0.05)" />
+              fill="rgba(196,167,255,0.06)" />
             {x(parse(s.start)) < width - 90 ? <text x={x(parse(s.start)) + 4} y={m.t + 12} fill={CHART.inkMuted} fontSize={11}>{s.label}</text> : null}
           </g>
         ))}
@@ -104,9 +110,19 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
         {band ? <path d={bandPath} fill={band.color} opacity={0.18} /> : null}
         {series.map((s) => (
           <path key={s.id} d={lineOf(s.values)} fill="none" stroke={s.color} strokeWidth={CHART.lineWidth}
-            strokeDasharray={s.dashed ? "5 4" : undefined} strokeLinejoin="round" />
+            strokeDasharray={s.dashed ? "5 4" : undefined} strokeLinejoin="round" strokeLinecap="round"
+            pathLength={s.dashed ? undefined : 1} className={lineClass(s.color, s.dashed)} />
         ))}
-        {hover !== null ? <line x1={x(parse(dates[hover]))} x2={x(parse(dates[hover]))} y1={m.t} y2={height - m.b} stroke={CHART.axis} /> : null}
+        {hover !== null ? (
+          <g className="chart-crosshair">
+            <line x1={x(parse(dates[hover]))} x2={x(parse(dates[hover]))} y1={m.t} y2={height - m.b} stroke="var(--ink-muted)"
+              strokeOpacity={0.7} strokeDasharray="3 3" />
+            {series.map((s) => (s.values[hover] === null ? null : (
+              <circle key={s.id} cx={x(parse(dates[hover]))} cy={y(s.values[hover] as number)} r={4.5} fill={s.color}
+                stroke="var(--surface)" strokeWidth={2} />
+            )))}
+          </g>
+        ) : null}
       </svg>
       {hover !== null ? (
         <div className="chart-tip-anchor" style={{ left: Math.min(width - 190, Math.max(0, x(parse(dates[hover])) + 12)) }}>
@@ -153,7 +169,8 @@ export function HBars({ rows, format = fmt, rowHeight = 30, ariaLabel, color = "
               <text x={labelW - 8} y={y.bandwidth() / 2 + 4} textAnchor="end" fill={r.emphasis ? "var(--ink-primary)" : CHART.ink}
                 fontSize={12} fontWeight={r.emphasis ? 600 : 400}>{r.label}</text>
               <rect x={x0} y={0} width={w} height={y.bandwidth()} rx={CHART.barRadius} fill={r.color ?? color}
-                opacity={r.emphasis === false ? 0.45 : 1} style={{ transition: "width 300ms, x 300ms" }} />
+                opacity={r.emphasis === false ? 0.45 : 1} className="chart-bar"
+                style={{ transformOrigin: `${x(0)}px 0px`, transition: "width 300ms, x 300ms" }} />
               <text x={r.value < 0 ? x0 - 6 : x0 + w + 6} y={y.bandwidth() / 2 + 4} textAnchor={r.value < 0 ? "end" : "start"}
                 fill={CHART.ink} fontSize={12} className="tabular-nums">{format(r.value)}{r.note ? ` ${r.note}` : ""}</text>
             </g>
@@ -220,12 +237,15 @@ export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabe
         <text transform={`translate(12 ${(height - m.b + m.t) / 2}) rotate(-90)`} textAnchor="middle" fill={CHART.ink} fontSize={12}>{yLabel}</text>
         {curves.map((c) => (
           <g key={c.id}>
-            <path d={path(c.points)} fill="none" stroke={c.color} strokeWidth={CHART.lineWidth} />
-            {c.points.map((p, i) => <circle key={i} cx={x(p.x)} cy={y(p.y)} r={3} fill={c.color}><title>{`${c.label}: ${p.label ?? ""} ${formatX(p.x)}, ${formatY(p.y)}`}</title></circle>)}
+            <path d={path(c.points)} fill="none" stroke={c.color} strokeWidth={CHART.lineWidth} strokeLinejoin="round"
+              strokeLinecap="round" pathLength={1} className={lineClass(c.color)} />
+            {c.points.map((p, i) => <circle key={i} cx={x(p.x)} cy={y(p.y)} r={3.5} fill={c.color} stroke="var(--surface)" strokeWidth={1.5}
+              className="chart-point"><title>{`${c.label}: ${p.label ?? ""} ${formatX(p.x)}, ${formatY(p.y)}`}</title></circle>)}
           </g>
         ))}
         {marker ? (
           <g>
+            <circle cx={x(marker.x)} cy={y(marker.y)} r={7} fill="none" stroke={marker.color} strokeWidth={2} className="chart-marker-pulse" />
             <circle cx={x(marker.x)} cy={y(marker.y)} r={7} fill="none" stroke={marker.color} strokeWidth={2} />
             <text x={x(marker.x) + (x(marker.x) > width * 0.7 ? -10 : 10)} y={y(marker.y) - 10}
               textAnchor={x(marker.x) > width * 0.7 ? "end" : "start"} fill="var(--ink-primary)" fontSize={12}>{marker.label}</text>

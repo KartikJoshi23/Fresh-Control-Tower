@@ -8,7 +8,7 @@
  */
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
-import { extname, join, normalize, sep } from "node:path";
+import { basename, dirname, extname, join, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../out", import.meta.url));
@@ -39,6 +39,13 @@ function resolveFile(urlPath) {
   const target = normalize(join(root, pathname));
   if (target !== root && !target.startsWith(root + sep)) return null;
   const candidates = [target, join(target, "index.html"), `${target}.html`];
+  // Link prefetches ask for "__next.demand.__PAGE__.txt". On Windows, Next's export writes the same payload
+  // nested as "__next.demand/__PAGE__.txt" (Linux and Vercel builds use the dotted name). Try both.
+  const name = basename(target);
+  if (name.startsWith("__next.") && name.endsWith(".txt")) {
+    const segments = name.slice("__next.".length, -".txt".length).split(".");
+    if (segments.length > 1) candidates.push(join(dirname(target), `__next.${segments[0]}`, `${segments.slice(1).join(sep)}.txt`));
+  }
   return candidates.find((file) => existsSync(file) && statSync(file).isFile()) ?? null;
 }
 

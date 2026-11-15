@@ -15,13 +15,13 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 5: development. **Parts 1–6 merged into `main`. Parts 7–9 in review in [PR #8](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/8) (see KI-18: #6 and #7 merged into stacked branches, not `main`).** All seven pages are built. |
-| **Gate** | Lead: review and merge PR #8 into `main`, then connect Vercel (L-04) so P9-04 can deploy. Phase 6 stays locked (§2). |
-| **Last completed step** | Part 9 on `feat/P9-impact-roadmap-qa`: Impact and Roadmap pages and the QA sweep. Verified: 139 pytest, 127 Vitest, 41 Playwright e2e (incl. 28 QA: 7 routes × 3 widths + axe), 52/52 data files valid, every route ≤ 248.8 KB gzip initial JS. |
-| **Exact next step** | **Lead:** merge PR #8; connect Vercel (L-04) for P9-04; decide CR-001 and CR-002 (§5); answer Q1–Q7. **Then:** Lighthouse on the deploy (KI-19), R-00 screenshots, and Phase 6 (report) once the lead opens it. |
-| **Last integrated commit on `main`** | `2ba55e6` (merge of PR #3, which brought in #4 Part 5 and #5 Part 6); earlier: `3d8725e` (PR #2), `b0f26fe` (PR #1), `ff47bb7` (Part 1) |
+| **Current phase** | Phase 5: development. **Parts 1–9 merged into `main` (PR #8 merged, `bac07d5`); the site is live at https://fresh-control-tower.vercel.app/.** UI overhaul "Neon Noir" (CR-003) is on `feat/ui-neon-noir`, waiting for the lead's review. |
+| **Gate** | Phase 5 complete and live. Phase 6 stays locked (§2) until the lead opens it. |
+| **Last completed step** | CR-003 UI overhaul, revision 2 (balanced colour) on `feat/ui-neon-noir` / PR #9: black + neutral glass with neon accents by role, motion, new header/nav/console/controls. Verified: 127 Vitest, 41 Playwright e2e (axe with reduced motion), 52/52 data files valid, routes 221–255 KB gzip initial JS. |
+| **Exact next step** | **Lead:** decide CR-001 and CR-002 (§5); answer Q1–Q7. **Then:** Lighthouse on the deploy (KI-19), R-00 screenshots, and Phase 6 (report) once the lead opens it. |
+| **Last integrated commit on `main`** | `6baad6d` (Vercel config, L-04); before it `bac07d5` (merge of PR #8, Parts 7–9), `2ba55e6` (PR #3), `3d8725e` (PR #2), `b0f26fe` (PR #1), `ff47bb7` (Part 1) |
 | **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` via pull requests. Open pull requests with `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls` (KI-14). |
-| **Updated** | 2026-11-15 by Anurag, via Claude Code. §1, the §2 status note, §6 and §7 refreshed factually and flagged to the lead on PR #8; the §2 gate approvals are unchanged. |
+| **Updated** | 2026-11-15 by Kartik (lead), via Claude Code: CR-003 UI overhaul; L-04 and P9-04 done (site live). |
 
 ## 2. Phase gates
 
@@ -76,7 +76,7 @@
 | L-01 | Add teammates as GitHub collaborators (write access) | Kartik | ⬜ | Settings → Collaborators |
 | L-02 | Answer open questions Q1–Q3 and Q5–Q7 (§5) | Kartik | ⬜ | Names are needed to assign owners |
 | L-03 | Optional: protect `main` (require pull requests and passing CI) and allow claim commits | Kartik | ⬜ | Only once everyone has the workflow down |
-| L-04 | Connect Vercel to the repository (root `web/`) | Kartik | 🟨 | Repo is deploy-ready (2026-11-15): `web/vercel.json` added; clean `npm ci` + build pass, 52/52 data files valid, 0 fixtures. Steps in README → Deployment. Lead imports the project on Vercel |
+| L-04 | Connect Vercel to the repository (root `web/`) | Kartik | ✅ | Live at https://fresh-control-tower.vercel.app/ (2026-11-15); `web/vercel.json`, steps in README → Deployment |
 
 ### Phase 5, Part 1: data foundation (Track A)
 
@@ -145,7 +145,7 @@
 | P9-01 | Impact page (Frontier, waterfall, CO2e, food rescue, tornado) | P5-01…P5-05 | Anurag | 🟦 | feat/P9-impact-roadmap-qa · [PR #8](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/8) → `main` | `app/impact/Impact.tsx`: frontier with a draggable marker + slider shared with `policy.serviceTarget`, same-availability readout, cost waterfall, waste/CO2e with the food-rescue toggle, illustrative tornado, KPIs across the six windows; helpers unit-tested |
 | P9-02 | Roadmap page (+ Methods and Data tab) | P5-01…P5-05 | Anurag | 🟦 | feat/P9-impact-roadmap-qa · [PR #8](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/8) → `main` | `app/roadmap/Roadmap.tsx`: business-model shift with backtest results, three-phase rollout with gates (no invented costs), partner groups, risk register (plan §14.2 + where each mitigation shows); Methods & Data tab: four model cards with honest evidence, provenance legend, 25 Harvard-style sources, KQ2 duplication note |
 | P9-03 | QA: e2e on every route and viewport, axe, Lighthouse budgets | P6–P9 | Anurag | 🟦 | feat/P9-impact-roadmap-qa · [PR #8](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/8) → `main` | `e2e/qa.spec.ts`: 7 routes × 375/768/1440 (no horizontal scroll, no console errors) + axe WCAG 2.1 A/AA (no serious/critical) = 28 tests; `scripts/js-budget.mjs`: every route ≤ 248.8 KB gzip. Lighthouse not run (not a dependency): run by hand on the deploy |
-| P9-04 | Vercel production deploy | P9-03, L-04 | — | ⛔ |  | Blocked on L-04: Kartik connects the repository to Vercel (static export in `web/out`, no server code) |
+| P9-04 | Vercel production deploy | P9-03, L-04 | Kartik | ✅ | main | Production deploy from `main`: https://fresh-control-tower.vercel.app/ (2026-11-15). Lighthouse still to run (KI-19) |
 
 ### Phase 6: screenshots and report (lead-gated, one section at a time)
 
@@ -188,6 +188,7 @@
 | D-21 | 2026-11-14 | P0 covers L + R − 1 days (22:00 review, 06:00 dawn delivery) with a weekday-aware 28-day moving average | The night between review and delivery carries almost no demand; same-weekday averages match the legacy practice | docs/04 §5 (decided by Kartik) |
 | D-22 | 2026-11-14 | P0 adds a shrink allowance, a one-case presentation minimum and a flat +25% promotion uplift; the buffer stays at 20%. A 9th supplier, `sup-local-bakery` (archetype `local`), is added | Fixes the zero-sales trap of a pure moving average; bakery is a daily local delivery | docs/04 §4–5 (decided by Kartik) |
 | D-23 | 2026-11-14 | Spike bands are checked on true demand (recorded sales shown alongside); the spoilage band applies to the two vegetable categories only | Spikes are a demand property the festival-blind P0 caps; real loss data covers vegetables only | docs/04 §6 (decided by Kartik) |
+| D-24 | 2026-11-15 | UI overhaul "Neon Noir" (CR-003, revision 2): true-black plane and neutral graphite glass; colour is a highlight with one job each (brand spectrum cyan → violet → pink, one accent per page, KPI tones, a cyan magnitude ramp, the validated data palette); Space Grotesk display face; CSS-first motion plus Motion's vanilla `inView` and `motion/mini` | The lead found the live UI flat and blue, then found revision 1 too violet; Motion's React layer cost about 49 KB gzip per route and broke the 300 KB limit, so it is not used | docs/decisions/CR-003-ui-overhaul-neon-noir.md, docs/design-system.md |
 
 ## 5. Open questions and blockers
 
@@ -225,6 +226,8 @@
 | KI-17 | The top bar overflowed at 768 px (seven links + brand + Scenario button need about 1000 px) | Fixed in P8: links move to the menu sheet below 1024 px | e2e now checks 768 px too (P9-03) |
 | KI-18 | PRs #4–#7 were stacked and merged into their base branches in an order that left Parts 7–8 on `feat/P6-overview-demand`, not `main` (#5 merged before #6 brought them in) | `main` lacked the Scenario Studio, Live Ops and Sourcing | PR #8 (from `feat/P9-impact-roadmap-qa`, which includes Parts 7–9 and `main`) targets `main` directly. For future stacks: merge the bottom PR into `main` first, then retarget the next one to `main` before merging it |
 | KI-19 | Lighthouse budgets (plan §6.6) are not automated: Lighthouse is not a dependency and `package.json` is frozen | Performance is checked through the JS budget script and the e2e suite only | Run Lighthouse in Chrome DevTools on the Vercel deploy (P9-04) and record the scores in §9 |
+| KI-20 | On Windows, `next build` writes link-prefetch payloads nested (`__next.demand/__PAGE__.txt`) while the browser asks for `__next.demand.__PAGE__.txt`; local e2e saw 404 console errors at 1440 px. Linux CI and Vercel are not affected (the live site has no 404s) | Local Windows test runs only | `web/scripts/serve-static.mjs` now falls back to the nested path; `scripts/js-budget.mjs` uses `fileURLToPath` (it crashed on Windows) |
+| KI-21 | After CR-003, six routes sit 0.7–4.5 KB over the 250 KB soft JS target (hard limit 300 KB: all pass; 221–255 KB) | None functionally | Keep new client code on CSS and Motion's vanilla APIs; never Motion's React layer (D-24) |
 
 ## 7. File ownership map
 
@@ -278,6 +281,10 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · Part 2 code pushed (tests/docs pending). Decisions to log: D-21 P0 coverage = L+R−1 days (22:00 review, 06:00 dawn delivery), weekday-aware 28-day MA; D-22 P0 adds shrink allowance, 1-case presentation minimum (fixes zero-sales trap) and flat +25% promo uplift, buffer stays 20%; D-23 spike bands checked on true demand (recorded sales shown alongside); spoilage band applied to vegetable categories only; added sup-local-bakery (9 suppliers, archetype 'local'). Waste = expiry + quality culls (series.ts comment to update) · next: tests, docs/04, merge
 
 - 2026-11-15 · L-04 · branch main · Vercel-ready: `web/vercel.json` (Next.js preset, `npm ci`, security and data-cache headers), README deployment steps; clean build of all 7 routes verified · next: lead imports the repo on Vercel (root `web`, Node 22.x), then P9-04 and Lighthouse (KI-19)
+
+- 2026-11-15 · CR-003 · branch feat/ui-neon-noir · UI overhaul "Neon Noir": tokens (black, violet glass, re-validated palette), Backdrop (aurora), Spotlight rims, PageHeader on all 7 pages, glass pill nav with a springing highlight, spring Console drawer, custom sliders/toggles/tabs, KPI count-up and hover lift, chart draw-in/glow/crosshair markers, scroll reveals, globe recolour and auto-rotate; e2e axe runs with reduced motion; KI-20 tooling fixes · 127 Vitest, 41 e2e, 52/52 valid, routes 221–255 KB · next: lead reviews the preview and merges
+
+- 2026-11-15 · CR-003 rev. 2 · branch feat/ui-neon-noir · lead found revision 1 too violet: colour rebuilt by role (neutral graphite structure; brand spectrum; one accent per page via PageHeader `accent`; KPI tones; cyan magnitude ramp, diverging and globe; violet only for focus/selection) · 127 Vitest, 41 e2e, 52/52 valid, routes 221–255 KB · next: merge PR #9 to main (lead asked for the live app to update)
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->
 

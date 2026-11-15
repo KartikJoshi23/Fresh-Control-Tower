@@ -1,67 +1,94 @@
 /*
- * Design tokens: implementation-plan.md §6.4 and docs/design-system.md.
- * FROZEN from Phase 4. Changes need a change request in docs/decisions/.
+ * Design tokens: "Neon Noir", balanced revision (docs/design-system.md, change request CR-003, rev. 2, 2026-11-15).
+ * Changes need a change request in docs/decisions/.
  *
- * Dark-only by design ("night-shift control tower").
- * The categorical, status and ink values were validated with the dataviz palette validator
- * on 13 Nov 2026 against chart surfaces #101822 to #191e26 (all checks pass).
+ * Dark-only by design. Neutral black and graphite carry the structure; colour is a highlight with a job:
+ * - brand: a cyan -> violet -> pink spectrum (logo, top hairline, the Scenario button, toggles, sliders);
+ * - page identity: one neon accent per page (header dot, top glow, active-nav underline), set as --page-accent;
+ * - data: the validated categorical palette, a cyan magnitude ramp and the reserved status colours.
+ * Categorical, sequential, status and ink values were validated with the dataviz palette validator on
+ * 15 Nov 2026 against the glass composite range #0f0f12 to #1e1b26 (all checks pass).
  */
 :root {
   color-scheme: dark;
 
-  /* Planes and surfaces */
-  --plane: #0a1018;
-  --surface: #111923; /* validated chart surface */
-  --glass-chart: rgba(17, 25, 35, 0.88); /* chart panels: composites to #101822-#121c28 */
-  --glass-deco: rgba(255, 255, 255, 0.06); /* decorative glass only, never behind data */
-  --hairline: rgba(255, 255, 255, 0.1);
+  /* Planes and surfaces (neutral) */
+  --plane: #050506;
+  --plane-2: #09090b;
+  --surface: #111114; /* solid fallback for glass; inside the validated chart-surface range */
+  --surface-raised: #18181c;
+  --glass-chart: rgba(19, 19, 23, 0.74); /* composites to #0f0f12-#1e1b26 over the plane and backdrop glows */
+  --glass-chart-top: rgba(27, 27, 32, 0.78);
+  --glass-deco: rgba(255, 255, 255, 0.03); /* decorative glass only, never behind data */
+  --hairline: rgba(255, 255, 255, 0.07);
   --hairline-strong: rgba(255, 255, 255, 0.14);
+  --glass-edge: rgba(255, 255, 255, 0.16);
 
-  /* Ink (text) */
-  --ink-primary: #f0efec; /* 15.4:1 on surface */
-  --ink-secondary: #c3c2b7; /* 9.9:1 */
-  --ink-muted: #898781; /* 4.9:1 */
+  /* Ink (text): contrast on #1e1b26 / #0f0f12 */
+  --ink-primary: #f4f4f5; /* 15.4:1 / 17.4:1 */
+  --ink-secondary: #c4c4cc; /* 9.8:1 / 11.0:1 */
+  --ink-muted: #8f8f9a; /* 5.3:1 / 6.0:1 */
 
-  /* UI chrome accent: focus rings, active nav, toggles. NEVER used in charts. */
-  --accent: #4cc9e0;
+  /* Neon accents. Decorative or chrome only: they NEVER encode data. */
+  --neon-violet: #a78bfa;
+  --neon-cyan: #22d3ee;
+  --neon-pink: #f472b6;
+  --neon-lime: #a3e635;
+  --neon-sky: #38bdf8;
+  --neon-emerald: #34d399;
+  --neon-fuchsia: #e879f9;
+  --page-accent: var(--neon-violet); /* overridden per page from PageHeader's data-accent (globals.css) */
+
+  /* Interaction: violet for focus rings and selection; the brand spectrum for "on" states. */
+  --accent: #a78bfa; /* 6.2:1 as text on the lightest glass */
+  --accent-strong: #8b5cf6;
+  --link: #67e8f9; /* 11.7:1 */
+  --gradient-brand: linear-gradient(90deg, #22d3ee 0%, #a78bfa 52%, #f472b6 100%);
+  --gradient-brand-soft: linear-gradient(90deg, rgba(34, 211, 238, 0.16), rgba(167, 139, 250, 0.16), rgba(244, 114, 182, 0.16));
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.9);
 
   /* Categorical data colours: fixed order, never cycled.
      Entity mapping (app-wide): 1 = AI / recommended, 2 = baseline / legacy / recorded sales,
      3 = true demand (synthetic ground truth); other series take slots 4+ in order. */
-  --series-1: #3987e5;
-  --series-2: #d95926;
-  --series-3: #199e70;
-  --series-4: #c98500;
-  --series-5: #d55181;
-  --series-6: #008300;
-  --series-7: #9085e9;
-  --series-8: #e66767;
+  --series-1: #9d6bff;
+  --series-2: #d4702c;
+  --series-3: #129a79;
+  --series-4: #b58c16;
+  --series-5: #de5596;
+  --series-6: #4e9a2b;
+  --series-7: #3b90dc;
+  --series-8: #e05c4c;
 
   /* Status: reserved meaning, always shown with an icon and a label */
-  --status-good: #0ca30c; /* In stock */
-  --status-warning: #fab219; /* At risk */
-  --status-serious: #ec835a; /* Expiring */
-  --status-critical: #d03b3b; /* Stockout */
+  --status-good: #22c55e; /* In stock */
+  --status-warning: #fbbf24; /* At risk */
+  --status-serious: #fb8a5a; /* Expiring */
+  --status-critical: #f5525a; /* Stockout */
 
-  /* Sequential (blue, magnitude) */
-  --seq-100: #cde2fb;
-  --seq-200: #9ec5f4;
-  --seq-300: #6da7ec;
-  --seq-400: #3987e5;
-  --seq-500: #256abf;
-  --seq-600: #184f95;
-  --seq-700: #0d366b;
+  /* Sequential (cyan, magnitude): light to dark */
+  --seq-100: #d8f9ff;
+  --seq-200: #9debfa;
+  --seq-300: #5fd5ee;
+  --seq-400: #22bcdc;
+  --seq-500: #0d9dbd;
+  --seq-600: #0a7f9a;
+  --seq-700: #0b6479;
 
-  /* Diverging (cover vs target): blue = surplus/waste risk, red = shortage risk, grey midpoint */
-  --div-surplus: #3987e5;
-  --div-mid: #383835;
-  --div-shortage: #e66767;
+  /* Diverging (cover vs target): cyan = surplus/waste risk, coral = shortage risk, grey midpoint */
+  --div-surplus: #0d9dbd;
+  --div-mid: #3a3a42;
+  --div-shortage: #e05c4c;
 
   /* Chart chrome */
-  --gridline: #2c2c2a;
-  --axis: #383835;
+  --gridline: rgba(255, 255, 255, 0.07);
+  --axis: #3a3a42;
 
   /* Layout */
   --nav-height: 64px;
-  --radius-panel: 16px;
+  --radius-panel: 20px;
+  --radius-control: 12px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }

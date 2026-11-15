@@ -6,6 +6,7 @@ import { TimeChart } from "@/components/charts/svg/charts";
 import { SurgePlanner } from "@/components/signature/SurgePlanner";
 import { NumberField } from "@/components/ui/controls";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { KpiTile } from "@/components/ui/KpiTile";
 import type { CatalogFile, McdmFile, SeriesFile } from "@/lib/contracts";
@@ -170,10 +171,8 @@ export function ScenarioStudio() {
   const mcdm = useArtefact("mcdm.json");
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">Scenario Studio</h1>
-        <p className="text-ink-secondary max-w-3xl">Push demand, spikes and supply around and watch the AI and the legacy rule respond. Every number here is computed in your browser.</p>
-      </header>
+      <PageHeader accent="pink" eyebrow="What-if engine · Runs in your browser" title="Scenario Studio"
+        description="Push demand, spikes and supply around and watch the AI and the legacy rule respond. Every number here is computed in your browser." />
       <DataState result={series} what="the series and its engine inputs" minHeight={400}>
         {(s) => (
           <DataState result={catalog} what="the catalogue">

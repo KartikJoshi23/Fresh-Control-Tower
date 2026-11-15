@@ -12,6 +12,7 @@ import { RouteGlobe } from "@/components/signature/RouteGlobe";
 import { routeViews } from "@/components/signature/routeGeometry";
 import { NumberField, Slider } from "@/components/ui/controls";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { ProvenanceChip } from "@/components/ui/ProvenanceChip";
 import type { CatalogFile, McdmFile, RoutesFile } from "@/lib/contracts";
@@ -201,10 +202,8 @@ export function Sourcing() {
   const routes = useArtefact("routes.json");
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">Sourcing</h1>
-        <p className="text-ink-secondary max-w-3xl">Nine fictional suppliers scored on seven criteria. Change the weights or the conditions and watch the ranking re-order.</p>
-      </header>
+      <PageHeader accent="sky" eyebrow="Multi-criteria procurement · AHP · Entropy · TOPSIS" title="Sourcing"
+        description="Nine fictional suppliers scored on seven criteria. Change the weights or the conditions and watch the ranking re-order." />
       <DataState result={mcdm} what="supplier scores" minHeight={400}>
         {(m) => (
           <DataState result={catalog} what="the catalogue">

@@ -14,12 +14,12 @@ import { useReducedMotion } from "@/components/motion/reducedMotion";
 
 import { arc, DASH, type RouteView, toVec } from "./routeGeometry";
 
-// three.js needs literal colours; these mirror tokens.css (CR-003).
-const ARC = "#b996ff"; // --seq-300: the single arc hue
+// three.js needs literal colours; these mirror tokens.css (CR-003 rev. 2).
+const ARC = "#5fd5ee"; // --seq-300: the single arc hue (cyan)
 const CRITICAL = "#f5525a"; // --status-critical
-const GRID = "#2e2545"; // violet-grey graticule
-const OCEAN = "#0b0814";
-const HALO = "#7c3aed"; // atmosphere glow (decorative)
+const GRID = "#2a2a31"; // neutral graphite graticule
+const OCEAN = "#0a0a0d";
+const HALO = "#22d3ee"; // atmosphere glow (decorative)
 
 function Graticule() {
   const lines = useMemo(() => {
@@ -90,7 +90,7 @@ export default function RouteGlobe3D({ routes, chokepoints }: { routes: RouteVie
         {/* A faint violet atmosphere: the back faces of a slightly larger sphere. */}
         <mesh>
           <sphereGeometry args={[1.03, 48, 48]} />
-          <meshBasicMaterial color={HALO} transparent opacity={0.08} side={BackSide} depthWrite={false} />
+          <meshBasicMaterial color={HALO} transparent opacity={0.06} side={BackSide} depthWrite={false} />
         </mesh>
         <Graticule />
         {routes.map((r) => <Route key={r.id} route={r} />)}

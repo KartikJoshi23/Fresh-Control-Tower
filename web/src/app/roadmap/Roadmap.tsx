@@ -206,7 +206,7 @@ export function Roadmap() {
   const [tabsRef, glide] = useGlide<HTMLDivElement>('[aria-selected="true"]', [tab]);
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="Adoption · Risks · Methods" title="Roadmap"
+      <PageHeader accent="fuchsia" eyebrow="Adoption · Risks · Methods" title="Roadmap"
         description="How an operator would adopt the control tower, what could go wrong, and how every number in this prototype was made.">
         <div ref={tabsRef} className="tablist" role="tablist" aria-label="Roadmap sections" data-glide={glide ? "" : undefined}>
           <GlideIndicator box={glide} className="tab-indicator" />

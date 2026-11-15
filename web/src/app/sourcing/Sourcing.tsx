@@ -202,7 +202,7 @@ export function Sourcing() {
   const routes = useArtefact("routes.json");
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="Multi-criteria procurement · AHP · Entropy · TOPSIS" title="Sourcing"
+      <PageHeader accent="sky" eyebrow="Multi-criteria procurement · AHP · Entropy · TOPSIS" title="Sourcing"
         description="Nine fictional suppliers scored on seven criteria. Change the weights or the conditions and watch the ranking re-order." />
       <DataState result={mcdm} what="supplier scores" minHeight={400}>
         {(m) => (

@@ -143,7 +143,7 @@ export function Overview() {
   const policyId = policy.policy === "P0" ? "P3" : policy.policy;
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="Group 1 · AI for Inventory Management · fictional UAE dark-store operator" title="Fresh Control Tower"
+      <PageHeader accent="violet" eyebrow="Group 1 · AI for Inventory Management · fictional UAE dark-store operator" title="Fresh Control Tower"
         description={<>AI replenishment for UAE fresh grocery: recover the demand that empty shelves hide, plan for festivals and sudden
           spikes, and source under disruption. Numbers below come from the calibrated synthetic world and are labelled by provenance.</>}
         aside={<><ProvenanceChip provenance="CALIBRATED_SYNTHETIC" /><ProvenanceChip provenance="PRECOMPUTED" /></>} />

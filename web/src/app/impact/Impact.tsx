@@ -255,7 +255,7 @@ export function Impact() {
   const backtest = useArtefact("backtest.json");
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="Cost · Waste · Emissions" title="Impact"
+      <PageHeader accent="emerald" eyebrow="Cost · Waste · Emissions" title="Impact"
         description="What the AI changes in cost, waste and emissions for a fictional eight-store operator. Figures are synthetic and illustrative." />
       <DataState result={impact} what="the impact summary" minHeight={400}>
         {(i) => (

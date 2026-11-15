@@ -16,9 +16,9 @@
 | Field | Value |
 |---|---|
 | **Current phase** | Phase 5: development. **Parts 1–9 merged into `main` (PR #8 merged, `bac07d5`); the site is live at https://fresh-control-tower.vercel.app/.** UI overhaul "Neon Noir" (CR-003) is on `feat/ui-neon-noir`, waiting for the lead's review. |
-| **Gate** | Lead: review the `feat/ui-neon-noir` preview and merge it into `main` (production redeploys from `main`). Phase 6 stays locked (§2). |
-| **Last completed step** | CR-003 UI overhaul on `feat/ui-neon-noir`: black + neon-violet glass theme, motion, new header/nav/console/controls. Verified: 127 Vitest, 41 Playwright e2e (axe with reduced motion), 52/52 data files valid, routes 221–255 KB gzip initial JS. |
-| **Exact next step** | **Lead:** review the Vercel preview of `feat/ui-neon-noir`, then merge it; decide CR-001 and CR-002 (§5); answer Q1–Q7. **Then:** Lighthouse on the deploy (KI-19), R-00 screenshots, and Phase 6 (report) once the lead opens it. |
+| **Gate** | Phase 5 complete and live. Phase 6 stays locked (§2) until the lead opens it. |
+| **Last completed step** | CR-003 UI overhaul, revision 2 (balanced colour) on `feat/ui-neon-noir` / PR #9: black + neutral glass with neon accents by role, motion, new header/nav/console/controls. Verified: 127 Vitest, 41 Playwright e2e (axe with reduced motion), 52/52 data files valid, routes 221–255 KB gzip initial JS. |
+| **Exact next step** | **Lead:** decide CR-001 and CR-002 (§5); answer Q1–Q7. **Then:** Lighthouse on the deploy (KI-19), R-00 screenshots, and Phase 6 (report) once the lead opens it. |
 | **Last integrated commit on `main`** | `6baad6d` (Vercel config, L-04); before it `bac07d5` (merge of PR #8, Parts 7–9), `2ba55e6` (PR #3), `3d8725e` (PR #2), `b0f26fe` (PR #1), `ff47bb7` (Part 1) |
 | **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` via pull requests. Open pull requests with `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls` (KI-14). |
 | **Updated** | 2026-11-15 by Kartik (lead), via Claude Code: CR-003 UI overhaul; L-04 and P9-04 done (site live). |
@@ -188,7 +188,7 @@
 | D-21 | 2026-11-14 | P0 covers L + R − 1 days (22:00 review, 06:00 dawn delivery) with a weekday-aware 28-day moving average | The night between review and delivery carries almost no demand; same-weekday averages match the legacy practice | docs/04 §5 (decided by Kartik) |
 | D-22 | 2026-11-14 | P0 adds a shrink allowance, a one-case presentation minimum and a flat +25% promotion uplift; the buffer stays at 20%. A 9th supplier, `sup-local-bakery` (archetype `local`), is added | Fixes the zero-sales trap of a pure moving average; bakery is a daily local delivery | docs/04 §4–5 (decided by Kartik) |
 | D-23 | 2026-11-14 | Spike bands are checked on true demand (recorded sales shown alongside); the spoilage band applies to the two vegetable categories only | Spikes are a demand property the festival-blind P0 caps; real loss data covers vegetables only | docs/04 §6 (decided by Kartik) |
-| D-24 | 2026-11-15 | UI overhaul "Neon Noir" (CR-003): true-black plane, violet/fuchsia glass, Space Grotesk display face, new validated chart palette (AI = violet), CSS-first motion plus Motion's vanilla `inView` and `motion/mini` | The lead found the live UI flat and blue; Motion's React layer cost about 49 KB gzip per route and broke the 300 KB limit, so it is not used | docs/decisions/CR-003-ui-overhaul-neon-noir.md, docs/design-system.md |
+| D-24 | 2026-11-15 | UI overhaul "Neon Noir" (CR-003, revision 2): true-black plane and neutral graphite glass; colour is a highlight with one job each (brand spectrum cyan → violet → pink, one accent per page, KPI tones, a cyan magnitude ramp, the validated data palette); Space Grotesk display face; CSS-first motion plus Motion's vanilla `inView` and `motion/mini` | The lead found the live UI flat and blue, then found revision 1 too violet; Motion's React layer cost about 49 KB gzip per route and broke the 300 KB limit, so it is not used | docs/decisions/CR-003-ui-overhaul-neon-noir.md, docs/design-system.md |
 
 ## 5. Open questions and blockers
 
@@ -283,6 +283,8 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-15 · L-04 · branch main · Vercel-ready: `web/vercel.json` (Next.js preset, `npm ci`, security and data-cache headers), README deployment steps; clean build of all 7 routes verified · next: lead imports the repo on Vercel (root `web`, Node 22.x), then P9-04 and Lighthouse (KI-19)
 
 - 2026-11-15 · CR-003 · branch feat/ui-neon-noir · UI overhaul "Neon Noir": tokens (black, violet glass, re-validated palette), Backdrop (aurora), Spotlight rims, PageHeader on all 7 pages, glass pill nav with a springing highlight, spring Console drawer, custom sliders/toggles/tabs, KPI count-up and hover lift, chart draw-in/glow/crosshair markers, scroll reveals, globe recolour and auto-rotate; e2e axe runs with reduced motion; KI-20 tooling fixes · 127 Vitest, 41 e2e, 52/52 valid, routes 221–255 KB · next: lead reviews the preview and merges
+
+- 2026-11-15 · CR-003 rev. 2 · branch feat/ui-neon-noir · lead found revision 1 too violet: colour rebuilt by role (neutral graphite structure; brand spectrum; one accent per page via PageHeader `accent`; KPI tones; cyan magnitude ramp, diverging and globe; violet only for focus/selection) · 127 Vitest, 41 e2e, 52/52 valid, routes 221–255 KB · next: merge PR #9 to main (lead asked for the live app to update)
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->
 

@@ -300,7 +300,7 @@ export function LiveOps() {
   const backtest = useArtefact("backtest.json");
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="Simulated live feed · 10–23 Mar 2026" title="Live Ops"
+      <PageHeader accent="lime" eyebrow="Simulated live feed · 10–23 Mar 2026" title="Live Ops"
         description={<>A replay of a simulated hourly feed for 10–23 March 2026 (two stores, ten hero SKUs, the P3 policy). The clock is
           simulated; this is how the control tower would look on a live connection.</>} />
       <DataState result={feed} what="the simulated feed" minHeight={400}>

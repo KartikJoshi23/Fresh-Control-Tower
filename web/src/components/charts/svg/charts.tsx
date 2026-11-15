@@ -115,8 +115,8 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
         ))}
         {hover !== null ? (
           <g className="chart-crosshair">
-            <line x1={x(parse(dates[hover]))} x2={x(parse(dates[hover]))} y1={m.t} y2={height - m.b} stroke="var(--accent)"
-              strokeOpacity={0.55} strokeDasharray="3 3" />
+            <line x1={x(parse(dates[hover]))} x2={x(parse(dates[hover]))} y1={m.t} y2={height - m.b} stroke="var(--ink-muted)"
+              strokeOpacity={0.7} strokeDasharray="3 3" />
             {series.map((s) => (s.values[hover] === null ? null : (
               <circle key={s.id} cx={x(parse(dates[hover]))} cy={y(s.values[hover] as number)} r={4.5} fill={s.color}
                 stroke="var(--surface)" strokeWidth={2} />

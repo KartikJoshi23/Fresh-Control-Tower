@@ -1,42 +1,50 @@
 /*
- * Design tokens: "Neon Noir" (docs/design-system.md, change request CR-003, 2026-11-15).
+ * Design tokens: "Neon Noir", balanced revision (docs/design-system.md, change request CR-003, rev. 2, 2026-11-15).
  * Changes need a change request in docs/decisions/.
  *
- * Dark-only by design: a true-black plane, translucent violet glass and neon violet / fuchsia chrome.
- * The categorical, sequential, status and ink values were validated with the dataviz palette validator
- * on 15 Nov 2026 against the glass composite range #0a0710 to #1a1426 (all checks pass).
+ * Dark-only by design. Neutral black and graphite carry the structure; colour is a highlight with a job:
+ * - brand: a cyan -> violet -> pink spectrum (logo, top hairline, the Scenario button, toggles, sliders);
+ * - page identity: one neon accent per page (header dot, top glow, active-nav underline), set as --page-accent;
+ * - data: the validated categorical palette, a cyan magnitude ramp and the reserved status colours.
+ * Categorical, sequential, status and ink values were validated with the dataviz palette validator on
+ * 15 Nov 2026 against the glass composite range #0f0f12 to #1e1b26 (all checks pass).
  */
 :root {
   color-scheme: dark;
 
-  /* Planes and surfaces */
-  --plane: #030305;
-  --plane-2: #07060c;
-  --surface: #0e0b15; /* solid fallback for glass; inside the validated chart-surface range */
-  --surface-raised: #151020;
-  --glass-chart: rgba(16, 12, 25, 0.8); /* composites to #0d0a14-#1a1426 over the plane and aurora */
-  --glass-chart-top: rgba(26, 19, 40, 0.82);
-  --glass-deco: rgba(255, 255, 255, 0.035); /* decorative glass only, never behind data */
+  /* Planes and surfaces (neutral) */
+  --plane: #050506;
+  --plane-2: #09090b;
+  --surface: #111114; /* solid fallback for glass; inside the validated chart-surface range */
+  --surface-raised: #18181c;
+  --glass-chart: rgba(19, 19, 23, 0.74); /* composites to #0f0f12-#1e1b26 over the plane and backdrop glows */
+  --glass-chart-top: rgba(27, 27, 32, 0.78);
+  --glass-deco: rgba(255, 255, 255, 0.03); /* decorative glass only, never behind data */
   --hairline: rgba(255, 255, 255, 0.07);
-  --hairline-strong: rgba(196, 167, 255, 0.22);
-  --glass-edge: rgba(196, 167, 255, 0.3);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+  --glass-edge: rgba(255, 255, 255, 0.16);
 
-  /* Ink (text): contrast on #1a1426 / #0a0710 */
-  --ink-primary: #f5f2fb; /* 16.2:1 / 18.1:1 */
-  --ink-secondary: #c8c0d8; /* 10.2:1 / 11.4:1 */
-  --ink-muted: #948ba6; /* 5.6:1 / 6.2:1 */
+  /* Ink (text): contrast on #1e1b26 / #0f0f12 */
+  --ink-primary: #f4f4f5; /* 15.4:1 / 17.4:1 */
+  --ink-secondary: #c4c4cc; /* 9.8:1 / 11.0:1 */
+  --ink-muted: #8f8f9a; /* 5.3:1 / 6.0:1 */
 
-  /* UI chrome: focus rings, active nav, toggles, buttons. NEVER used to encode data. */
-  --accent: #a78bfa; /* violet; 7.4:1 as text */
+  /* Neon accents. Decorative or chrome only: they NEVER encode data. */
+  --neon-violet: #a78bfa;
+  --neon-cyan: #22d3ee;
+  --neon-pink: #f472b6;
+  --neon-lime: #a3e635;
+  --neon-sky: #38bdf8;
+  --neon-emerald: #34d399;
+  --neon-fuchsia: #e879f9;
+  --page-accent: var(--neon-violet); /* overridden per page from PageHeader's data-accent (globals.css) */
+
+  /* Interaction: violet for focus rings and selection; the brand spectrum for "on" states. */
+  --accent: #a78bfa; /* 6.2:1 as text on the lightest glass */
   --accent-strong: #8b5cf6;
-  --accent-deep: #6d28d9;
-  --accent-2: #e879f9; /* fuchsia */
-  --accent-3: #f472b6; /* pink */
-  --accent-soft: rgba(167, 139, 250, 0.14);
-  --gradient-brand: linear-gradient(120deg, #c4b5fd 0%, #a78bfa 30%, #e879f9 70%, #f472b6 100%);
-  --gradient-button: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #d946ef 100%);
-  --glow-violet: 0 0 0 1px rgba(167, 139, 250, 0.45), 0 0 24px -2px rgba(139, 92, 246, 0.55);
-  --glow-soft: 0 0 32px -8px rgba(167, 139, 250, 0.45);
+  --link: #67e8f9; /* 11.7:1 */
+  --gradient-brand: linear-gradient(90deg, #22d3ee 0%, #a78bfa 52%, #f472b6 100%);
+  --gradient-brand-soft: linear-gradient(90deg, rgba(34, 211, 238, 0.16), rgba(167, 139, 250, 0.16), rgba(244, 114, 182, 0.16));
   --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.9);
 
   /* Categorical data colours: fixed order, never cycled.
@@ -57,23 +65,23 @@
   --status-serious: #fb8a5a; /* Expiring */
   --status-critical: #f5525a; /* Stockout */
 
-  /* Sequential (violet, magnitude): light to dark */
-  --seq-100: #ede4ff;
-  --seq-200: #d4c1ff;
-  --seq-300: #b996ff;
-  --seq-400: #9d6bff;
-  --seq-500: #8650ea;
-  --seq-600: #6e3ccc;
-  --seq-700: #5733ad;
+  /* Sequential (cyan, magnitude): light to dark */
+  --seq-100: #d8f9ff;
+  --seq-200: #9debfa;
+  --seq-300: #5fd5ee;
+  --seq-400: #22bcdc;
+  --seq-500: #0d9dbd;
+  --seq-600: #0a7f9a;
+  --seq-700: #0b6479;
 
-  /* Diverging (cover vs target): violet = surplus/waste risk, coral = shortage risk, grey midpoint */
-  --div-surplus: #9d6bff;
-  --div-mid: #3a3446;
+  /* Diverging (cover vs target): cyan = surplus/waste risk, coral = shortage risk, grey midpoint */
+  --div-surplus: #0d9dbd;
+  --div-mid: #3a3a42;
   --div-shortage: #e05c4c;
 
   /* Chart chrome */
-  --gridline: rgba(196, 167, 255, 0.09);
-  --axis: #3a3446;
+  --gridline: rgba(255, 255, 255, 0.07);
+  --axis: #3a3a42;
 
   /* Layout */
   --nav-height: 64px;

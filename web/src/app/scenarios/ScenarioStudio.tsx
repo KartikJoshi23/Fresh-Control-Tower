@@ -171,7 +171,7 @@ export function ScenarioStudio() {
   const mcdm = useArtefact("mcdm.json");
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="What-if engine · Runs in your browser" title="Scenario Studio"
+      <PageHeader accent="pink" eyebrow="What-if engine · Runs in your browser" title="Scenario Studio"
         description="Push demand, spikes and supply around and watch the AI and the legacy rule respond. Every number here is computed in your browser." />
       <DataState result={series} what="the series and its engine inputs" minHeight={400}>
         {(s) => (

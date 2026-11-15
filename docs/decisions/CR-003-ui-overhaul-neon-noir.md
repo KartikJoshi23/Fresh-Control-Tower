@@ -67,6 +67,29 @@ The live site reads as a plain admin page, not a polished control tower:
   - Contrast on gradient text: kept to light stops only.
   - Blur cost on low-end devices: one blur layer per panel, with a solid fallback and `prefers-reduced-transparency`.
 
+## Revision 2 (2026-11-15): balanced colour
+
+**Lead's feedback on revision 1:**
+- Violet dominated everything, which reads as unprofessional in a graded presentation.
+- Neon violet/purple was one *suggestion* among others ("neon violet/purple, etc."), not the only colour.
+
+**What changed.** The layout, glass, typography and motion stayed. Only the colour system was rebuilt so that no single hue dominates:
+- **Structure is neutral:**
+  - black plane `#050506`, graphite glass `rgba(19,19,23,0.74)`, white-alpha rims and hairlines;
+  - zinc ink `#f4f4f5`, `#c4c4cc` and `#8f8f9a`.
+- **Every colour has one job** (design system §4.5):
+  - **brand spectrum** cyan → violet → pink: logo, top hairline, Scenario button, toggles, slider fills;
+  - **one identity accent per page:** Overview violet, Demand Lab cyan, Scenario Studio pink, Live Ops lime, Sourcing sky, Impact emerald, Roadmap fuchsia;
+  - **KPI tones** rotating across tiles;
+  - **violet only** for focus and selection;
+  - **cyan** for links.
+- **Data:**
+  - the categorical palette is unchanged (it re-validates on the neutral glass, `#0f0f12`–`#1e1b26`);
+  - the magnitude ramp moved from violet to a validated **cyan** ramp `#d8f9ff`–`#0b6479`, so magnitude no longer reads as "AI";
+  - diverging is cyan / grey / coral;
+  - the globe arcs are cyan.
+- **Checks:** all text and accent colours stay at AA or better (muted ink 5.3:1 on the lightest glass).
+
 ## Alternatives considered
 
 - **Re-tint the old tokens only:** it fixes the colour but not the flatness, the lack of motion or the hierarchy the lead asked for.

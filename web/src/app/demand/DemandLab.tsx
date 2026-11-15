@@ -236,7 +236,7 @@ export function DemandLab() {
   const [tabsRef, glide] = useGlide<HTMLDivElement>('[aria-selected="true"]', [tab]);
   return (
     <div className="page-grid py-6">
-      <PageHeader eyebrow="Hidden demand · Forecasting · Data value" title="Demand Lab"
+      <PageHeader accent="cyan" eyebrow="Hidden demand · Forecasting · Data value" title="Demand Lab"
         description="How much demand do empty shelves hide, how well does the AI recover it, and which data matters?" />
       <div ref={tabsRef} className="col-span-12 tablist" role="tablist" aria-label="Demand Lab views" data-glide={glide ? "" : undefined}>
         <GlideIndicator box={glide} className="tab-indicator" />

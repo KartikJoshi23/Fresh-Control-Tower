@@ -177,10 +177,28 @@ def test_engine_worked_example_steady_state() -> None:
     assert spike["rows"][4]["lost"] == 20
 
 
+def test_engine_what_if_levers_worked_example() -> None:
+    # Forecast x0.5 (the AI learns from censored till sales): it orders 5 a day for a demand of 10, so 5 are lost daily.
+    low = er.run_engine(flat_engine(), {"policy": "AI", "forecastFactor": 0.5})
+    assert [r["order"] for r in low["rows"]] == [5] * 10 and low["kpis"]["lost"] == 45
+    # Half the orders a day late (deterministic: the 2nd, 4th, ... order): the shelf is empty on days 2, 5 and 8.
+    late = er.run_engine(flat_engine(), {"policy": "AI", "lateProbability": 0.5})
+    assert [r["lost"] for r in late["rows"]] == [0, 0, 10, 0, 0, 10, 0, 0, 10, 0]
+    # Demand doubles from day 5 and the AI knows it (a calendar factor): it orders 20 from day 4 and loses nothing,
+    # while the current method, which only looks back at sales, runs short.
+    factors = [1.0] * 5 + [2.0] * 5
+    ai = er.run_engine(flat_engine(), {"policy": "AI", "dayFactors": factors})
+    assert [r["demand"] for r in ai["rows"]][4:6] == [10, 20] and ai["rows"][4]["order"] == 20 and ai["kpis"]["lost"] == 0
+    assert er.run_engine(flat_engine(), {"policy": "P0", "dayFactors": factors})["kpis"]["lost"] > 0
+    # Neutral values change nothing.
+    assert er.run_engine(flat_engine(), {"policy": "AI", "dayFactors": [1.0] * 10, "forecastFactor": 1.0,
+                                         "lateProbability": 0.0}) == er.run_engine(flat_engine(), {"policy": "AI"})
+
+
 def test_golden_cases_reproduce_from_the_committed_series_files() -> None:
     golden = json.loads((repo_path("web_data").parent.parent / "tests" / "fixtures" / "golden" / "engine_cases.json")
                         .read_text(encoding="utf-8"))
-    assert golden["prng"]["first5"][0] == 0.60110375192 and len(golden["cases"]) == 24
+    assert golden["prng"]["first5"][0] == 0.60110375192 and len(golden["cases"]) == 36
     for case in golden["cases"][:: 5]:
         series = json.loads((repo_path("web_data") / "series" / f"{case['storeId']}__{case['skuId']}.json").read_text())
         assert series["engine"] == case["engine"]

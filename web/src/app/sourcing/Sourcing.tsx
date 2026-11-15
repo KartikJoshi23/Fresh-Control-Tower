@@ -19,6 +19,7 @@ import type { CatalogFile, McdmFile, RoutesFile } from "@/lib/contracts";
 import { useArtefact } from "@/lib/data/hooks";
 import { fmtKg } from "@/lib/format";
 import { ahp, allocateGreedy, applyScenario, COMPATIBLE, ranks, sensitivity, topsis } from "@/lib/mcdm/mcdm";
+import { withDisruption } from "@/lib/state/scenario";
 import { useScenario, useScenarioStore } from "@/lib/state/scenarioStore";
 
 const MODES = [
@@ -60,6 +61,7 @@ function RankRace({ rows, recommendedId, category }: {
 function SourcingBody({ mcdm, catalog, routes }: { mcdm: McdmFile; catalog: CatalogFile; routes: RoutesFile }) {
   const scenario = useScenario();
   const set = useScenarioStore((s) => s.set);
+  const replace = useScenarioStore((s) => s.replace);
   const mode = scenario.sourcing.weightMode;
   const hormuz = scenario.supply.disruptionPreset === "hormuz2026";
   const [custom, setCustom] = useState<number[]>(() => [...mcdm.ahp.weights]);
@@ -112,7 +114,7 @@ function SourcingBody({ mcdm, catalog, routes }: { mcdm: McdmFile; catalog: Cata
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Supply conditions">
             {CONDITIONS.map((c) => (
               <button key={c.id} type="button" role="radio" aria-checked={(hormuz ? "hormuz2026" : "none") === c.id} className="preset"
-                onClick={() => set("supply.disruptionPreset", c.id)}>{c.label}</button>
+                onClick={() => replace(withDisruption(scenario, c.id))}>{c.label}</button>
             ))}
           </div>
           <p className="text-ink-muted text-sm">{CONDITIONS.find((c) => c.id === (hormuz ? "hormuz2026" : "none"))?.help}</p>

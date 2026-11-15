@@ -36,7 +36,7 @@ describe("shared primitives", () => {
 });
 
 describe("engine parity with the Python reference (golden cases)", () => {
-  it(`has ${golden.cases.length} cases`, () => expect(golden.cases.length).toBe(24));
+  it(`has ${golden.cases.length} cases`, () => expect(golden.cases.length).toBe(36));
   for (const c of golden.cases) {
     it(c.id, () => {
       close(runEngine(c.engine, c.scenario), c.deterministic, "deterministic");
@@ -59,8 +59,9 @@ describe("surge planner (worked example shared with the Python test)", () => {
 });
 
 describe("scenario → engine mapping", async () => {
-  const { DEFAULT_SCENARIO } = await import("@/lib/state/scenario");
-  const { toEngineScenario, PER_DEGREE_C } = await import("@/lib/engine/scenario");
+  const { DEFAULT_SCENARIO, activeChips, withDisruption } = await import("@/lib/state/scenario");
+  const { engineContext, toEngineScenario, PER_DEGREE_C } = await import("@/lib/engine/scenario");
+  const read = (path: string) => JSON.parse(readFileSync(new URL(`../public/data/${path}`, import.meta.url), "utf-8"));
   const engine = golden.cases[0].engine;
   const base = structuredClone(DEFAULT_SCENARIO);
 
@@ -81,5 +82,37 @@ describe("scenario → engine mapping", async () => {
     const mean = engine.horizonQuantiles.reduce((a: number, q: { p50: number }) => a + q.p50, 0) / engine.horizonQuantiles.length;
     s.demand.ordersPerDay = 2 * mean;
     expect(toEngineScenario(s, engine).demandMultiplier).toBeCloseTo(2, 12);
+  });
+
+  it("wires the Ramadan effect, late import deliveries and learning from till sales only", () => {
+    const bananas = read("series/dxb-marina__bananas-1kg.json");
+    const ctx = engineContext(bananas, read("calendar.json"), read("ablation.json"));
+    // The horizon (11 Feb - 17 Mar 2026) is Ramadan 2026's build-up week and its first 28 days.
+    expect(ctx.ramadanDays.filter(Boolean).length).toBe(35);
+    expect(ctx.ramadanLift).toBeGreaterThan(0);
+    const s = structuredClone(DEFAULT_SCENARIO);
+    expect(toEngineScenario(s, bananas.engine, {}, ctx)).toMatchObject({ dayFactors: null, forecastFactor: 1, lateProbability: 0 });
+    s.calendar.ramadanIntensity = 0;
+    expect(toEngineScenario(s, bananas.engine, {}, ctx).dayFactors?.[0]).toBeCloseTo(1 / (1 + (ctx.ramadanLift ?? 0)), 12);
+    s.calendar.ramadanIntensity = 150;
+    expect(toEngineScenario(s, bananas.engine, {}, ctx).dayFactors?.[0]).toBeGreaterThan(1);
+    s.policy.useDemandRecovery = false;
+    expect(toEngineScenario(s, bananas.engine, {}, ctx).forecastFactor).toBeCloseTo((1 - 0.3102) / (1 - 0.0594), 12);
+    s.supply.reliabilityDrop = 30;
+    expect(toEngineScenario(s, bananas.engine, {}, ctx).lateProbability).toBeCloseTo(0.3, 12);      // a sea importer
+    // Lettuce buys from a local farm, then a GCC truck, then an air importer: only the importer is late.
+    expect([0, 1, 2].map((i) => toEngineScenario(s, engine, { supplierIndex: i }).lateProbability)).toEqual([0, 0, 0.3]);
+  });
+
+  it("applies the sea delivery time on its own, and the disruption switch sets both delivery settings", () => {
+    const s = structuredClone(DEFAULT_SCENARIO);
+    s.supply.seaLeadTimeMultiplier = 1.5;
+    expect(toEngineScenario(s, read("series/dxb-marina__bananas-1kg.json").engine).leadTimeMultiplier).toBe(1.5);
+    expect(toEngineScenario(s, engine).leadTimeMultiplier).toBe(1);                                  // local farm
+    const hz = withDisruption(DEFAULT_SCENARIO, "hormuz2026");
+    expect(hz.supply).toMatchObject({ disruptionPreset: "hormuz2026", seaLeadTimeMultiplier: 2, reliabilityDrop: 30 });
+    expect(withDisruption(hz, "none").supply).toEqual(DEFAULT_SCENARIO.supply);
+    expect(activeChips(hz)).toEqual(["Hormuz disruption"]);
+    expect(activeChips({ ...hz, supply: { ...hz.supply, reliabilityDrop: 10 } })).toEqual(["Hormuz disruption", "10% of import deliveries late"]);
   });
 });

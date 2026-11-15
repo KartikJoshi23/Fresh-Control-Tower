@@ -16,6 +16,12 @@ export interface EngineScenario {
   supplierIndex?: number;
   leadTimeMultiplier?: number;
   manualOrder?: { day: number; qty: number } | null;
+  /** Per-day demand factor by horizon day (calendar what-ifs such as the Ramadan effect). Real demand and both policies' plans see it. */
+  dayFactors?: number[] | null;
+  /** Multiplies only the AI's forecast, not real demand: below 1 when the AI learns from till sales only (censored history). */
+  forecastFactor?: number;
+  /** Extra chance (0-1) that an order arrives one day late; the planner does not know in advance (reliability drop). */
+  lateProbability?: number;
 }
 
 export interface DayRow {
@@ -94,7 +100,8 @@ export const roundToCase = (raw: number, casePack: number) => Math.floor(Math.ma
 const round = (x: number, n: number) => Math.round(x * 10 ** n) / 10 ** n;
 
 export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: number | null = null): { rows: DayRow[]; kpis: Kpis } {
-  const sc = { demandMultiplier: 1, spike: null, policy: "AI", tau: null, supplierIndex: 0, leadTimeMultiplier: 1, manualOrder: null, ...scenario };
+  const sc = { demandMultiplier: 1, spike: null, policy: "AI", tau: null, supplierIndex: 0, leadTimeMultiplier: 1, manualOrder: null,
+    dayFactors: null, forecastFactor: 1, lateProbability: 0, ...scenario };
   const q = engine.horizonQuantiles;
   const horizon = q.length;
   const rng = seed === null ? null : mulberry32(seed);
@@ -105,6 +112,8 @@ export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: 
     return spike.magnitude;
   };
   const quantile = (day: number) => q[Math.min(day, horizon - 1)];
+  const dayFactor = (day: number) => sc.dayFactors?.[Math.min(day, horizon - 1)] ?? 1;
+  let ordersPlaced = 0;
   const sigma = (day: number) => {
     const { p10, p90 } = quantile(day);
     return p10 > 0 && p90 > p10 ? (Math.log(p90) - Math.log(p10)) / (2 * Z90) : 0;
@@ -129,7 +138,7 @@ export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: 
     const got = pipeline.get(d) ?? 0;
     pipeline.delete(d);
     if (got) batches.push({ qty: got, expires: d + shelf - 1 });
-    const mu = quantile(d).p50 * sc.demandMultiplier * spikeFactor(d);
+    const mu = quantile(d).p50 * sc.demandMultiplier * dayFactor(d) * spikeFactor(d);
     let demand: number;
     if (rng === null) demand = roundHalfUp(mu);
     else {
@@ -160,7 +169,9 @@ export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: 
         order = roundToCase((1 + P0_BUFFER) * lead * avg - onHand - onOrder, casePack);
       } else {
         const plan: number[] = [];
-        for (let j = 1; j < lead + sellable; j += 1) plan.push(quantile(d + j).p50 * sc.demandMultiplier * spikeFactor(d + j, d));
+        for (let j = 1; j < lead + sellable; j += 1) {
+          plan.push(quantile(d + j).p50 * sc.demandMultiplier * dayFactor(d + j) * spikeFactor(d + j, d) * sc.forecastFactor);
+        }
         let muSum = 0;
         let variance = 0;
         for (let j = 1; j <= lead; j += 1) {
@@ -172,7 +183,15 @@ export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: 
         order = roundToCase(Math.min(level - onHand - onOrder, cap), casePack);
       }
       if (sc.manualOrder && sc.manualOrder.day === d) order = Math.trunc(sc.manualOrder.qty);
-      if (order > 0) pipeline.set(d + lead, (pipeline.get(d + lead) ?? 0) + order);
+      if (order > 0) {
+        // Late deliveries: a random draw in Monte Carlo runs; in the single deterministic run, exactly that share of orders
+        // (every order whose running count crosses a multiple of 1/p). No draw is made when p = 0, so other runs are unchanged.
+        const p = sc.lateProbability;
+        let late = 0;
+        if (p > 0) late = rng === null ? Number(Math.floor((ordersPlaced + 1) * p) > Math.floor(ordersPlaced * p)) : Number(rng() < p);
+        ordersPlaced += 1;
+        pipeline.set(d + lead + late, (pipeline.get(d + lead + late) ?? 0) + order);
+      }
     }
     rows.push({ day: d, receipts: got, demand, sales: sold, lost: demand - sold, waste, onHandClose: onHand, order });
     t.demand += demand;

@@ -272,7 +272,8 @@ function Live({ feed, catalog, backtest, mcdm }: { feed: LiveFeedFile; catalog: 
             In the simulated Hormuz 2026 disruption (typical result of {backtest.results[0].runs} runs), &ldquo;{policyName("P2")}&rdquo; has{" "}
             <strong className="text-ink">{Math.abs(change(p2.lostSalesUnits.p50, p1.lostSalesUnits.p50)).toFixed(0)}% {p2.lostSalesUnits.p50 <= p1.lostSalesUnits.p50 ? "fewer" : "more"} missed sales</strong> and a{" "}
             <strong className="text-ink">{Math.abs(change(p2.totalCostAED.p50, p1.totalCostAED.p50)).toFixed(0)}% {p2.totalCostAED.p50 <= p1.totalCostAED.p50 ? "lower" : "higher"} total cost</strong> than
-            &ldquo;{policyName("P1")}&rdquo; alone.
+            &ldquo;{policyName("P1")}&rdquo; alone. That result tests two same-day steps together: this noon top-up, and a larger
+            evening order when a store&apos;s sales run well above the forecast.
           </p>
         ) : null}
       </GlassPanel>

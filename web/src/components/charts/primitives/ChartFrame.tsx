@@ -73,7 +73,7 @@ export function ChartFrame({ title, subtitle, provenance, sources, legend = [], 
       data-testid="chart-frame" data-inview={seen ? "" : undefined}>
       <header className="chart-head">
         <div className="min-w-0">
-          <h3 id={`${id}-title`} className="chart-title">{title}</h3>
+          <h2 id={`${id}-title`} className="chart-title">{title}</h2>
           {subtitle ? <p className="chart-subtitle">{subtitle}</p> : null}
         </div>
         <div className="chart-tools">

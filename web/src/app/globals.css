@@ -22,6 +22,10 @@
 html {
   background: var(--plane);
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  /* Reserve the scrollbar's width from the start: when data arrives and the page grows past the viewport,
+     a classic (non-overlay) scrollbar would otherwise appear and shift every element sideways
+     (Lighthouse measured CLS 0.52 on /demand at desktop size). */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -1228,6 +1232,9 @@ input[type="range"]:focus-visible::-webkit-slider-runnable-track {
 }
 .chart-svg {
   display: block;
+  /* Charts first render at a fallback width until ResizeObserver measures their column; never let that one
+     frame widen the page (it caused a 178 px horizontal scroll on the Overview at 1440 px). */
+  max-width: 100%;
   overflow: visible;
   font-family: var(--font-sans);
   border-radius: 8px;

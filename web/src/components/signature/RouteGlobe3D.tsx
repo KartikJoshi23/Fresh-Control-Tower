@@ -7,7 +7,7 @@
  */
 import { Line, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { type RefObject, useMemo, useRef } from "react";
+import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { BackSide, Vector3 } from "three";
 
 import { useReducedMotion } from "@/components/motion/reducedMotion";
@@ -65,6 +65,17 @@ export default function RouteGlobe3D({ routes, chokepoints }: { routes: RouteVie
   const cam = toVec(28, 40, 2.4);
   const refs = useRef<(HTMLSpanElement | null)[]>([]);
   const reduceMotion = useReducedMotion();
+  // Render frames only while the globe is on screen: the auto-rotation would otherwise keep the GPU (or, on
+  // devices without one, the CPU) busy for the whole visit. Lighthouse measured 15 s of blocking time on /sourcing.
+  const wrap = useRef<HTMLDivElement>(null);
+  const [onScreen, setOnScreen] = useState(() => typeof IntersectionObserver === "undefined");
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting), { rootMargin: "100px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const labels = useMemo<Label[]>(() => {
     const origins = new Map<string, Label>();
     for (const r of routes) {
@@ -81,8 +92,9 @@ export default function RouteGlobe3D({ routes, chokepoints }: { routes: RouteVie
       ...origins.values()];
   }, [routes, chokepoints]);
   return (
-    <div className="globe-wrap">
-      <Canvas camera={{ position: cam, fov: 40 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }} aria-hidden="true">
+    <div className="globe-wrap" ref={wrap}>
+      <Canvas camera={{ position: cam, fov: 40 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }} aria-hidden="true"
+        frameloop={onScreen ? "always" : "never"}>
         <mesh>
           <sphereGeometry args={[0.995, 48, 48]} />
           <meshBasicMaterial color={OCEAN} />

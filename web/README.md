@@ -124,3 +124,13 @@ regenerate the golden file (`python -m freshpipe.export`) and keep both in step.
   Chrome DevTools on the deployed site and record the scores in PROGRESS.md.
 - Anything with `position: absolute` (including `.sr-only` text) inside a scrolling table needs a positioned parent,
   or it escapes the scroll box and widens the page on phones.
+
+## Verifying the live deploy
+
+- `npx playwright test -c playwright.live.config.ts` runs the whole e2e suite (pages, QA sweep, axe) against
+  https://fresh-control-tower.vercel.app; set `LIVE_URL` to check a preview deploy instead.
+- Lighthouse is not a project dependency. Install it outside the repo and point it at Playwright's Chromium:
+  `mkdir /tmp/lh && cd /tmp/lh && npm i lighthouse`, then
+  `CHROME_PATH=<playwright chromium> npx lighthouse https://fresh-control-tower.vercel.app/demand/ --preset=desktop`.
+  Headless machines without a GPU render the Route Globe in software, so `/sourcing` scores lower there than on a
+  phone or laptop with a GPU.

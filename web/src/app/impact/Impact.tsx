@@ -169,7 +169,7 @@ function Body({ impact, frontier, backtest }: { impact: ImpactFile; frontier: Fr
     <>
       <p className="col-span-12 text-ink-secondary text-sm">
         <strong className="text-ink">AI ordering</strong> compared with the current method, across all eight stores and forty items.
-        Money is per year; waste and emissions are for 1 Jan to 31 Oct 2026.
+        Money, waste and emissions are per year: the 1 Jan to 31 Oct 2026 results scaled up to twelve months.
       </p>
       <div className="col-span-12 kpi-row" role="list" aria-label="Impact of AI ordering compared with the current method">
         <div role="listitem"><KpiTile label="Yearly cost saving" value={fmtAED(tor.saving)} delta={`${fmtSignedPct(change(impact.waterfall.at(-1)!.valueAED, impact.waterfall[0].valueAED), 0)} total cost vs current method`} better provenance="DERIVED" range="Illustrative: a fictional eight-store retailer" /></div>
@@ -223,7 +223,7 @@ function Body({ impact, frontier, backtest }: { impact: ImpactFile; frontier: Fr
       </div>
 
       <div className="col-span-12 xl:col-span-6">
-        <ChartFrame title="Food thrown away and carbon emissions" subtitle="Totals for 1 Jan to 31 Oct 2026, all stores"
+        <ChartFrame title="Food thrown away and carbon emissions" subtitle="Per year, all stores (1 Jan to 31 Oct 2026 scaled up to twelve months)"
           provenance="DERIVED"
           note={<>Both totals go up with the AI because it sells much more of the demand that empty shelves used to hide, so more food
             is bought, moved and handled. Per unit sold, and at the same shelf availability, it wastes less (see the chart above).</>}

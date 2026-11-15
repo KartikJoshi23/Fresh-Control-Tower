@@ -1,6 +1,8 @@
 "use client";
 
 /** Scenario Studio (plan §6.1 page 3): deep what-ifs on one hero store-SKU. Serves R1, R2, R4, R5, KQ1. */
+import { useMemo } from "react";
+
 import { ChartFrame, ENTITY_COLOR, otherSeriesColor, TableView, useSeriesFilter } from "@/components/charts/primitives";
 import { TimeChart } from "@/components/charts/svg/charts";
 import { SurgePlanner } from "@/components/signature/SurgePlanner";
@@ -9,10 +11,10 @@ import { DataState } from "@/components/ui/DataState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { KpiTile } from "@/components/ui/KpiTile";
-import type { CatalogFile, McdmFile, SeriesFile } from "@/lib/contracts";
+import type { AblationFile, CalendarFile, CatalogFile, McdmFile, SeriesFile } from "@/lib/contracts";
 import { useArtefact, useSeries } from "@/lib/data/hooks";
 import type { EngineScenario } from "@/lib/engine/engine";
-import { leadTimeMultiplier, toEngineScenario } from "@/lib/engine/scenario";
+import { engineContext, lateProbability, leadTimeMultiplier, toEngineScenario } from "@/lib/engine/scenario";
 import { planSurge, type SupplierOption } from "@/lib/engine/surge";
 import { useEngine } from "@/lib/engine/useEngine";
 import { change, fmtAED, fmtDate, fmtShare, fmtSignedPct, fmtSignedPts, fmtUnits } from "@/lib/format";
@@ -24,12 +26,15 @@ const RUNS = 50;
 const SURGE_LABEL = { prebuild_primary: "Stock up early with the usual supplier", switch_faster: "Switch to the fastest supplier",
   split: "Split into two deliveries", accept_shortfall: "Do nothing extra" } as const;
 
-function Studio({ series, catalog, mcdm }: { series: SeriesFile; catalog: CatalogFile; mcdm: McdmFile }) {
+interface StudioData { series: SeriesFile; catalog: CatalogFile; mcdm: McdmFile; calendar: CalendarFile; ablation: AblationFile }
+
+function Studio({ series, catalog, mcdm, calendar, ablation }: StudioData) {
   const scenario = useScenario();
   const set = useScenarioStore((s) => s.set);
   const flowFilter = useSeriesFilter();
   const engine = series.engine;
-  const base = toEngineScenario(scenario, engine);
+  const ctx = useMemo(() => engineContext(series, calendar, ablation), [series, calendar, ablation]);
+  const base = toEngineScenario(scenario, engine, {}, ctx);
   const supplierName = (id: string) => (mcdm.suppliers.find((s) => s.id === id)?.name ?? id).replace(" (fictional)", "");
   const tau = base.tau ?? engine.optimalTau;
   const named: { key: string; label: string; scenario: EngineScenario }[] = [
@@ -38,7 +43,8 @@ function Studio({ series, catalog, mcdm }: { series: SeriesFile; catalog: Catalo
     { key: "ai-95", label: "AI, stock-level setting 95% (more safety stock)", scenario: { ...base, policy: "AI", tau: 0.95 } },
     ...engine.leadTimes.slice(1).map((l, i) => ({
       key: `alt-${i + 1}`, label: `AI, buying from ${supplierName(l.supplierId)}`,
-      scenario: { ...base, policy: "AI" as const, supplierIndex: i + 1, leadTimeMultiplier: leadTimeMultiplier(scenario, engine, i + 1) },
+      scenario: { ...base, policy: "AI" as const, supplierIndex: i + 1, leadTimeMultiplier: leadTimeMultiplier(scenario, engine, i + 1),
+        lateProbability: lateProbability(scenario, engine, i + 1) },
     })),
   ];
   const key = JSON.stringify([series.storeId, series.skuId, named.map((n) => n.scenario)]);
@@ -52,7 +58,8 @@ function Studio({ series, catalog, mcdm }: { series: SeriesFile; catalog: Catalo
   const spike = base.spike ?? { startDay: 10, days: 3, magnitude: 2.5, warningDays: 0 };
   const today = Math.max(0, spike.startDay - (spike.warningDays ?? 0));
   const extraPerDay = engine.horizonQuantiles.slice(spike.startDay, spike.startDay + spike.days)
-    .reduce((a, q) => a + q.p50, 0) / Math.max(1, spike.days) * (base.demandMultiplier ?? 1) * (spike.magnitude - 1);
+    .reduce((a, q, i) => a + q.p50 * (base.dayFactors?.[spike.startDay + i] ?? 1), 0) / Math.max(1, spike.days)
+    * (base.demandMultiplier ?? 1) * (spike.magnitude - 1);
   const metric = (id: string, c: string) => mcdm.suppliers.find((s) => s.id === id)?.metrics[c];
   const primaryCost = metric(engine.leadTimes[0].supplierId, "landed-cost") ?? 1;
   const options: SupplierOption[] = engine.leadTimes.map((l, i) => ({
@@ -195,6 +202,8 @@ export function ScenarioStudio() {
   const series = useSeries(selection.storeId, selection.skuId);
   const catalog = useArtefact("catalog.json");
   const mcdm = useArtefact("mcdm.json");
+  const calendar = useArtefact("calendar.json");
+  const ablation = useArtefact("ablation.json");
   return (
     <div className="page-grid py-6">
       <PageHeader accent="pink" eyebrow="What-if engine" title="Scenario Studio"
@@ -202,7 +211,11 @@ export function ScenarioStudio() {
       <DataState result={series} what="the series and its engine inputs" minHeight={400}>
         {(s) => (
           <DataState result={catalog} what="the catalogue">
-            {(c) => <DataState result={mcdm} what="supplier metrics">{(m) => <Studio series={s} catalog={c} mcdm={m} />}</DataState>}
+            {(c) => <DataState result={mcdm} what="supplier metrics">{(m) => (
+              <DataState result={calendar} what="the festival calendar">{(cal) => (
+                <DataState result={ablation} what="the forecast study">{(a) => <Studio series={s} catalog={c} mcdm={m} calendar={cal} ablation={a} />}</DataState>
+              )}</DataState>
+            )}</DataState>}
           </DataState>
         )}
       </DataState>

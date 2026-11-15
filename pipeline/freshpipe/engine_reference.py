@@ -5,13 +5,16 @@ in `web/tests/fixtures/golden/engine_cases.json`. Everything below is specified 
 
 **Inputs:** a series file's `engine` block (contract `EngineParams`) plus a scenario:
 `demandMultiplier`, an optional spike `{startDay, days, magnitude, warningDays}`, `policy` ("P0" or "AI"),
-`tau` (null = `optimalTau`), `supplierIndex` (into `leadTimes`), `leadTimeMultiplier`, and an optional
-manual order `{day, qty}`.
+`tau` (null = `optimalTau`), `supplierIndex` (into `leadTimes`), `leadTimeMultiplier`, an optional
+manual order `{day, qty}`, and three what-if levers with neutral defaults: `dayFactors` (one demand factor per
+horizon day, e.g. the Ramadan effect; missing or null = 1), `forecastFactor` (multiplies only the AI's planning
+forecast, e.g. 0.73 when it learns from till sales only; default 1) and `lateProbability` (the share of orders
+that arrive one day late, unknown to the planner in advance; default 0).
 
 **One day d = 0 … H−1** (H = len(horizonQuantiles), at most 35):
 1. *Receive* every batch due on day d (arrival = order day + lead time: an order placed at the end of day t
    lands at dawn of day t + L, as in the hourly engine). Each batch keeps its own expiry.
-2. *Demand.* μ_d = P50_d × demandMultiplier × spike_d. Deterministic mode: demand = round_half_up(μ_d).
+2. *Demand.* μ_d = P50_d × demandMultiplier × dayFactor_d × spike_d (multiplied in this order). Deterministic mode: demand = round_half_up(μ_d).
    Monte Carlo mode: σ_d = (ln P90_d − ln P10_d) ÷ (2 × 1.2815515655446004) (0 if P10 ≤ 0) and
    demand = round_half_up(μ_d × exp(σ_d z − σ_d² / 2)), z from Box–Muller on two mulberry32 draws
    (u1 = 1 − next(), u2 = next(); z = √(−2 ln u1) cos(2π u2)).
@@ -20,10 +23,15 @@ manual order `{day, qty}`.
 5. *Order* at the end of every review day (d mod reviewPeriodDays = 0). Lead time L = max(1, round_half_up(
    meanDays × leadTimeMultiplier)); in Monte Carlo mode L = max(1, round_half_up(meanDays × multiplier + sdDays × z′)).
    - AI: S = Σ_{j=1..L} μ̂_{d+j} + Φ⁻¹(τ) × √(Σ σ̂²_{d+j} × μ̂²_{d+j}) with μ̂ the planning forecast: P50 ×
-     demandMultiplier, × the spike only once it is announced (d ≥ startDay − warningDays). Days past the horizon
-     reuse its last day. Φ⁻¹ is Acklam's rational approximation (`norm_ppf`).
+     demandMultiplier × dayFactor, × the spike only once it is announced (d ≥ startDay − warningDays), ×
+     forecastFactor (in this order). Days past the horizon reuse its last day. Φ⁻¹ is Acklam's rational
+     approximation (`norm_ppf`).
    - P0: S = 1.2 × L × the mean of the last min(d + 1, 28) days' SALES (day 0: P50_0 × 0.8, the censored view).
    - Order = round_to_case(S − on hand − on order, casePack); the manual order replaces it on its day.
+   - Late deliveries (only when lateProbability p > 0 and the order is positive): the order lands on d + L + 1
+     instead of d + L. Deterministic mode: exactly that share of orders, i.e. the n-th order placed (n = 0, 1, …)
+     is late when floor((n + 1) p) > floor(n p). Monte Carlo mode: late when one more draw next() < p (drawn after
+     the lead-time draw). With p = 0 nothing is drawn, so every other result is unchanged.
    - Shelf-life guard (AI only): the order never exceeds Σ μ̂ over its sellable days (d + L … d + L +
      shelfLifeDays − minRemainingShelfLifeDays − 1) minus the stock already held and on order.
 6. *Cost:* holding += on hand at close × holdingCostPerUnitDayAED.
@@ -115,7 +123,8 @@ class Batch:
 
 def _scenario_defaults(s: dict) -> dict:
     return {"demandMultiplier": 1.0, "spike": None, "policy": "AI", "tau": None, "supplierIndex": 0,
-            "leadTimeMultiplier": 1.0, "manualOrder": None} | s
+            "leadTimeMultiplier": 1.0, "manualOrder": None, "dayFactors": None, "forecastFactor": 1.0,
+            "lateProbability": 0.0} | s
 
 
 def run_engine(engine: dict, scenario: dict, seed: int | None = None) -> dict:
@@ -135,6 +144,12 @@ def run_engine(engine: dict, scenario: dict, seed: int | None = None) -> dict:
 
     def quantile(day: int) -> dict:
         return q[min(day, horizon - 1)]
+
+    def day_factor(day: int) -> float:
+        factors, i = sc["dayFactors"], min(day, horizon - 1)
+        return float(factors[i]) if factors is not None and i < len(factors) and factors[i] is not None else 1.0
+
+    orders_placed = 0
 
     def sigma(day: int) -> float:
         p10, p90 = quantile(day)["p10"], quantile(day)["p90"]
@@ -160,7 +175,7 @@ def run_engine(engine: dict, scenario: dict, seed: int | None = None) -> dict:
         got = pipeline.pop(d, 0)
         if got:
             batches.append(Batch(got, d + shelf - 1))
-        mu = quantile(d)["p50"] * sc["demandMultiplier"] * spike_factor(d)
+        mu = quantile(d)["p50"] * sc["demandMultiplier"] * day_factor(d) * spike_factor(d)
         if rng is None:
             demand = round_half_up(mu)
         else:
@@ -193,8 +208,8 @@ def run_engine(engine: dict, scenario: dict, seed: int | None = None) -> dict:
             else:
                 # plan[j - 1] is the planning forecast for day d + j; the order covers d + 1 … d + L and can be
                 # sold from its arrival day d + L for `sellable` days.
-                plan = [quantile(d + j)["p50"] * sc["demandMultiplier"] * spike_factor(d + j, d)
-                        for j in range(1, lead + sellable)]
+                plan = [quantile(d + j)["p50"] * sc["demandMultiplier"] * day_factor(d + j) * spike_factor(d + j, d)
+                        * sc["forecastFactor"] for j in range(1, lead + sellable)]
                 mu_sum = sum(plan[:lead])
                 var = sum((sigma(d + j) * plan[j - 1]) ** 2 for j in range(1, lead + 1))
                 level = mu_sum + z_tau * math.sqrt(var)
@@ -204,7 +219,11 @@ def run_engine(engine: dict, scenario: dict, seed: int | None = None) -> dict:
             if manual is not None and manual["day"] == d:
                 order = int(manual["qty"])
             if order > 0:
-                pipeline[d + lead] = pipeline.get(d + lead, 0) + order
+                p, late = sc["lateProbability"], 0
+                if p > 0:
+                    late = int(math.floor((orders_placed + 1) * p) > math.floor(orders_placed * p)) if rng is None                         else int(rng() < p)
+                orders_placed += 1
+                pipeline[d + lead + late] = pipeline.get(d + lead + late, 0) + order
         holding = on_hand * engine["holdingCostPerUnitDayAED"]
         rows.append({"day": d, "receipts": got, "demand": demand, "sales": sold, "lost": demand - sold, "waste": waste,
                      "onHandClose": on_hand, "order": order})
@@ -266,6 +285,10 @@ GOLDEN_SCENARIOS = (
     ("slow-supplier-x2", {"policy": "AI", "leadTimeMultiplier": 2.0}),
     ("tau-0.95", {"policy": "AI", "tau": 0.95}),
     ("manual-order", {"policy": "AI", "manualOrder": {"day": 5, "qty": 120}}),
+    ("day-factors", {"policy": "AI", "dayFactors": [1.1] * 7 + [1.35] * 21 + [0.9] * 7}),
+    ("forecast-x0.73", {"policy": "AI", "forecastFactor": 0.7334}),
+    ("late-30pct-ai", {"policy": "AI", "lateProbability": 0.3}),
+    ("late-30pct-p0", {"policy": "P0", "lateProbability": 0.3}),
 )
 
 

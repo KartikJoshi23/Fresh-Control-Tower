@@ -27,13 +27,14 @@ export interface ScenarioState {
   selection: { storeId: string; skuId: string; window: WindowId };
   demand: { demandMultiplier: number; ordersPerDay: number | null };
   spike: { enabled: boolean; date: string; magnitude: number; durationDays: number; warningDays: number };
-  calendar: { ramadanIntensity: number; eidIntensity: number; nationalDay: boolean; summerSeason: boolean };
+  /** Only Ramadan falls inside the engine's 35-day horizon (11 Feb – 17 Mar 2026); the other festivals are in the forecast. */
+  calendar: { ramadanIntensity: number };
   weather: { heatwave: boolean; heatwaveDeltaC: number };
   supply: {
     disruptionPreset: DisruptionPreset;
     seaLeadTimeMultiplier: number;
+    /** Percent of sea and air import deliveries that arrive a day late. */
     reliabilityDrop: number;
-    freightIncrease: number;
     supplierOutage: string | null;
   };
   policy: {
@@ -53,13 +54,12 @@ export const DEFAULT_SCENARIO: ScenarioState = {
   selection: { storeId: "dxb-marina", skuId: "lettuce-romaine", window: "test-2026" },
   demand: { demandMultiplier: 1, ordersPerDay: null },
   spike: { enabled: false, date: "2026-02-21", magnitude: 2.5, durationDays: 3, warningDays: 0 },
-  calendar: { ramadanIntensity: 100, eidIntensity: 100, nationalDay: true, summerSeason: true },
+  calendar: { ramadanIntensity: 100 },
   weather: { heatwave: false, heatwaveDeltaC: 4 },
   supply: {
     disruptionPreset: "none",
     seaLeadTimeMultiplier: 1,
     reliabilityDrop: 0,
-    freightIncrease: 0,
     supplierOutage: null,
   },
   policy: {
@@ -103,15 +103,11 @@ export const FIELDS: readonly Field[] = [
   { path: "spike.durationDays", key: "spl", kind: { type: "number", min: 1, max: 14, integer: true } },
   { path: "spike.warningDays", key: "spw", kind: { type: "number", min: 0, max: 21, integer: true } },
   { path: "calendar.ramadanIntensity", key: "ram", kind: { type: "number", min: 0, max: 150, integer: true } },
-  { path: "calendar.eidIntensity", key: "eid", kind: { type: "number", min: 0, max: 150, integer: true } },
-  { path: "calendar.nationalDay", key: "nd", kind: { type: "boolean" } },
-  { path: "calendar.summerSeason", key: "sum", kind: { type: "boolean" } },
   { path: "weather.heatwave", key: "hw", kind: { type: "boolean" } },
   { path: "weather.heatwaveDeltaC", key: "hwc", kind: { type: "number", min: 1, max: 8 } },
   { path: "supply.disruptionPreset", key: "dis", kind: { type: "enum", options: ["none", "hormuz2026"] } },
   { path: "supply.seaLeadTimeMultiplier", key: "slt", kind: { type: "number", min: 1, max: 3 } },
   { path: "supply.reliabilityDrop", key: "rel", kind: { type: "number", min: 0, max: 50, integer: true } },
-  { path: "supply.freightIncrease", key: "frt", kind: { type: "number", min: 0, max: 100, integer: true } },
   { path: "supply.supplierOutage", key: "out", kind: { type: "id", nullable: true } },
   { path: "policy.policy", key: "pol", kind: { type: "enum", options: ["P0", "P1", "P2", "P3"] } },
   { path: "policy.serviceTarget", key: "tau", kind: { type: "number", min: 0.5, max: 0.99, nullable: true } },
@@ -197,6 +193,16 @@ export interface Preset {
   apply: (state: ScenarioState) => ScenarioState;
 }
 
+/** What the Hormuz 2026 disruption sets in the what-if engine: sea deliveries take twice as long and 30% of import
+ *  deliveries arrive a day late (the backtest's disruption hits sea and air importers only). */
+export const HORMUZ_SUPPLY = { seaLeadTimeMultiplier: 2, reliabilityDrop: 30 } as const;
+
+/** Switch the supply disruption and the delivery settings that come with it (normal settings for "none"). */
+export function withDisruption(state: ScenarioState, preset: DisruptionPreset): ScenarioState {
+  const levers = preset === "hormuz2026" ? HORMUZ_SUPPLY : { seaLeadTimeMultiplier: 1, reliabilityDrop: 0 };
+  return { ...state, supply: { ...state.supply, disruptionPreset: preset, ...levers } };
+}
+
 /** Presets keep the store-SKU and UI settings, set their window and reset everything else, so they never stack. */
 function fresh(state: ScenarioState, window: WindowId): ScenarioState {
   return { ...DEFAULT_SCENARIO, selection: { ...state.selection, window }, ui: state.ui };
@@ -208,11 +214,8 @@ export const PRESETS: readonly Preset[] = [
   {
     id: "ramadan-2026",
     label: "Ramadan 2026",
-    description: "Ramadan from 18 Feb 2026 at the calibrated intensity, with Eid al-Fitr.",
-    apply: (s) => {
-      const base = fresh(s, "ramadan-2026");
-      return { ...base, calendar: { ...base.calendar, ramadanIntensity: 100, eidIntensity: 100 } };
-    },
+    description: "Ramadan 2026 (18 Feb – 19 Mar) with Ramadan demand at the strength seen in the data.",
+    apply: (s) => fresh(s, "ramadan-2026"),
   },
   {
     id: "spike-200-500",
@@ -230,14 +233,8 @@ export const PRESETS: readonly Preset[] = [
   {
     id: "hormuz-2026",
     label: "Hormuz 2026",
-    description: "The 2026 Strait of Hormuz disruption (Mar–May): sea and air imports take longer and arrive on time less often.",
-    apply: (s) => {
-      const base = fresh(s, "hormuz");
-      return {
-        ...base,
-        supply: { ...base.supply, disruptionPreset: "hormuz2026", seaLeadTimeMultiplier: 2, reliabilityDrop: 30 },
-      };
-    },
+    description: "The 2026 Strait of Hormuz disruption (Mar–May): sea deliveries take twice as long and 30% of sea and air import deliveries arrive a day late.",
+    apply: (s) => withDisruption(fresh(s, "hormuz"), "hormuz2026"),
   },
   {
     id: "heatwave",
@@ -264,15 +261,19 @@ export function activeChips(state: ScenarioState): string[] {
   const chips: string[] = [];
   const d = DEFAULT_SCENARIO;
   if (state.selection.window !== d.selection.window) chips.push(`Window: ${WINDOW_LABELS[state.selection.window].replace(/ \(.*\)$/, "")}`);
-  if (state.calendar.ramadanIntensity !== d.calendar.ramadanIntensity) chips.push(`Ramadan ${state.calendar.ramadanIntensity}%`);
-  if (state.calendar.eidIntensity !== d.calendar.eidIntensity) chips.push(`Eid ${state.calendar.eidIntensity}%`);
+  if (state.calendar.ramadanIntensity !== d.calendar.ramadanIntensity) chips.push(`Ramadan effect ${state.calendar.ramadanIntensity}%`);
   if (state.demand.demandMultiplier !== 1) chips.push(`Demand ${state.demand.demandMultiplier}×`);
   if (state.demand.ordersPerDay !== null) chips.push(`${state.demand.ordersPerDay} units/day`);
   if (state.spike.enabled) {
     const w = state.spike.warningDays;
     chips.push(`Spike ${state.spike.magnitude}×${w > 0 ? `, ${w} ${w === 1 ? "day's" : "days'"} warning` : ""}`);
   }
-  if (state.supply.disruptionPreset === "hormuz2026") chips.push("Hormuz disruption");
+  const hormuz = state.supply.disruptionPreset === "hormuz2026";
+  if (hormuz) chips.push("Hormuz disruption");
+  const sea = state.supply.seaLeadTimeMultiplier;
+  if (sea !== (hormuz ? HORMUZ_SUPPLY.seaLeadTimeMultiplier : 1)) chips.push(`Sea deliveries ${sea.toFixed(1)}× normal time`);
+  const late = state.supply.reliabilityDrop;
+  if (late !== (hormuz ? HORMUZ_SUPPLY.reliabilityDrop : 0)) chips.push(`${late}% of import deliveries late`);
   if (state.supply.supplierOutage) chips.push(`Outage: ${state.supply.supplierOutage}`);
   if (state.weather.heatwave) chips.push(`Heatwave +${state.weather.heatwaveDeltaC} °C`);
   if (state.policy.policy !== d.policy.policy) chips.push(`Ordering: ${policyName(state.policy.policy)}`);

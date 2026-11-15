@@ -15,7 +15,7 @@ import { prefersReducedMotion } from "@/components/motion/reducedMotion";
 
 import { NumberField, Select, Slider, Toggle } from "@/components/ui/controls";
 import { useArtefact } from "@/lib/data/hooks";
-import { matchingPreset, PRESETS, WINDOW_LABELS, WINDOWS } from "@/lib/state/scenario";
+import { matchingPreset, PRESETS, WINDOW_LABELS, WINDOWS, withDisruption } from "@/lib/state/scenario";
 import { useScenario, useScenarioStore } from "@/lib/state/scenarioStore";
 import { POLICY_NAME } from "@/lib/labels";
 
@@ -74,6 +74,7 @@ function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () =>
   const set = useScenarioStore((s) => s.set);
   const applyPreset = useScenarioStore((s) => s.applyPreset);
   const reset = useScenarioStore((s) => s.reset);
+  const replace = useScenarioStore((s) => s.replace);
   const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -116,7 +117,9 @@ function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () =>
         <div>
           <p className="eyebrow"><span className="eyebrow-dot" aria-hidden="true" />What-if controls</p>
           <h2 id="scenario-title" className="console-title">Scenario Console</h2>
-          <p className="text-ink-muted text-sm">Every page reads this scenario. It is saved in the link, so you can share it.</p>
+          <p className="text-ink-muted text-sm">The store, item, period, ordering method and supply conditions also change the other pages.
+            The what-if settings (demand, spike, Ramadan, weather and deliveries) recalculate the Scenario Studio.
+            Everything is saved in the link, so you can share it.</p>
         </div>
         <div className="flex gap-2">
           <button type="button" className="ghost-button" onClick={reset}><RotateCcw aria-hidden="true" size={14} /> Reset</button>
@@ -156,12 +159,8 @@ function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () =>
             disabled={!spike.enabled} format={(v) => `${v} ${v === 1 ? "day" : "days"}`} onChange={(v) => set("spike.warningDays", v)} />
         </Group>
         <Group title="Calendar">
-          <Slider label="Ramadan effect on demand" value={calendar.ramadanIntensity} min={0} max={150} step={5} format={pct}
-            onChange={(v) => set("calendar.ramadanIntensity", v)} />
-          <Slider label="Eid effect on demand" value={calendar.eidIntensity} min={0} max={150} step={5} format={pct}
-            onChange={(v) => set("calendar.eidIntensity", v)} />
-          <Toggle label="National Day" checked={calendar.nationalDay} onChange={(v) => set("calendar.nationalDay", v)} />
-          <Toggle label="Summer season" checked={calendar.summerSeason} onChange={(v) => set("calendar.summerSeason", v)} />
+          <Slider label="Ramadan effect on demand (100% = as seen in the data)" value={calendar.ramadanIntensity} min={0} max={150} step={5}
+            format={pct} onChange={(v) => set("calendar.ramadanIntensity", v)} />
         </Group>
         <Group title="Weather">
           <Toggle label="Heatwave" checked={weather.heatwave} onChange={(v) => set("weather.heatwave", v)} />
@@ -171,13 +170,11 @@ function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () =>
         <Group title="Supply">
           <Select label="Supply disruption" value={supply.disruptionPreset}
             options={[{ value: "none", label: "None" }, { value: "hormuz2026", label: "Hormuz 2026" }] as const}
-            onChange={(v) => set("supply.disruptionPreset", v)} />
+            onChange={(v) => replace(withDisruption(scenario, v))} />
           <Slider label="Sea delivery time (× normal)" value={supply.seaLeadTimeMultiplier} min={1} max={3} step={0.1}
             format={(v) => `${v.toFixed(1)}×`} onChange={(v) => set("supply.seaLeadTimeMultiplier", v)} />
-          <Slider label="On-time deliveries drop by" value={supply.reliabilityDrop} min={0} max={50} step={5}
-            format={(v) => `${v} points`} onChange={(v) => set("supply.reliabilityDrop", v)} />
-          <Slider label="Freight cost increase" value={supply.freightIncrease} min={0} max={100} step={5}
-            format={(v) => `+${v}%`} onChange={(v) => set("supply.freightIncrease", v)} />
+          <Slider label="Sea and air import deliveries a day late" value={supply.reliabilityDrop} min={0} max={50} step={5}
+            format={pct} onChange={(v) => set("supply.reliabilityDrop", v)} />
         </Group>
         <Group title="Ordering">
           <Select label="Ordering method" value={policy.policy} options={POLICIES} onChange={(v) => set("policy.policy", v)} />
@@ -188,6 +185,7 @@ function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () =>
               format={(v) => `${Math.round(v * 100)}%`} onChange={(v) => set("policy.serviceTarget", v)} />
           ) : null}
           <Toggle label="Learn from recovered demand (not only till sales)" checked={policy.useDemandRecovery}
+            description="Off: the AI learns only from till sales, which miss the demand lost to empty shelves, so it orders too little"
             onChange={(v) => set("policy.useDemandRecovery", v)} />
           <Toggle label="Send expiring food to food rescue" checked={policy.foodRescue} onChange={(v) => set("policy.foodRescue", v)} />
         </Group>

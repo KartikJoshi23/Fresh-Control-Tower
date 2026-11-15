@@ -64,7 +64,7 @@ function StockoutStrip({ rows }: { rows: Row[] }) {
   const ramp = ["var(--seq-100)", "var(--seq-200)", "var(--seq-300)", "var(--seq-400)", "var(--seq-500)", "var(--seq-600)", "var(--seq-700)"];
   const colour = (h: number) => (h === 0 ? "rgba(255,255,255,0.05)" : ramp[Math.min(6, Math.floor((h / 16) * 7))]);
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Stockout heat strip (scrolls sideways)">
       <svg width={weeks * (cell + 2) + 30} height={7 * (cell + 2) + 4} role="img" aria-label="Stockout hours per day, weeks by weekday">
         {["Mon", "", "Wed", "", "Fri", "", "Sun"].map((d, i) => (
           <text key={i} x={0} y={i * (cell + 2) + cell - 2} fill="var(--ink-muted)" fontSize={10}>{d}</text>

@@ -1,0 +1,1009 @@
+{
+  "tolerance": 1e-06,
+  "entropyFromMetrics": [
+    0.006676838,
+    0.023958755,
+    0.000306625,
+    0.006810093,
+    0.04787696,
+    0.434743678,
+    0.479627051
+  ],
+  "compatible": {
+    "leafy-greens": [
+      "sup-local-farm",
+      "sup-gcc-truck",
+      "sup-air-import"
+    ],
+    "berries": [
+      "sup-air-europe",
+      "sup-air-import"
+    ],
+    "stone-fruit": [
+      "sup-sea-europe",
+      "sup-sea-import",
+      "sup-sea-khorfakkan",
+      "sup-air-europe"
+    ],
+    "salad-vegetables": [
+      "sup-local-farm",
+      "sup-gcc-truck",
+      "sup-gcc-ksa"
+    ],
+    "dairy": [
+      "sup-gcc-ksa",
+      "sup-gcc-truck"
+    ],
+    "bakery": [
+      "sup-local-bakery"
+    ],
+    "poultry": [
+      "sup-gcc-ksa",
+      "sup-gcc-truck"
+    ],
+    "dates": [
+      "sup-gcc-ksa",
+      "sup-gcc-truck"
+    ],
+    "fruit": [
+      "sup-sea-import",
+      "sup-sea-khorfakkan",
+      "sup-sea-europe",
+      "sup-air-import"
+    ]
+  },
+  "cases": [
+    {
+      "scenario": null,
+      "weightMode": "ahp",
+      "closeness": [
+        0.863930113,
+        0.952333982,
+        0.861475953,
+        0.844584521,
+        0.420470664,
+        0.776580769,
+        0.22016149,
+        0.67258021,
+        0.664916558
+      ],
+      "ranks": [
+        2,
+        1,
+        3,
+        4,
+        8,
+        5,
+        9,
+        6,
+        7
+      ],
+      "sensitivity": [
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            2,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            2,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            2,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            2,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            2,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": null,
+      "weightMode": "entropy",
+      "closeness": [
+        0.954448039,
+        0.999423915,
+        0.976620242,
+        0.981040004,
+        0.653846265,
+        0.985298928,
+        0.509510408,
+        0.564590378,
+        0.457057629
+      ],
+      "ranks": [
+        5,
+        1,
+        4,
+        3,
+        6,
+        2,
+        8,
+        7,
+        9
+      ],
+      "sensitivity": [
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            8,
+            7,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            9,
+            7,
+            8
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            7,
+            2,
+            9,
+            6,
+            8
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hormuz2026",
+      "weightMode": "ahp",
+      "closeness": [
+        0.892441077,
+        0.963236698,
+        0.889882113,
+        0.894211126,
+        0.219626711,
+        0.674738806,
+        0.174800221,
+        0.537212861,
+        0.534791047
+      ],
+      "ranks": [
+        3,
+        1,
+        4,
+        2,
+        8,
+        5,
+        9,
+        6,
+        7
+      ],
+      "sensitivity": [
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            4,
+            3,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            4,
+            1,
+            3,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            4,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            3,
+            4,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            4,
+            1,
+            3,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            4,
+            3,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            4,
+            1,
+            3,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            4,
+            3,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            2,
+            1,
+            4,
+            3,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            4,
+            1,
+            3,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            4,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            4,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            4,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            3,
+            1,
+            4,
+            2,
+            8,
+            5,
+            9,
+            6,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "hormuz2026",
+      "weightMode": "entropy",
+      "closeness": [
+        0.951597073,
+        0.999386168,
+        0.9758133,
+        0.983537261,
+        0.578112501,
+        0.98613148,
+        0.546164428,
+        0.519623365,
+        0.406257972
+      ],
+      "ranks": [
+        5,
+        1,
+        4,
+        3,
+        6,
+        2,
+        7,
+        8,
+        9
+      ],
+      "sensitivity": [
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            7,
+            2,
+            8,
+            6,
+            9
+          ]
+        },
+        {
+          "change": -0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            7,
+            2,
+            8,
+            6,
+            9
+          ]
+        },
+        {
+          "change": 0.2,
+          "topUnchanged": true,
+          "ranks": [
+            5,
+            1,
+            4,
+            3,
+            6,
+            2,
+            7,
+            8,
+            9
+          ]
+        }
+      ]
+    }
+  ]
+}

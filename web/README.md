@@ -90,3 +90,37 @@ The six non-Overview routes hold `PagePlaceholder` stand-ins from Part 5. Each p
 **Tests:**
 - `tests/shell.test.ts` (Vitest): the URL codec, presets, chips, navigation and loader states.
 - `e2e/shell.spec.ts` (Playwright): the top bar at 1440 and 375 px, Console → URL → links, the placeholder banner, contract errors as panels, zero console errors.
+
+## The in-browser engine (Part 7)
+
+`src/lib/engine/engine.ts` is a line-for-line port of `pipeline/freshpipe/engine_reference.py`; the Python
+docstring is the specification. `tests/engine.test.ts` checks all golden cases in
+`tests/fixtures/golden/engine_cases.json` (deterministic and Monte Carlo) to 1e-6. If you change one side,
+regenerate the golden file (`python -m freshpipe.export`) and keep both in step.
+
+- `scenario.ts` maps the shared scenario store onto engine inputs (spike date → planning day, heatwave
+  ×1.0139 per °C from the real-data calibration, Hormuz → sea lead-time multiplier, P0 vs AI).
+- `useEngine` runs `compute.ts` in a Web Worker (`worker.ts`) and falls back to the main thread if the worker
+  cannot start. The page shows the recompute time and its p95.
+- `surge.ts` ports `plan_surge` (the Surge Planner) and shares its worked example with the Python test.
+
+## Live Ops, Sourcing and the Route Globe (Part 8)
+
+- `live/feed.json` (1.25 MB, 72 KB gzipped) is only requested by `/live`. The clock is simulated; label it so.
+- `src/lib/mcdm/mcdm.ts` ports AHP, entropy and TOPSIS from `pipeline/freshpipe/mcdm.py`. Its parity file
+  `tests/fixtures/golden/mcdm_cases.json` is written by `python pipeline/run.py --step mcdm` from `mcdm.json` itself.
+- The Route Globe is the only WebGL scene. `RouteGlobe3D.tsx` is loaded with `next/dynamic` (`ssr: false`), so
+  three.js stays out of every other route. Without WebGL, or with reduced motion, the flat SVG map is shown.
+- `node scripts/js-budget.mjs` (after `npm run build`) prints the initial gzip JS per route against the 250 KB
+  target and 300 KB limit, and lists the lazy chunks.
+
+## Impact, Roadmap and the QA sweep (Part 9)
+
+- `/impact` reads `impact.json`, `frontier.json` and `backtest.json`. Dragging the frontier marker (or the slider) sets
+  `policy.serviceTarget`, so the choice carries to the Scenario Studio. The tornado is illustrative and labelled so.
+- `/roadmap` quotes only results from the artefacts; rollout costs are deliberately not estimated.
+- `npx playwright test e2e/qa.spec.ts` checks every route at 375, 768 and 1440 px (no horizontal scroll, no console
+  errors) and runs axe (WCAG 2.1 A/AA; serious and critical issues fail). Lighthouse is not a dependency: run it in
+  Chrome DevTools on the deployed site and record the scores in PROGRESS.md.
+- Anything with `position: absolute` (including `.sr-only` text) inside a scrolling table needs a positioned parent,
+  or it escapes the scroll box and widens the page on phones.

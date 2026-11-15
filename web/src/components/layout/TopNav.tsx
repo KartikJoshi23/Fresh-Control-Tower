@@ -2,7 +2,7 @@
 
 /**
  * TopNav (docs/design-system.md §2, §6): the ONLY navigation. Horizontal top bar, sticky, 64 px.
- * Logo + 7 links + the Scenario button + active-scenario chips. Below 768 px the links move into a
+ * Logo + 7 links + the Scenario button + active-scenario chips. Below 1024 px the links move into a
  * drop-down sheet from the top. There is no sidebar anywhere.
  */
 import { Menu, SlidersHorizontal, X } from "lucide-react";
@@ -42,12 +42,13 @@ export function TopNav() {
   return (
     <header className="top-bar" data-testid="top-bar">
       <div className="top-bar-inner">
-        <Link href={withQuery("/", query)} className="brand" aria-label="Fresh Control Tower: Overview">
+        <Link href={withQuery("/", query)} className="brand">
           <span className="brand-mark" aria-hidden="true" />
           <span className="brand-text">
             <span className="text-ink font-semibold">Fresh Control Tower</span>
             <span className="text-ink-muted text-xs">Fictional UAE operator</span>
           </span>
+          <span className="sr-only"> (Overview)</span>
         </Link>
 
         <nav aria-label="Main" className="nav-desktop">

@@ -38,3 +38,57 @@ describe("Hidden Demand Reveal", () => {
     expect(t).toEqual({ hiddenUnits: 8, hiddenAED: 20, recoveredShare: 7 / 8 });
   });
 });
+
+describe("Live Ops approvals", async () => {
+  const { approvalOf } = await import("@/app/live/LiveOps");
+  const po = { id: "po-1", createdAt: "2026-03-10T06:00", supplierId: "s", storeId: "a", skuId: "b", qty: 10, etaAt: "2026-03-11T06:00", reason: "r" };
+  it("approve-exceptions keeps routine orders automatic and holds flagged ones", () => {
+    expect(approvalOf({ ...po, approval: "auto" }, "exceptions", {})).toBe("auto");
+    expect(approvalOf({ ...po, approval: "needs_approval" }, "exceptions", {})).toBe("needs_approval");
+  });
+  it("auto-within-guardrails blocks the flagged orders", () => {
+    expect(approvalOf({ ...po, approval: "needs_approval" }, "auto", {})).toBe("blocked");
+    expect(approvalOf({ ...po, approval: "auto" }, "auto", {})).toBe("auto");
+  });
+  it("manual holds every order until a person decides", () => {
+    expect(approvalOf({ ...po, approval: "auto" }, "manual", {})).toBe("needs_approval");
+    expect(approvalOf({ ...po, approval: "auto" }, "manual", { "po-1": "rejected" })).toBe("rejected");
+  });
+});
+
+describe("Impact helpers", async () => {
+  const { equalAvailability, tornado, waterfallBars } = await import("@/app/impact/Impact");
+  const { FrontierFile, ImpactFile } = await import("@/lib/contracts");
+  const { readFileSync } = await import("node:fs");
+  const read = (f: string) => JSON.parse(readFileSync(new URL(`../public/data/${f}`, import.meta.url), "utf-8"));
+  const frontier = FrontierFile.parse(read("frontier.json"));
+  const impact = ImpactFile.parse(read("impact.json"));
+
+  it("the waterfall's floating bars end at the AI's total", () => {
+    const bars = waterfallBars(impact.waterfall);
+    const deltas = bars.filter((b) => b.kind === "delta");
+    expect(deltas.at(-1)!.to).toBeCloseTo(impact.waterfall.at(-1)!.valueAED, 0);
+    deltas.forEach((b, i) => expect(b.from).toBeCloseTo(i === 0 ? impact.waterfall[0].valueAED : deltas[i - 1].to, 6));
+  });
+
+  it("the tornado is centred on the base saving and each bar swings by ±pct of its component", () => {
+    const t = tornado(impact.waterfall, 0.25);
+    expect(t.saving).toBeCloseTo(impact.waterfall[0].valueAED - impact.waterfall.at(-1)!.valueAED, 0);
+    for (const b of t.bars) {
+      const v = impact.waterfall.find((r) => r.id === b.id)!.valueAED;
+      expect(Math.abs(b.high - b.low)).toBeCloseTo(Math.abs(v) * 0.5, 6);
+    }
+  });
+
+  it("equal availability: the AI's lowest setting matches the legacy rule's best with about 41% less waste", () => {
+    const eq = equalAvailability(frontier, 0.5);
+    expect(Math.abs(eq.gapPts)).toBeLessThan(0.5);
+    expect(eq.wasteChange).toBeLessThan(-35);
+  });
+});
+
+it("the risk register carries all eight risks from plan §14.2", async () => {
+  const { RISKS } = await import("@/app/roadmap/Roadmap");
+  expect(RISKS).toHaveLength(8);
+  expect(RISKS.every((r) => r.mitigation && r.where)).toBe(true);
+});

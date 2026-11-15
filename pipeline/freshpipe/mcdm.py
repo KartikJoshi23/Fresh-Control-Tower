@@ -239,3 +239,34 @@ def ranking(scenario: str = "normal", weights: np.ndarray | None = None) -> dict
     w = np.asarray(weights if weights is not None else ahp(saaty_from_importance(IMPORTANCE))["weights"])
     x = hormuz if scenario == "hormuz2026" else normal
     return {r["id"]: float(s) for r, s in zip(records, topsis(x, w, BENEFIT))}
+
+
+def apply_scenario(body: dict, scenario_id: str | None) -> np.ndarray:
+    """The (suppliers × criteria) matrix of an mcdm.json body, with a scenario's adjustments applied."""
+    ids = [c["id"] for c in body["criteria"]]
+    x = np.array([[s["metrics"][c] for c in ids] for s in body["suppliers"]], dtype=float)
+    scenario = next((sc for sc in body["scenarios"] if sc["id"] == scenario_id), None)
+    if scenario:
+        rows = {s["id"]: i for i, s in enumerate(body["suppliers"])}
+        for adj in scenario["adjustments"]:
+            i, j = rows[adj["supplierId"]], ids.index(adj["criterionId"])
+            x[i, j] = x[i, j] * adj["value"] if adj["op"] == "multiply" else x[i, j] + adj["value"]
+    return x
+
+
+def golden_cases(body: dict) -> dict[str, object]:
+    """Test-only parity cases for the browser's TOPSIS (web/tests/fixtures/golden/mcdm_cases.json, P8-02)."""
+    benefit = np.array([c["type"] == "benefit" for c in body["criteria"]])
+    cases = []
+    for scenario in (None, *[sc["id"] for sc in body["scenarios"]]):
+        x = apply_scenario(body, scenario)
+        for mode, w in (("ahp", body["ahp"]["weights"]), ("entropy", body["entropyWeights"])):
+            closeness = topsis(x, np.asarray(w), benefit)
+            cases.append({"scenario": scenario, "weightMode": mode, "closeness": closeness.round(9).tolist(),
+                          "ranks": ranks(closeness).tolist(),
+                          "sensitivity": [{"change": r["change"], "topUnchanged": r["topUnchanged"], "ranks": r["ranks"]}
+                                          for r in sensitivity(x, np.asarray(w), benefit)]})
+    from .optimise import COMPATIBLE
+
+    return {"tolerance": 1e-6, "entropyFromMetrics": entropy_weights(apply_scenario(body, None)).round(9).tolist(),
+            "compatible": {k: list(v) for k, v in COMPATIBLE.items()}, "cases": cases}

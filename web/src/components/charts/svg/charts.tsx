@@ -7,7 +7,7 @@
  */
 import { scaleBand, scaleLinear, scaleTime } from "d3-scale";
 import { area, line } from "d3-shape";
-import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { ChartTooltip } from "@/components/charts/primitives/ChartTooltip";
 import { CHART } from "@/components/charts/primitives/theme";
@@ -25,7 +25,11 @@ export function useWidth<T extends HTMLElement>(fallback = 640) {
 }
 
 const fmt = (v: number) => (Math.abs(v) >= 100 ? Math.round(v).toLocaleString("en-US") : v.toLocaleString("en-US", { maximumFractionDigits: 1 }));
-const parse = (d: string) => new Date(`${d}T00:00:00`);
+/** Dates are "YYYY-MM-DD" (daily) or "YYYY-MM-DDTHH:mm" (hourly, Gulf local time as written). */
+const parse = (d: string) => new Date(d.includes("T") ? d : `${d}T00:00:00`);
+const tickLabel = (t: Date, hourly: boolean) => hourly
+  ? `${t.toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ${String(t.getHours()).padStart(2, "0")}:00`
+  : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" });
 
 export interface TimeSeries {
   id: string;
@@ -94,7 +98,7 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
         ))}
         {ticks.map((t) => (
           <text key={+t} x={x(t)} y={height - 8} textAnchor="middle" fill={CHART.inkMuted} fontSize={11}>
-            {t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" })}
+            {tickLabel(t, dates[0].includes("T"))}
           </text>
         ))}
         {band ? <path d={bandPath} fill={band.color} opacity={0.18} /> : null}
@@ -106,7 +110,8 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
       </svg>
       {hover !== null ? (
         <div className="chart-tip-anchor" style={{ left: Math.min(width - 190, Math.max(0, x(parse(dates[hover])) + 12)) }}>
-          <ChartTooltip title={parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+          <ChartTooltip title={dates[hover].includes("T") ? `${parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} ${dates[hover].slice(11)}`
+            : parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
             rows={[
               ...series.map((s) => ({ label: s.label, value: s.values[hover] === null ? "—" : formatY(s.values[hover] as number), color: s.color })),
               ...(band && band.lo[hover] !== null ? [{ label: band.label, value: `${formatY(band.lo[hover] as number)}–${formatY(band.hi[hover] as number)}`, color: band.color }] : []),
@@ -167,9 +172,11 @@ export interface XYCurve {
 }
 
 /** Curves on two linear axes (for example availability vs waste), with an optional "you are here" marker. */
-export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabel, formatX = fmt, formatY = fmt }: {
+export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabel, formatX = fmt, formatY = fmt, pick }: {
   curves: XYCurve[]; xLabel: string; yLabel: string; height?: number; ariaLabel: string;
   marker?: { x: number; y: number; label: string; color: string }; formatX?: (v: number) => string; formatY?: (v: number) => string;
+  /** Drag (or click) along one curve: reports the index of the nearest point. Pair it with an accessible control. */
+  pick?: { curveId: string; onIndex: (index: number) => void };
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const m = { t: 12, r: 16, b: 40, l: 52 };
@@ -178,9 +185,28 @@ export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabe
   const x = scaleLinear().domain([Math.min(...xs), Math.max(...xs)]).nice().range([m.l, width - m.r]);
   const y = scaleLinear().domain([Math.min(0, ...ys), Math.max(...ys) * 1.1]).nice().range([height - m.b, m.t]);
   const path = (pts: XYCurve["points"]) => line<XYCurve["points"][number]>().x((p) => x(p.x)).y((p) => y(p.y))([...pts].sort((a, b) => a.x - b.x)) ?? "";
+  const [dragging, setDragging] = useState(false);
+  const nearest = (e: PointerEvent<SVGSVGElement>) => {
+    const curve = curves.find((c) => c.id === pick?.curveId);
+    if (!curve || !pick) return;
+    const box = e.currentTarget.getBoundingClientRect();
+    const px = e.clientX - box.left;
+    const py = e.clientY - box.top;
+    let best = 0;
+    curve.points.forEach((p, i) => {
+      const d = (x(p.x) - px) ** 2 + (y(p.y) - py) ** 2;
+      const b = (x(curve.points[best].x) - px) ** 2 + (y(curve.points[best].y) - py) ** 2;
+      if (d < b) best = i;
+    });
+    pick.onIndex(best);
+  };
   return (
     <div ref={ref} className="w-full">
-      <svg width={width} height={height} role="img" aria-label={ariaLabel} className="chart-svg">
+      <svg width={width} height={height} role="img" aria-label={ariaLabel} className="chart-svg"
+        style={pick ? { cursor: dragging ? "grabbing" : "grab", touchAction: "none" } : undefined}
+        onPointerDown={pick ? (e) => { e.currentTarget.setPointerCapture(e.pointerId); setDragging(true); nearest(e); } : undefined}
+        onPointerMove={pick ? (e) => { if (dragging) nearest(e); } : undefined}
+        onPointerUp={pick ? () => setDragging(false) : undefined}>
         {y.ticks(4).map((t) => (
           <g key={t}>
             <line x1={m.l} x2={width - m.r} y1={y(t)} y2={y(t)} stroke={CHART.grid} />

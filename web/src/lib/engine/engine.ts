@@ -4,6 +4,7 @@
  * engine_cases.json) is tested to 1e-6 in tests/engine.test.ts. Do not change one side without the other.
  */
 import type { SeriesFile } from "@/lib/contracts";
+import { daysBetween } from "@/lib/format";
 
 export type EngineParams = SeriesFile["engine"];
 
@@ -92,10 +93,6 @@ export const roundHalfUp = (x: number) => Math.floor(x + 0.5);
 export const roundToCase = (raw: number, casePack: number) => Math.floor(Math.max(raw, 0) / casePack + 0.5) * casePack;
 const round = (x: number, n: number) => Math.round(x * 10 ** n) / 10 ** n;
 
-function dayIndex(start: string, date: string): number {
-  return Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86_400_000);
-}
-
 export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: number | null = null): { rows: DayRow[]; kpis: Kpis } {
   const sc = { demandMultiplier: 1, spike: null, policy: "AI", tau: null, supplierIndex: 0, leadTimeMultiplier: 1, manualOrder: null, ...scenario };
   const q = engine.horizonQuantiles;
@@ -122,7 +119,7 @@ export function runEngine(engine: EngineParams, scenario: EngineScenario, seed: 
     engine.initialOnHand > 0 ? [{ qty: roundHalfUp(engine.initialOnHand), expires: shelf - 1 }] : [];
   const pipeline = new Map<number, number>();
   for (const o of engine.onOrder) {
-    const day = dayIndex(engine.planningStart, o.arrivalDate);
+    const day = daysBetween(engine.planningStart, o.arrivalDate);
     if (day >= 0) pipeline.set(day, (pipeline.get(day) ?? 0) + roundHalfUp(o.qty));
   }
   const salesHist: number[] = [];

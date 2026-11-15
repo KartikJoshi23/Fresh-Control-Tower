@@ -6,6 +6,7 @@
  * scenario can be shared as a link. Each field has a short, stable query key and a parser that clamps
  * values to their allowed range; unknown or invalid parameters are ignored, never thrown.
  */
+import { policyName, serviceTargetLabel } from "@/lib/labels";
 
 export type PolicyId = "P0" | "P1" | "P2" | "P3";
 export type DisruptionPreset = "none" | "hormuz2026";
@@ -216,7 +217,7 @@ export const PRESETS: readonly Preset[] = [
   {
     id: "spike-200-500",
     label: "200→500 Spike",
-    description: "Orders jump from 200 to 500 a day (2.5×) for 3 days, unannounced.",
+    description: "Orders jump from 200 to 500 units a day (2.5×) for 3 days, with no warning.",
     apply: (s) => {
       const base = fresh(s, "stockpiling");
       return {
@@ -229,7 +230,7 @@ export const PRESETS: readonly Preset[] = [
   {
     id: "hormuz-2026",
     label: "Hormuz 2026",
-    description: "Sea and air imports through the Hormuz disruption (Mar–May 2026): slower, less reliable.",
+    description: "The 2026 Strait of Hormuz disruption (Mar–May): sea and air imports take longer and arrive on time less often.",
     apply: (s) => {
       const base = fresh(s, "hormuz");
       return {
@@ -266,15 +267,16 @@ export function activeChips(state: ScenarioState): string[] {
   if (state.calendar.ramadanIntensity !== d.calendar.ramadanIntensity) chips.push(`Ramadan ${state.calendar.ramadanIntensity}%`);
   if (state.calendar.eidIntensity !== d.calendar.eidIntensity) chips.push(`Eid ${state.calendar.eidIntensity}%`);
   if (state.demand.demandMultiplier !== 1) chips.push(`Demand ${state.demand.demandMultiplier}×`);
-  if (state.demand.ordersPerDay !== null) chips.push(`${state.demand.ordersPerDay}/day`);
+  if (state.demand.ordersPerDay !== null) chips.push(`${state.demand.ordersPerDay} units/day`);
   if (state.spike.enabled) {
-    chips.push(`Spike ${state.spike.magnitude}×${state.spike.warningDays > 0 ? `, ${state.spike.warningDays} d warning` : ""}`);
+    const w = state.spike.warningDays;
+    chips.push(`Spike ${state.spike.magnitude}×${w > 0 ? `, ${w} ${w === 1 ? "day's" : "days'"} warning` : ""}`);
   }
   if (state.supply.disruptionPreset === "hormuz2026") chips.push("Hormuz disruption");
   if (state.supply.supplierOutage) chips.push(`Outage: ${state.supply.supplierOutage}`);
   if (state.weather.heatwave) chips.push(`Heatwave +${state.weather.heatwaveDeltaC} °C`);
-  if (state.policy.policy !== d.policy.policy) chips.push(`Policy ${state.policy.policy}`);
-  if (state.policy.serviceTarget !== null) chips.push(`τ ${state.policy.serviceTarget}`);
-  if (!state.policy.useDemandRecovery) chips.push("No recovery");
+  if (state.policy.policy !== d.policy.policy) chips.push(`Ordering: ${policyName(state.policy.policy)}`);
+  if (state.policy.serviceTarget !== null) chips.push(serviceTargetLabel(state.policy.serviceTarget));
+  if (!state.policy.useDemandRecovery) chips.push("Learns from till sales only");
   return chips;
 }

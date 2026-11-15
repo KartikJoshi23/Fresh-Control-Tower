@@ -4,14 +4,14 @@
 import type { Provenance } from "@/lib/contracts";
 
 export const PROVENANCE: Record<Provenance, { label: string; glyph: string; meaning: string }> = {
-  REAL: { label: "Real", glyph: "●", meaning: "Measured in a real dataset or an official source." },
+  REAL: { label: "Real", glyph: "●", meaning: "Measured in real data, or taken from an official source." },
   CALIBRATED_SYNTHETIC: {
     label: "Synthetic",
     glyph: "◆",
-    meaning: "Calibrated synthetic data for a fictional operator, built from the real datasets.",
+    meaning: "Realistic simulated data for a fictional retailer, shaped by real datasets.",
   },
-  SCENARIO: { label: "Scenario", glyph: "▲", meaning: "A what-if computed from the scenario you set." },
-  SIMULATED_FEED: { label: "Simulated", glyph: "⟳", meaning: "A replayed hourly feed, not live data." },
-  DERIVED: { label: "Derived", glyph: "∑", meaning: "Real factors applied to synthetic volumes." },
-  PRECOMPUTED: { label: "Precomputed", glyph: "⧗", meaning: "Computed offline by the Python pipeline (models, backtests)." },
+  SCENARIO: { label: "Scenario", glyph: "▲", meaning: "Calculated in your browser from the scenario you set." },
+  SIMULATED_FEED: { label: "Simulated", glyph: "⟳", meaning: "A replay of a simulated hourly feed, not live data." },
+  DERIVED: { label: "Derived", glyph: "∑", meaning: "Real-world factors (for example emissions per kilogram) applied to simulated quantities." },
+  PRECOMPUTED: { label: "Precomputed", glyph: "⧗", meaning: "Calculated in advance by our forecasting and simulation models." },
 };

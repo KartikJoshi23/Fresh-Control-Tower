@@ -134,3 +134,14 @@ regenerate the golden file (`python -m freshpipe.export`) and keep both in step.
   `CHROME_PATH=<playwright chromium> npx lighthouse https://fresh-control-tower.vercel.app/demand/ --preset=desktop`.
   Headless machines without a GPU render the Route Globe in software, so `/sourcing` scores lower there than on a
   phone or laptop with a GPU.
+
+## Units, plain names and chart filters (UX-01)
+
+- **Formats** live in `src/lib/format.ts` and nowhere else:
+  - weights are always kilograms (`fmtKg`: "128,450 kg");
+  - money is `fmtAED`: "AED 7,768" below one million, "AED 2.14 million" above;
+  - dates are day-first (`fmtDate`: "15/11/2026"; chart ticks "15/11" with the year in the axis title).
+  - For money axes, `aedAxis(max)` gives the unit for the title ("AED million") and short ticks.
+- **Plain names** for the ordering policies are in `src/lib/labels.ts` (`policyName`, `POLICY_HELP`). P0–P3, P10/P50/P90 and τ never appear on screen; the data files and the report keep the codes.
+- **Chart filters:** `const filter = useSeriesFilter()`. Pass `filter` to `ChartFrame`, give each legend item the `id` of its series, and draw only `series.filter((s) => filter.isShown(s.id))`. The first click on a name shows only that line, further clicks add or remove lines, and "Show all" resets. Colours never change.
+- **Every chart** needs a y-axis title with its unit (`TimeChart` requires `yLabel`; the x-axis title defaults to the date range) and, where it helps, a `note` in plain words saying how to read it.

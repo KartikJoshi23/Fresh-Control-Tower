@@ -121,7 +121,7 @@ def test_tuning_respects_the_false_alarm_cap() -> None:
     positive = np.zeros(2800, dtype=bool)
     positive[:100] = True
     actual[:100] *= 3.0
-    params, metrics = spikes.tune(actual, expected, positive, n_stores=10, n_days=280)
+    _, metrics = spikes.tune(actual, expected, positive, n_stores=10, n_days=280)
     assert metrics["false_alarms_per_store_week"] <= 1.0 and metrics["detection_rate"] > 0.9
 
 

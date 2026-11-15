@@ -31,14 +31,13 @@ the intuition (about 0.40 at the real median markup) and is checked in a worked 
 
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.stats import norm
 
 from .simulate import OrderBatch, SeriesParams, State, SupplyModel, round_to_case
-from .world import CATEGORIES, SKUS
+from .world import SKUS
 
 Z90 = 1.2815515655446004
 ERROR_CORRELATION = 0.3

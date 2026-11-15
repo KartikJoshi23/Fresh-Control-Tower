@@ -7,15 +7,12 @@
  * - policy: P0 is the legacy rule; P1–P3 run the AI rule (the engine has one store-SKU and no intraday step,
  *   so P2/P3's extra levers show in the precomputed backtests, not here).
  */
+import { daysBetween } from "@/lib/format";
 import type { ScenarioState } from "@/lib/state/scenario";
 
 import type { EngineParams, EngineScenario } from "./engine";
 
 export const PER_DEGREE_C = 1.0139;
-
-export function daysBetween(start: string, date: string): number {
-  return Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86_400_000);
-}
 
 export function demandMultiplier(s: ScenarioState, engine: EngineParams): number {
   const meanP50 = engine.horizonQuantiles.reduce((a, q) => a + q.p50, 0) / engine.horizonQuantiles.length;

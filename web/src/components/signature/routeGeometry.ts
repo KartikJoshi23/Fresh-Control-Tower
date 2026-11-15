@@ -10,8 +10,8 @@ export type Mode = RoutesFile["routes"][number]["mode"];
 export const DASH: Record<Mode, { label: string; svg: string | undefined; dash: number; gap: number }> = {
   local_truck: { label: "Local truck", svg: undefined, dash: 0, gap: 0 },
   truck: { label: "GCC truck", svg: undefined, dash: 0, gap: 0 },
-  sea: { label: "Sea", svg: "8 5", dash: 0.06, gap: 0.04 },
-  air: { label: "Air", svg: "2 4", dash: 0.015, gap: 0.03 },
+  sea: { label: "Ship", svg: "8 5", dash: 0.06, gap: 0.04 },
+  air: { label: "Air freight", svg: "2 4", dash: 0.015, gap: 0.03 },
 };
 
 export interface RouteView {
@@ -56,6 +56,20 @@ export function arc(a: { lat: number; lon: number }, b: { lat: number; lon: numb
     const s = omega < 1e-6 ? [1 - t, t] : [Math.sin((1 - t) * omega) / Math.sin(omega), Math.sin(t * omega) / Math.sin(omega)];
     const r = 1.005 + lift * Math.sin(Math.PI * t);
     out.push([0, 1, 2].map((k) => (s[0] * va[k] + s[1] * vb[k]) * r) as [number, number, number]);
+  }
+  return out;
+}
+
+/** One label per origin; neighbours closer than 2° (Rotterdam and Amsterdam) share a label. */
+export function originLabels(routes: RouteView[]) {
+  const out: { text: string; lat: number; lon: number }[] = [];
+  for (const r of routes) {
+    const o = r.points[0];
+    const text = o.name.split(",")[0].replace(/ \(.*\)/, "");
+    if (text.startsWith("UAE") || out.some((l) => l.text.split(" · ").includes(text))) continue;
+    const near = out.find((l) => Math.abs(l.lat - o.lat) < 2 && Math.abs(l.lon - o.lon) < 2);
+    if (near) near.text = `${near.text} · ${text}`;
+    else out.push({ text, lat: o.lat, lon: o.lon });
   }
   return out;
 }

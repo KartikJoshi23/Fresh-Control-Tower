@@ -10,9 +10,9 @@ import { scaleLinear, scaleTime } from "d3-scale";
 import { area, line } from "d3-shape";
 import { useId, useMemo, useState } from "react";
 
-import { useWidth } from "@/components/charts/svg/charts";
+import { dateAxisTitle, useWidth } from "@/components/charts/svg/charts";
 import { CHART, ENTITY_COLOR } from "@/components/charts/primitives/theme";
-import { fmtAED, fmtInt, fmtShare } from "@/lib/format";
+import { fmtAED, fmtDayMonth, fmtInt, fmtShare, fmtUnits, parseDate as parse } from "@/lib/format";
 
 export interface RevealRow {
   date: string;
@@ -21,7 +21,12 @@ export interface RevealRow {
   recoveredDemand: number | null;
 }
 
-const parse = (d: string) => new Date(`${d}T00:00:00`);
+/** Which lines are visible (the chart's show/hide filter). The hidden-demand shading follows true demand. */
+export interface RevealShow {
+  recorded: boolean;
+  truth: boolean;
+  recovered: boolean;
+}
 
 export function revealTotals(rows: RevealRow[], priceAED: number) {
   let hidden = 0;
@@ -34,11 +39,13 @@ export function revealTotals(rows: RevealRow[], priceAED: number) {
   return { hiddenUnits: hidden, hiddenAED: hidden * priceAED, recoveredShare: hidden > 0 ? found / hidden : 0 };
 }
 
-export function HiddenDemandReveal({ rows, priceAED, height = 280 }: { rows: RevealRow[]; priceAED: number; height?: number }) {
+export function HiddenDemandReveal({ rows, priceAED, height = 300, show = { recorded: true, truth: true, recovered: true } }: {
+  rows: RevealRow[]; priceAED: number; height?: number; show?: RevealShow;
+}) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [veil, setVeil] = useState(0.5);
   const id = useId().replace(/:/g, "");
-  const m = { t: 12, r: 12, b: 28, l: 48 };
+  const m = { t: 12, r: 12, b: 46, l: 66 };
   const x = useMemo(() => scaleTime().domain([parse(rows[0].date), parse(rows[rows.length - 1].date)]).range([m.l, width - m.r]),
     [rows, width, m.l, m.r]);
   const yMax = Math.max(1, ...rows.map((r) => Math.max(r.trueDemand ?? 0, r.recordedSales, r.recoveredDemand ?? 0))) * 1.08;
@@ -56,11 +63,11 @@ export function HiddenDemandReveal({ rows, priceAED, height = 280 }: { rows: Rev
   return (
     <div className="flex flex-col gap-3" data-testid="hidden-demand-reveal">
       <div className="reveal-stats" aria-live="polite">
-        <div><span className="stat-label">Hidden demand revealed</span>
-          <span className="stat-value tabular-nums">{fmtInt(totals.hiddenUnits)} units</span></div>
-        <div><span className="stat-label">Lost revenue it represents</span>
+        <div><span className="stat-label">Sales missed (right of the handle)</span>
+          <span className="stat-value tabular-nums">{fmtUnits(totals.hiddenUnits)}</span></div>
+        <div><span className="stat-label">Value of those missed sales</span>
           <span className="stat-value tabular-nums">{fmtAED(totals.hiddenAED)}</span></div>
-        <div><span className="stat-label">Share the AI recovers</span>
+        <div><span className="stat-label">Share the AI finds again</span>
           <span className="stat-value tabular-nums">{fmtShare(totals.recoveredShare, 0)}</span></div>
       </div>
       <div ref={ref} className="relative w-full">
@@ -82,25 +89,30 @@ export function HiddenDemandReveal({ rows, priceAED, height = 280 }: { rows: Rev
             </g>
           ))}
           {x.ticks(Math.max(2, Math.floor(width / 120))).map((t) => (
-            <text key={+t} x={x(t)} y={height - 8} textAnchor="middle" fill={CHART.inkMuted} fontSize={11}>
-              {t.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+            <text key={+t} x={x(t)} y={height - m.b + 16} textAnchor="middle" fill={CHART.inkMuted} fontSize={11} className="tabular-nums">
+              {fmtDayMonth(t)}
             </text>
           ))}
+          <text x={(m.l + width - m.r) / 2} y={height - 6} textAnchor="middle" fill={CHART.ink} fontSize={12}>{dateAxisTitle(rows.map((r) => r.date))}</text>
+          <text transform={`translate(14 ${(height - m.b + m.t) / 2}) rotate(-90)`} textAnchor="middle" fill={CHART.ink} fontSize={12}>Units per day</text>
           <g clipPath={`url(#${id}-right)`}>
-            <path d={gap} fill={ENTITY_COLOR.truth} opacity={0.22} />
-            <path d={mk((r) => r.trueDemand)} fill="none" stroke={ENTITY_COLOR.truth} strokeWidth={2} />
-            <path d={mk((r) => r.recoveredDemand)} fill="none" stroke={ENTITY_COLOR.ai} strokeWidth={2} strokeDasharray="5 4" />
+            {show.truth ? <path d={gap} fill={ENTITY_COLOR.truth} opacity={0.22} /> : null}
+            {show.truth ? <path d={mk((r) => r.trueDemand)} fill="none" stroke={ENTITY_COLOR.truth} strokeWidth={2} /> : null}
+            {show.recovered ? <path d={mk((r) => r.recoveredDemand)} fill="none" stroke={ENTITY_COLOR.ai} strokeWidth={2} strokeDasharray="5 4" /> : null}
           </g>
-          <path d={mk((r) => r.recordedSales)} fill="none" stroke={ENTITY_COLOR.baseline} strokeWidth={2} />
+          {show.recorded ? <path d={mk((r) => r.recordedSales)} fill="none" stroke={ENTITY_COLOR.baseline} strokeWidth={2} /> : null}
           <line x1={veilX} x2={veilX} y1={m.t} y2={height - m.b} stroke="var(--ink-secondary)" strokeWidth={1.5} />
           <rect x={veilX - 7} y={(height - m.b + m.t) / 2 - 16} width={14} height={32} rx={7} fill="var(--surface)"
             stroke="var(--ink-secondary)" style={{ cursor: "ew-resize" }} />
-          <text x={Math.max(m.l + 4, veilX - 8)} y={m.t + 12} textAnchor="end" fill={CHART.inkMuted} fontSize={11}>What the legacy system sees</text>
-          <text x={veilX + 8} y={m.t + 12} fill={CHART.inkMuted} fontSize={11}>What customers wanted</text>
+          {/* Each side's caption only where it fits, so it never runs off the chart. */}
+          {veilX - m.l > 180 ? <text x={veilX - 8} y={m.t + 12} textAnchor="end" fill={CHART.inkMuted} fontSize={11}
+            stroke="var(--surface)" strokeWidth={4} paintOrder="stroke">What the till records</text> : null}
+          {width - m.r - veilX > 170 ? <text x={veilX + 8} y={m.t + 12} fill={CHART.inkMuted} fontSize={11}
+            stroke="var(--surface)" strokeWidth={4} paintOrder="stroke">What customers wanted</text> : null}
         </svg>
       </div>
       <label htmlFor={sliderId} className="control-label">
-        <span>Veil position: drag the handle, or use this slider</span>
+        <span>Move the handle: drag it on the chart, or use this slider</span>
       </label>
       <input id={sliderId} type="range" min={0} max={1} step={0.01} value={veil} onChange={(e) => setVeil(Number(e.target.value))}
         className="w-full" style={{ "--fill": `${veil * 100}%` } as React.CSSProperties} />

@@ -13,6 +13,7 @@ import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef, useS
 
 import { ChartTooltip } from "@/components/charts/primitives/ChartTooltip";
 import { CHART, ENTITY_COLOR } from "@/components/charts/primitives/theme";
+import { fmtDate, fmtDayMonth, parseDate as parse } from "@/lib/format";
 
 /** Class names for a series line: draw-in for solid lines, glow for the AI entity. */
 const lineClass = (color: string, dashed?: boolean) =>
@@ -31,11 +32,29 @@ export function useWidth<T extends HTMLElement>(fallback = 640) {
 }
 
 const fmt = (v: number) => (Math.abs(v) >= 100 ? Math.round(v).toLocaleString("en-US") : v.toLocaleString("en-US", { maximumFractionDigits: 1 }));
-/** Dates are "YYYY-MM-DD" (daily) or "YYYY-MM-DDTHH:mm" (hourly, Gulf local time as written). */
-const parse = (d: string) => new Date(d.includes("T") ? d : `${d}T00:00:00`);
-const tickLabel = (t: Date, hourly: boolean) => hourly
-  ? `${t.toLocaleDateString("en-GB", { day: "numeric", month: "short" })} ${String(t.getHours()).padStart(2, "0")}:00`
-  : t.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" });
+/**
+ * Dates are "YYYY-MM-DD" (daily) or "YYYY-MM-DDTHH:mm" (hourly, Gulf time as written). Ticks are day-first
+ * (UAE style): "15/11" when the axis covers one year (the axis title names it), "15/11/26" across years, and
+ * "15/11 06:00" for hourly data.
+ */
+const tickLabel = (t: Date, hourly: boolean, oneYear: boolean) => hourly
+  ? `${fmtDayMonth(t)} ${String(t.getHours()).padStart(2, "0")}:00`
+  : oneYear ? fmtDayMonth(t) : `${fmtDayMonth(t)}/${String(t.getFullYear()).slice(2)}`;
+/** The default x-axis title: says what the ticks are and which year. */
+export function dateAxisTitle(dates: string[]): string {
+  const a = parse(dates[0]).getFullYear();
+  const b = parse(dates[dates.length - 1]).getFullYear();
+  if (dates[0].includes("T")) return `Date and hour, Gulf time (day/month${a === b ? `, ${a}` : ""})`;
+  return a === b ? `Date (day/month, ${a})` : `Date (day/month/year, ${a}–${b})`;
+}
+/** Rough width of a 11–12 px label, for fitting text without measuring the DOM. */
+export const textWidth = (text: string, px = 11) => text.length * px * 0.58;
+
+/** The axis title that fits: the full one, else the short one (narrow phones). */
+const fitTitle = (full: string, short: string, room: number) => (textWidth(full, 12) <= room ? full : short);
+
+/** Halo behind text drawn over lines, so labels stay legible where they cross marks. */
+const HALO = { stroke: "var(--surface)", strokeWidth: 4, paintOrder: "stroke" as const, strokeLinejoin: "round" as const };
 
 export interface TimeSeries {
   id: string;
@@ -53,12 +72,17 @@ interface TimeChartProps {
   height?: number;
   formatY?: (v: number) => string;
   ariaLabel: string;
+  /** Y-axis title with its unit, e.g. "Units sold per day". */
+  yLabel: string;
+  /** X-axis title; defaults to the date range in plain words (dateAxisTitle). */
+  xLabel?: string;
 }
 
-export function TimeChart({ dates, series, band, shades = [], height = 300, formatY = fmt, ariaLabel }: TimeChartProps) {
+export function TimeChart({ dates, series, band, shades = [], height = 300, formatY = fmt, ariaLabel, yLabel, xLabel }: TimeChartProps) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number | null>(null);
-  const m = { t: 12, r: 12, b: 28, l: 52 };
+  const m = { t: 12, r: 12, b: 46, l: 66 };
+  const oneYear = parse(dates[0]).getFullYear() === parse(dates[dates.length - 1]).getFullYear();
   const x = useMemo(() => scaleTime().domain([parse(dates[0]), parse(dates[dates.length - 1])]).range([m.l, width - m.r]),
     [dates, width, m.l, m.r]);
   const yMax = useMemo(() => {
@@ -90,11 +114,18 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
         onMouseMove={(e) => setHover(index(e.clientX - e.currentTarget.getBoundingClientRect().left))}
         onMouseLeave={() => setHover(null)} onBlur={() => setHover(null)} className="chart-svg">
         {shades.map((s) => (
-          <g key={s.label + s.start}>
-            <rect x={x(parse(s.start))} y={m.t} width={Math.max(2, x(parse(s.end)) - x(parse(s.start)))} height={height - m.t - m.b}
-              fill="rgba(196,167,255,0.06)" />
-            {x(parse(s.start)) < width - 90 ? <text x={x(parse(s.start)) + 4} y={m.t + 12} fill={CHART.inkMuted} fontSize={11}>{s.label}</text> : null}
-          </g>
+          <rect key={s.label + s.start} x={x(parse(s.start))} y={m.t} width={Math.max(2, x(parse(s.end)) - x(parse(s.start)))} height={height - m.t - m.b}
+            fill="rgba(196,167,255,0.06)"><title>{s.label}</title></rect>
+        ))}
+        {/* Shade captions only where they fit and do not run into the previous one (the band keeps a tooltip). */}
+        {shades.reduce<{ end: number; items: { x: number; label: string }[] }>((acc, s) => {
+          const sx = x(parse(s.start)) + 4;
+          const w = textWidth(s.label);
+          if (sx > acc.end + 6 && sx + w < width - m.r) acc.items.push({ x: sx, label: s.label });
+          if (sx > acc.end + 6 && sx + w < width - m.r) acc.end = sx + w;
+          return acc;
+        }, { end: -Infinity, items: [] }).items.map((c) => (
+          <text key={c.label + c.x} x={c.x} y={m.t + 12} fill={CHART.inkMuted} fontSize={11} {...HALO}>{c.label}</text>
         ))}
         {y.ticks(4).map((t) => (
           <g key={t}>
@@ -103,10 +134,14 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
           </g>
         ))}
         {ticks.map((t) => (
-          <text key={+t} x={x(t)} y={height - 8} textAnchor="middle" fill={CHART.inkMuted} fontSize={11}>
-            {tickLabel(t, dates[0].includes("T"))}
+          <text key={+t} x={x(t)} y={height - m.b + 16} textAnchor="middle" fill={CHART.inkMuted} fontSize={11} className="tabular-nums">
+            {tickLabel(t, dates[0].includes("T"), oneYear)}
           </text>
         ))}
+        <text x={(m.l + width - m.r) / 2} y={height - 6} textAnchor="middle" fill={CHART.ink} fontSize={12}>
+          {xLabel ?? fitTitle(dateAxisTitle(dates), dates[0].includes("T") ? "Date and hour (Gulf time)" : `Date (${parse(dates[0]).getFullYear()})`, width - m.l - m.r)}
+        </text>
+        <text transform={`translate(14 ${(height - m.b + m.t) / 2}) rotate(-90)`} textAnchor="middle" fill={CHART.ink} fontSize={12}>{yLabel}</text>
         {band ? <path d={bandPath} fill={band.color} opacity={0.18} /> : null}
         {series.map((s) => (
           <path key={s.id} d={lineOf(s.values)} fill="none" stroke={s.color} strokeWidth={CHART.lineWidth}
@@ -126,8 +161,7 @@ export function TimeChart({ dates, series, band, shades = [], height = 300, form
       </svg>
       {hover !== null ? (
         <div className="chart-tip-anchor" style={{ left: Math.min(width - 190, Math.max(0, x(parse(dates[hover])) + 12)) }}>
-          <ChartTooltip title={dates[hover].includes("T") ? `${parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })} ${dates[hover].slice(11)}`
-            : parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+          <ChartTooltip title={`${parse(dates[hover]).toLocaleDateString("en-GB", { weekday: "short" })} ${fmtDate(dates[hover])}${dates[hover].includes("T") ? ` ${dates[hover].slice(11, 16)}` : ""}`}
             rows={[
               ...series.map((s) => ({ label: s.label, value: s.values[hover] === null ? "—" : formatY(s.values[hover] as number), color: s.color })),
               ...(band && band.lo[hover] !== null ? [{ label: band.label, value: `${formatY(band.lo[hover] as number)}–${formatY(band.hi[hover] as number)}`, color: band.color }] : []),
@@ -146,32 +180,40 @@ export interface BarRow {
   note?: string;
 }
 
-/** Horizontal bars with direct value labels; signed values draw from a zero line. Bars animate on re-order. */
+/**
+ * Horizontal bars with direct value labels; signed values draw from a zero line. Bars animate on re-order.
+ * On narrow screens (under 480 px) each label sits above its bar, so long labels are never cut off.
+ */
 export function HBars({ rows, format = fmt, rowHeight = 30, ariaLabel, color = "var(--series-1)" }: {
   rows: BarRow[]; format?: (v: number) => string; rowHeight?: number; ariaLabel: string; color?: string;
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
-  const labelW = Math.min(200, Math.round(width * 0.36));
-  const valueW = 72;
+  const stacked = width < 480;
+  const rowH = stacked ? rowHeight + 18 : rowHeight;
+  const labelW = stacked ? 0 : Math.min(220, Math.round(width * 0.38));
+  // Room for the longest value label ("AED 2.14 million"), about 7 px a character at 12 px.
+  const valueW = Math.max(56, ...rows.map((r) => (format(r.value) + (r.note ? ` ${r.note}` : "")).length * 7 + 10));
   const lo = Math.min(0, ...rows.map((r) => r.value));
   const hi = Math.max(0, ...rows.map((r) => r.value));
   const x = scaleLinear().domain([lo, hi === lo ? lo + 1 : hi]).range([labelW, width - valueW]);
-  const y = scaleBand().domain(rows.map((r) => r.label)).range([0, rows.length * rowHeight]).padding(0.25);
+  const y = scaleBand().domain(rows.map((r) => r.label)).range([0, rows.length * rowH]).padding(stacked ? 0.12 : 0.25);
+  const barTop = stacked ? 18 : 0;
+  const barH = stacked ? Math.max(8, y.bandwidth() - 18) : y.bandwidth();
   return (
     <div ref={ref} className="w-full">
-      <svg width={width} height={rows.length * rowHeight} role="img" aria-label={ariaLabel} className="chart-svg">
-        {lo < 0 ? <line x1={x(0)} x2={x(0)} y1={0} y2={rows.length * rowHeight} stroke={CHART.axis} /> : null}
+      <svg width={width} height={rows.length * rowH} role="img" aria-label={ariaLabel} className="chart-svg">
+        {lo < 0 ? <line x1={x(0)} x2={x(0)} y1={0} y2={rows.length * rowH} stroke={CHART.axis} /> : null}
         {rows.map((r) => {
           const x0 = x(Math.min(0, r.value));
           const w = Math.max(2, Math.abs(x(r.value) - x(0)));
           return (
             <g key={r.label} style={{ transform: `translateY(${y(r.label)}px)`, transition: "transform 300ms cubic-bezier(.2,.9,.3,1)" }}>
-              <text x={labelW - 8} y={y.bandwidth() / 2 + 4} textAnchor="end" fill={r.emphasis ? "var(--ink-primary)" : CHART.ink}
-                fontSize={12} fontWeight={r.emphasis ? 600 : 400}>{r.label}</text>
-              <rect x={x0} y={0} width={w} height={y.bandwidth()} rx={CHART.barRadius} fill={r.color ?? color}
+              <text x={stacked ? 0 : labelW - 8} y={stacked ? 12 : y.bandwidth() / 2 + 4} textAnchor={stacked ? "start" : "end"}
+                fill={r.emphasis ? "var(--ink-primary)" : CHART.ink} fontSize={12} fontWeight={r.emphasis ? 600 : 400}>{r.label}</text>
+              <rect x={x0} y={barTop} width={w} height={barH} rx={CHART.barRadius} fill={r.color ?? color}
                 opacity={r.emphasis === false ? 0.45 : 1} className="chart-bar"
                 style={{ transformOrigin: `${x(0)}px 0px`, transition: "width 300ms, x 300ms" }} />
-              <text x={r.value < 0 ? x0 - 6 : x0 + w + 6} y={y.bandwidth() / 2 + 4} textAnchor={r.value < 0 ? "end" : "start"}
+              <text x={r.value < 0 ? x0 - 6 : x0 + w + 6} y={barTop + barH / 2 + 4} textAnchor={r.value < 0 ? "end" : "start"}
                 fill={CHART.ink} fontSize={12} className="tabular-nums">{format(r.value)}{r.note ? ` ${r.note}` : ""}</text>
             </g>
           );
@@ -196,7 +238,7 @@ export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabe
   pick?: { curveId: string; onIndex: (index: number) => void };
 }) {
   const [ref, width] = useWidth<HTMLDivElement>();
-  const m = { t: 12, r: 16, b: 40, l: 52 };
+  const m = { t: 12, r: 16, b: 46, l: 66 };
   const xs = curves.flatMap((c) => c.points.map((p) => p.x));
   const ys = curves.flatMap((c) => c.points.map((p) => p.y));
   const x = scaleLinear().domain([Math.min(...xs), Math.max(...xs)]).nice().range([m.l, width - m.r]);
@@ -234,7 +276,7 @@ export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabe
           <text key={t} x={x(t)} y={height - m.b + 16} textAnchor="middle" fill={CHART.inkMuted} fontSize={11}>{formatX(t)}</text>
         ))}
         <text x={(m.l + width - m.r) / 2} y={height - 6} textAnchor="middle" fill={CHART.ink} fontSize={12}>{xLabel}</text>
-        <text transform={`translate(12 ${(height - m.b + m.t) / 2}) rotate(-90)`} textAnchor="middle" fill={CHART.ink} fontSize={12}>{yLabel}</text>
+        <text transform={`translate(14 ${(height - m.b + m.t) / 2}) rotate(-90)`} textAnchor="middle" fill={CHART.ink} fontSize={12}>{yLabel}</text>
         {curves.map((c) => (
           <g key={c.id}>
             <path d={path(c.points)} fill="none" stroke={c.color} strokeWidth={CHART.lineWidth} strokeLinejoin="round"
@@ -247,8 +289,9 @@ export function XYChart({ curves, xLabel, yLabel, height = 280, marker, ariaLabe
           <g>
             <circle cx={x(marker.x)} cy={y(marker.y)} r={7} fill="none" stroke={marker.color} strokeWidth={2} className="chart-marker-pulse" />
             <circle cx={x(marker.x)} cy={y(marker.y)} r={7} fill="none" stroke={marker.color} strokeWidth={2} />
-            <text x={x(marker.x) + (x(marker.x) > width * 0.7 ? -10 : 10)} y={y(marker.y) - 10}
-              textAnchor={x(marker.x) > width * 0.7 ? "end" : "start"} fill="var(--ink-primary)" fontSize={12}>{marker.label}</text>
+            {/* Above the marker, or below it when it sits near the top; a halo keeps it legible over points. */}
+            <text x={x(marker.x) + (x(marker.x) > width * 0.7 ? -12 : 12)} y={y(marker.y) < m.t + 24 ? y(marker.y) + 22 : y(marker.y) - 14}
+              textAnchor={x(marker.x) > width * 0.7 ? "end" : "start"} fill="var(--ink-primary)" fontSize={12} {...HALO}>{marker.label}</text>
           </g>
         ) : null}
       </svg>

@@ -29,7 +29,8 @@ export function KpiTile({ label, value, delta, better, range, provenance }: KpiT
         <span className="stat-label">{label}</span>
         <ProvenanceChip provenance={provenance} />
       </div>
-      <AnimatedNumber className="kpi-value" text={value} />
+      {/* Long values ("AED 2.14 million", "513,037 kg CO2e") step down a size so they stay on one line. */}
+      <AnimatedNumber className={value.length > 11 ? "kpi-value kpi-value-long" : "kpi-value"} text={value} />
       {delta ? (
         <span className="kpi-delta" data-tone={better ? "good" : "warning"}>
           {better ? <Check aria-hidden="true" size={13} strokeWidth={2.6} /> : <TriangleAlert aria-hidden="true" size={13} strokeWidth={2.4} />}

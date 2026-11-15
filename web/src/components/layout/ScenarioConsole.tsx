@@ -4,9 +4,14 @@
  * The global Scenario Console (implementation-plan.md §6.2, requirement R5): a glass drawer from the top,
  * on every page. Its controls map 1:1 to the scenario store (§2.5); presets set several fields at once.
  * Escape or the close button closes it and returns focus to the Scenario button.
+ * CR-003: it springs open (CSS keyframes, .scenario-console) and fades away with Motion's mini animate
+ * (Web Animations API), staying mounted until the exit animation has finished.
  */
 import { RotateCcw, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { animate } from "motion/mini";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { prefersReducedMotion } from "@/components/motion/reducedMotion";
 
 import { NumberField, Select, Slider, Toggle } from "@/components/ui/controls";
 import { useArtefact } from "@/lib/data/hooks";
@@ -54,6 +59,15 @@ function SeriesPicker() {
 
 export function ScenarioConsole() {
   const open = useScenarioStore((s) => s.consoleOpen);
+  // Stay mounted after closing until the exit animation ends ("adjust state while rendering" pattern).
+  const [mounted, setMounted] = useState(open);
+  const onExited = useCallback(() => setMounted(false), []);
+  if (open && !mounted) setMounted(true);
+  if (!mounted) return null;
+  return <ConsolePanel closing={!open} onExited={onExited} />;
+}
+
+function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () => void }) {
   const setOpen = useScenarioStore((s) => s.setConsoleOpen);
   const scenario = useScenario();
   const set = useScenarioStore((s) => s.set);
@@ -62,7 +76,22 @@ export function ScenarioConsole() {
   const panel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!closing) return;
+    const el = panel.current;
+    if (!el || prefersReducedMotion()) {
+      // Defer to a frame so no state changes synchronously inside the effect.
+      const frame = requestAnimationFrame(onExited);
+      return () => cancelAnimationFrame(frame);
+    }
+    const exit = animate(el, { opacity: [1, 0], transform: ["translateY(0) scale(1)", "translateY(-12px) scale(0.985)"] },
+      { duration: 0.18, ease: [0.4, 0, 1, 1] });
+    let done = false;
+    exit.finished.then(() => { if (!done) onExited(); });
+    // Reopened mid-exit: cancel() reverts to the resting state (stop() would freeze it half-faded).
+    return () => { done = true; exit.cancel(); };
+  }, [closing, onExited]);
+
+  useEffect(() => {
     panel.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -72,19 +101,20 @@ export function ScenarioConsole() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, setOpen]);
+  }, [setOpen]);
 
-  if (!open) return null;
   const preset = matchingPreset(scenario);
   const { demand, spike, calendar, weather, supply, policy, sourcing } = scenario;
   const pct = (v: number) => `${v}%`;
 
   return (
     <div id="scenario-console" ref={panel} tabIndex={-1} role="dialog" aria-modal="false" aria-labelledby="scenario-title"
-      className="scenario-console" data-testid="scenario-console">
+      className="scenario-console" data-testid="scenario-console" data-closing={closing ? "" : undefined}
+      inert={closing}>
       <div className="console-head">
         <div>
-          <h2 id="scenario-title" className="text-ink text-lg font-semibold">Scenario Console</h2>
+          <p className="eyebrow"><span className="eyebrow-dot" aria-hidden="true" />What-if controls</p>
+          <h2 id="scenario-title" className="console-title">Scenario Console</h2>
           <p className="text-ink-muted text-sm">Every page reads this scenario. It is saved in the link, so you can share it.</p>
         </div>
         <div className="flex gap-2">

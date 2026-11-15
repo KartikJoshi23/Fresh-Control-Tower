@@ -13,6 +13,7 @@ import { CHART } from "@/components/charts/primitives/theme";
 import { HBars, useWidth, XYChart } from "@/components/charts/svg/charts";
 import { Select, Slider, Toggle } from "@/components/ui/controls";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { KpiTile } from "@/components/ui/KpiTile";
 import type { BacktestFile, FrontierFile, ImpactFile } from "@/lib/contracts";
 import { useArtefact } from "@/lib/data/hooks";
@@ -254,10 +255,8 @@ export function Impact() {
   const backtest = useArtefact("backtest.json");
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">Impact</h1>
-        <p className="text-ink-secondary max-w-3xl">What the AI changes in cost, waste and emissions for a fictional eight-store operator. Figures are synthetic and illustrative.</p>
-      </header>
+      <PageHeader eyebrow="Cost · Waste · Emissions" title="Impact"
+        description="What the AI changes in cost, waste and emissions for a fictional eight-store operator. Figures are synthetic and illustrative." />
       <DataState result={impact} what="the impact summary" minHeight={400}>
         {(i) => (
           <DataState result={frontier} what="the frontier">

@@ -103,7 +103,7 @@ export function HiddenDemandReveal({ rows, priceAED, height = 280 }: { rows: Rev
         <span>Veil position: drag the handle, or use this slider</span>
       </label>
       <input id={sliderId} type="range" min={0} max={1} step={0.01} value={veil} onChange={(e) => setVeil(Number(e.target.value))}
-        className="w-full" style={{ accentColor: "var(--accent)" }} />
+        className="w-full" style={{ "--fill": `${veil * 100}%` } as React.CSSProperties} />
     </div>
   );
 }

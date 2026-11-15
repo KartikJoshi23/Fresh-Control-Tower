@@ -12,6 +12,7 @@ import { ChartFrame, ENTITY_COLOR, otherSeriesColor, TableView } from "@/compone
 import { TimeChart } from "@/components/charts/svg/charts";
 import { Select, Toggle } from "@/components/ui/controls";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { KpiTile } from "@/components/ui/KpiTile";
 import { ProvenanceChip } from "@/components/ui/ProvenanceChip";
@@ -137,7 +138,8 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
         <label className="flex items-center gap-2 grow min-w-[200px] text-sm text-ink-secondary">
           <span className="sr-only">Simulated time</span>
           <input type="range" className="range grow" min={0} max={hours.length - 1} value={hour} aria-label="Simulated time"
-            aria-valuetext={now} onChange={(e) => setHour(Number(e.target.value))} />
+            aria-valuetext={now} onChange={(e) => setHour(Number(e.target.value))}
+            style={{ "--fill": `${(hour / Math.max(1, hours.length - 1)) * 100}%` } as React.CSSProperties} />
         </label>
         <div className="w-[200px]">
           <Select label="Replay speed" value={String(scenario.ui.liveSpeed) as (typeof SPEEDS)[number]["value"]} options={SPEEDS}
@@ -298,13 +300,9 @@ export function LiveOps() {
   const backtest = useArtefact("backtest.json");
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">Live Ops</h1>
-        <p className="text-ink-secondary max-w-3xl">
-          A replay of a simulated hourly feed for 10–23 March 2026 (two stores, ten hero SKUs, the P3 policy). The clock is simulated;
-          this is how the control tower would look on a live connection.
-        </p>
-      </header>
+      <PageHeader eyebrow="Simulated live feed · 10–23 Mar 2026" title="Live Ops"
+        description={<>A replay of a simulated hourly feed for 10–23 March 2026 (two stores, ten hero SKUs, the P3 policy). The clock is
+          simulated; this is how the control tower would look on a live connection.</>} />
       <DataState result={feed} what="the simulated feed" minHeight={400}>
         {(f) => (
           <DataState result={catalog} what="the catalogue">

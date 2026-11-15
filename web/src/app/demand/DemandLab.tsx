@@ -5,8 +5,10 @@ import { useMemo, useState } from "react";
 
 import { ChartFrame, ENTITY_COLOR, otherSeriesColor, TableView } from "@/components/charts/primitives";
 import { HBars, TimeChart, XYChart } from "@/components/charts/svg/charts";
+import { GlideIndicator, useGlide } from "@/components/motion/Glide";
 import { HiddenDemandReveal } from "@/components/signature/HiddenDemandReveal";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Toggle } from "@/components/ui/controls";
 import type { AblationFile, CalendarFile, CatalogFile, RealDataFile, SeriesFile } from "@/lib/contracts";
 import { useArtefact, useSeries } from "@/lib/data/hooks";
@@ -231,16 +233,18 @@ export function DemandLab() {
   const calendar = useArtefact("calendar.json");
   const real = useArtefact("realdata.json");
   const ablation = useArtefact("ablation.json");
+  const [tabsRef, glide] = useGlide<HTMLDivElement>('[aria-selected="true"]', [tab]);
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">Demand Lab</h1>
-        <p className="text-ink-secondary max-w-3xl">How much demand do empty shelves hide, how well does the AI recover it, and which data matters?</p>
-      </header>
-      <div className="col-span-12 tablist" role="tablist" aria-label="Demand Lab views">
+      <PageHeader eyebrow="Hidden demand · Forecasting · Data value" title="Demand Lab"
+        description="How much demand do empty shelves hide, how well does the AI recover it, and which data matters?" />
+      <div ref={tabsRef} className="col-span-12 tablist" role="tablist" aria-label="Demand Lab views" data-glide={glide ? "" : undefined}>
+        <GlideIndicator box={glide} className="tab-indicator" />
         {TABS.map((t) => (
           <button key={t.id} type="button" role="tab" id={`tab-${t.id}`} aria-selected={tab === t.id} aria-controls={`panel-${t.id}`}
-            className="tab" onClick={() => setTab(t.id)}>{t.label}</button>
+            className="tab" onClick={() => setTab(t.id)}>
+            <span>{t.label}</span>
+          </button>
         ))}
       </div>
       <section className="col-span-12" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>

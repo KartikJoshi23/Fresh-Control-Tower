@@ -8,13 +8,18 @@
 import { Line, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { type RefObject, useMemo, useRef } from "react";
-import { Vector3 } from "three";
+import { BackSide, Vector3 } from "three";
+
+import { useReducedMotion } from "@/components/motion/reducedMotion";
 
 import { arc, DASH, type RouteView, toVec } from "./routeGeometry";
 
-const ARC = "#6da7ec"; // --seq-300: the single arc hue (three.js needs a literal colour)
-const CRITICAL = "#d03b3b"; // --status-critical
-const GRID = "#3b4a5c";
+// three.js needs literal colours; these mirror tokens.css (CR-003).
+const ARC = "#b996ff"; // --seq-300: the single arc hue
+const CRITICAL = "#f5525a"; // --status-critical
+const GRID = "#2e2545"; // violet-grey graticule
+const OCEAN = "#0b0814";
+const HALO = "#7c3aed"; // atmosphere glow (decorative)
 
 function Graticule() {
   const lines = useMemo(() => {
@@ -59,6 +64,7 @@ export default function RouteGlobe3D({ routes, chokepoints }: { routes: RouteVie
   // Face the Gulf from a little north-west so Europe and East Africa are in view.
   const cam = toVec(28, 40, 2.4);
   const refs = useRef<(HTMLSpanElement | null)[]>([]);
+  const reduceMotion = useReducedMotion();
   const labels = useMemo<Label[]>(() => {
     const origins = new Map<string, Label>();
     for (const r of routes) {
@@ -76,15 +82,21 @@ export default function RouteGlobe3D({ routes, chokepoints }: { routes: RouteVie
   }, [routes, chokepoints]);
   return (
     <div className="globe-wrap">
-      <Canvas camera={{ position: cam, fov: 40 }} dpr={[1, 2]} gl={{ antialias: true }} aria-hidden="true">
+      <Canvas camera={{ position: cam, fov: 40 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }} aria-hidden="true">
         <mesh>
           <sphereGeometry args={[0.995, 48, 48]} />
-          <meshBasicMaterial color="#17212d" />
+          <meshBasicMaterial color={OCEAN} />
+        </mesh>
+        {/* A faint violet atmosphere: the back faces of a slightly larger sphere. */}
+        <mesh>
+          <sphereGeometry args={[1.03, 48, 48]} />
+          <meshBasicMaterial color={HALO} transparent opacity={0.08} side={BackSide} depthWrite={false} />
         </mesh>
         <Graticule />
         {routes.map((r) => <Route key={r.id} route={r} />)}
         <LabelProjector labels={labels} refs={refs} />
-        <OrbitControls enablePan={false} minDistance={1.6} maxDistance={4} rotateSpeed={0.5} />
+        <OrbitControls enablePan={false} minDistance={1.6} maxDistance={4} rotateSpeed={0.5}
+          autoRotate={!reduceMotion} autoRotateSpeed={0.35} />
       </Canvas>
       <div className="globe-overlay" aria-hidden="true">
         {labels.map((l, i) => (

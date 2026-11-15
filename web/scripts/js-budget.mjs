@@ -5,9 +5,11 @@
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 
-const OUT = new URL("../out/", import.meta.url).pathname;
+// fileURLToPath, not URL.pathname: the pathname is percent-encoded and gains a leading slash on Windows.
+const OUT = fileURLToPath(new URL("../out/", import.meta.url));
 const TARGET = 250 * 1024;
 const LIMIT = 300 * 1024;
 const routes = ["", ...readdirSync(OUT).filter((d) => !d.startsWith("_") && statSync(join(OUT, d)).isDirectory()

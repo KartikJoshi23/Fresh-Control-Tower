@@ -9,7 +9,9 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { GlideIndicator, useGlide } from "@/components/motion/Glide";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { ProvenanceChip } from "@/components/ui/ProvenanceChip";
 import type { BacktestFile, ImpactFile, MetaFile, Provenance } from "@/lib/contracts";
@@ -201,19 +203,22 @@ export function Roadmap() {
   const meta = useArtefact("meta.json");
   const impact = useArtefact("impact.json");
   const backtest = useArtefact("backtest.json");
+  const [tabsRef, glide] = useGlide<HTMLDivElement>('[aria-selected="true"]', [tab]);
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Roadmap</h1>
-        <p className="text-ink-secondary max-w-3xl">How an operator would adopt the control tower, what could go wrong, and how every number in this prototype was made.</p>
-        <div className="tablist" role="tablist" aria-label="Roadmap sections">
+      <PageHeader eyebrow="Adoption · Risks · Methods" title="Roadmap"
+        description="How an operator would adopt the control tower, what could go wrong, and how every number in this prototype was made.">
+        <div ref={tabsRef} className="tablist" role="tablist" aria-label="Roadmap sections" data-glide={glide ? "" : undefined}>
+          <GlideIndicator box={glide} className="tab-indicator" />
           {([["plan", "Roadmap"], ["methods", "Methods & Data"]] as const).map(([id, label]) => (
             <button key={id} type="button" role="tab" id={`tab-${id}`} aria-selected={tab === id} aria-controls={`panel-${id}`}
               tabIndex={tab === id ? 0 : -1} className="tab" onClick={() => setTab(id)}
-              onKeyDown={(e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "plan" ? "methods" : "plan"); }}>{label}</button>
+              onKeyDown={(e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") setTab(tab === "plan" ? "methods" : "plan"); }}>
+              <span>{label}</span>
+            </button>
           ))}
         </div>
-      </header>
+      </PageHeader>
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="col-span-12 page-grid">
         {tab === "plan" ? (
           <DataState result={impact} what="the impact summary">

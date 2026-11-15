@@ -5,6 +5,7 @@ import { ChartFrame, ENTITY_COLOR, TableView } from "@/components/charts/primiti
 import { XYChart } from "@/components/charts/svg/charts";
 import { HiddenDemandReveal } from "@/components/signature/HiddenDemandReveal";
 import { DataState } from "@/components/ui/DataState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { KpiTile } from "@/components/ui/KpiTile";
 import { ProvenanceChip } from "@/components/ui/ProvenanceChip";
@@ -142,14 +143,10 @@ export function Overview() {
   const policyId = policy.policy === "P0" ? "P3" : policy.policy;
   return (
     <div className="page-grid py-6">
-      <header className="col-span-12 flex flex-col gap-1">
-        <p className="stat-label">Group 1 · AI for Inventory Management · fictional UAE dark-store operator</p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Fresh Control Tower</h1>
-        <p className="text-ink-secondary max-w-3xl">
-          AI replenishment for UAE fresh grocery: recover the demand that empty shelves hide, plan for festivals and sudden spikes,
-          and source under disruption. Numbers below come from the calibrated synthetic world and are labelled by provenance.
-        </p>
-      </header>
+      <PageHeader eyebrow="Group 1 · AI for Inventory Management · fictional UAE dark-store operator" title="Fresh Control Tower"
+        description={<>AI replenishment for UAE fresh grocery: recover the demand that empty shelves hide, plan for festivals and sudden
+          spikes, and source under disruption. Numbers below come from the calibrated synthetic world and are labelled by provenance.</>}
+        aside={<><ProvenanceChip provenance="CALIBRATED_SYNTHETIC" /><ProvenanceChip provenance="PRECOMPUTED" /></>} />
       <DataState result={backtest} what="the backtest results">
         {(file) => (
           <>

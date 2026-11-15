@@ -6,10 +6,11 @@
  * - provenance chip(s);
  * - a legend whenever there are 2+ series (direct labels are the chart's job when there are ≤ 4);
  * - a table-view toggle. The global Scenario Console "table view" switch turns every chart into its table.
- * It lives in a navy "chart" GlassPanel, the only surface validated behind data.
+ * It lives in a "chart" GlassPanel, the only surface validated behind data (CR-003 glass).
  */
 import { ChartLine, Table2 } from "lucide-react";
-import { type ReactNode, useId, useState } from "react";
+import { inView } from "motion";
+import { type ReactNode, useEffect, useId, useRef, useState } from "react";
 
 import { GlassPanel } from "@/components/ui/GlassPanel";
 import { ProvenanceChip } from "@/components/ui/ProvenanceChip";
@@ -58,12 +59,22 @@ export function ChartFrame({ title, subtitle, provenance, sources, legend = [], 
   const [localTable, setLocalTable] = useState<boolean | null>(null);
   const showTable = localTable ?? globalTable;
   const chips = Array.isArray(provenance) ? provenance : [provenance];
+  // Scroll reveal (CR-003): Motion's inView marks the frame once a sliver of it is on screen; CSS animates it.
+  const frame = useRef<HTMLElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    if (!frame.current) return;
+    return inView(frame.current, () => {
+      setSeen(true);
+    }, { amount: 0.08 });
+  }, []);
   return (
-    <GlassPanel variant="chart" className={`chart-frame ${className}`} aria-labelledby={`${id}-title`} data-testid="chart-frame">
+    <GlassPanel ref={frame} variant="chart" className={`chart-frame ${className}`} aria-labelledby={`${id}-title`}
+      data-testid="chart-frame" data-inview={seen ? "" : undefined}>
       <header className="chart-head">
         <div className="min-w-0">
-          <h3 id={`${id}-title`} className="text-ink text-base font-semibold">{title}</h3>
-          {subtitle ? <p className="text-ink-muted text-sm">{subtitle}</p> : null}
+          <h3 id={`${id}-title`} className="chart-title">{title}</h3>
+          {subtitle ? <p className="chart-subtitle">{subtitle}</p> : null}
         </div>
         <div className="chart-tools">
           {chips.map((p) => <ProvenanceChip key={p} provenance={p} sources={sources} />)}
@@ -76,7 +87,8 @@ export function ChartFrame({ title, subtitle, provenance, sources, legend = [], 
         </div>
       </header>
       {!showTable ? <Legend items={legend} /> : null}
-      <div className="chart-body">{showTable ? table : children}</div>
+      {/* Keyed so switching between chart and table re-runs the fade-in (globals.css, .chart-body). */}
+      <div className="chart-body" key={showTable ? "table" : "chart"}>{showTable ? table : children}</div>
     </GlassPanel>
   );
 }

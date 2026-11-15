@@ -43,7 +43,8 @@ for (const width of WIDTHS) {
 }
 
 test.describe("accessibility (axe, 1440 px)", () => {
-  test.use({ viewport: { width: 1440, height: 900 } });
+  // Reduced motion: axe measures contrast with opacity included, so entrance fades must not be mid-flight (CR-003).
+  test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   for (const route of ROUTES) {
     test(`${route.path} has no serious or critical axe violations`, async ({ page }) => {
       await page.goto(route.path);

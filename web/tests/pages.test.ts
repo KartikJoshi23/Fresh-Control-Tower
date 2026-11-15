@@ -22,11 +22,10 @@ describe("Demand Lab", () => {
     expect(bias([8, 12, null], [10, 10, 5])).toEqual({ wpe: 0, wape: 0.2, n: 2 });
   });
 
-  it("explains only what the measured bias shows", () => {
-    expect(explainBias(-0.03, false)).toContain("close to unbiased");
-    expect(explainBias(-0.2, false)).toContain("under-forecasts");
-    expect(explainBias(0.2, false)).toContain("over-forecasts");
-    expect(explainBias(0, true)).toContain("under-forecasts");
+  it("explains the measured accuracy in plain words, and never more", () => {
+    expect(explainBias("The AI forecast", -0.06, 0.3)).toBe("The AI forecast was too low by 6% on average, and off by 30% on a typical day.");
+    expect(explainBias("X", 0.2, 0.25)).toContain("too high by 20%");
+    expect(explainBias("X", 0.001, 0.1)).toContain("about right on average");
   });
 });
 
@@ -91,4 +90,60 @@ it("the risk register carries all eight risks from plan §14.2", async () => {
   const { RISKS } = await import("@/app/roadmap/Roadmap");
   expect(RISKS).toHaveLength(8);
   expect(RISKS.every((r) => r.mitigation && r.where)).toBe(true);
+});
+
+describe("formats (team decision, 15 Nov 2026)", async () => {
+  const f = await import("@/lib/format");
+  it("weights are always kilograms with separators", () => {
+    expect(f.fmtKg(128450.4)).toBe("128,450 kg");
+    expect(f.fmtKg(640)).toBe("640 kg");
+    expect(f.fmtKg(2.46)).toBe("2.5 kg");
+    expect(f.fmtKg(-1500)).toBe("−1,500 kg");
+  });
+  it("money is in full below a million and in millions above", () => {
+    expect(f.fmtAED(7768.4)).toBe("AED 7,768");
+    expect(f.fmtAED(480093)).toBe("AED 480,093");
+    expect(f.fmtAED(2_140_000)).toBe("AED 2.14 million");
+    expect(f.fmtAED(-6_472_297)).toBe("−AED 6.47 million");
+    expect(f.aedAxis(9e6).unit).toBe("AED million");
+    expect(f.aedAxis(9e6).tick(2e6)).toBe("2");
+  });
+  it("dates are day-first", () => {
+    expect(f.fmtDate("2026-03-05")).toBe("05/03/2026");
+    expect(f.fmtDayMonth("2026-11-15")).toBe("15/11");
+    expect(f.fmtDateTime("2026-03-10T06:00")).toBe("10/03/2026 06:00");
+    expect(f.fmtWeekdayDate("2026-11-15")).toBe("Sun 15/11/2026");
+  });
+});
+
+describe("chart filter (show only / add / show all)", async () => {
+  const { nextShown } = await import("@/components/charts/primitives/seriesFilter");
+  const ids = ["a", "b", "c"];
+  it("the first click shows only that line; more clicks add or remove lines", () => {
+    expect(nextShown(null, "b", ids)).toEqual(["b"]);
+    expect(nextShown(["b"], "a", ids)).toEqual(["b", "a"]);
+    expect(nextShown(["b", "a"], "a", ids)).toEqual(["b"]);
+  });
+  it("never leaves an empty chart, and selecting every line means 'all'", () => {
+    expect(nextShown(["b"], "b", ids)).toBeNull();
+    expect(nextShown(["a", "b"], "c", ids)).toBeNull();
+  });
+});
+
+it("plain names replace the policy codes", async () => {
+  const { policyName, serviceTargetLabel } = await import("@/lib/labels");
+  expect(["P0", "P1", "P2", "P3"].map(policyName)).toEqual(["Current method", "AI daily ordering", "AI + midday top-up", "AI + top-up + best supplier"]);
+  expect(serviceTargetLabel(0.85)).toBe("Stock-level setting 85%");
+});
+
+it("Live Ops order reasons read in plain words", async () => {
+  const { plainReason } = await import("@/app/live/LiveOps");
+  expect(plainReason("Order-up-to at the SKU's service quantile (τ = 0.70).")).toContain("stock-level setting 70%");
+  expect(plainReason("Noon top-up: the morning's sales point to a shortfall before tomorrow's delivery.")).toMatch(/^Midday top-up/);
+});
+
+it("Live Ops alert messages spell out the shorthand", async () => {
+  const { plainMessage } = await import("@/app/live/LiveOps");
+  expect(plainMessage("Bananas: about 4 h of cover left at the forecast rate.")).toBe("Bananas: about 4 hours of stock left at the expected sales rate.");
+  expect(plainMessage("Order of 19 units (needs approval).")).toBe("Order of 19 units (waiting for approval).");
 });

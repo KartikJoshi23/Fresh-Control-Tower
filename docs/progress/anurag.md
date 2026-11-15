@@ -112,3 +112,27 @@ The lead merges PR #3. Then **Part 5** (web foundation) on `feat/P5-web-foundati
 - **Lighthouse (KI-19):** desktop 99–100 on five routes; mobile 86–92; accessibility 98–100; best practices and SEO 100. Two weak spots: `/demand` desktop CLS 0.52 and `/sourcing` blocking time (the globe kept rendering off screen).
 - **Fixed in PR #10 (KI-22):** charts briefly rendered at a 640 px fallback width and widened the Overview by 178 px (the cause of an intermittent e2e failure); the scrollbar appearing after data loads shifted the page (CLS); the globe now renders only while on screen; chart titles are `h2` (heading order). Re-measured on the local build: CLS 0.008, `/sourcing` blocking 60 ms desktop, accessibility 100.
 - **Next:** the lead merges PR #10; re-run Lighthouse on the live `/demand` and `/sourcing`; R-00 screenshots and Phase 6 when the lead opens it.
+
+## 2026-11-15 · UX-01 dashboard polish · feat/dashboard-polish
+
+- **Repo alignment first:** 0 open PRs, every branch's commits in `main`, CI and Vercel green; PROGRESS refreshed in PR #11 (merged). Lighthouse re-run on the live site after PR #10: `/demand` desktop 99, `/sourcing` desktop 95.
+- **Team walkthrough decisions (asked and answered before building):**
+  - kg everywhere; AED in full below a million and "AED x.xx million" above; dates DD/MM/YYYY;
+  - plain names instead of P0–P3 and P10/P50/P90;
+  - split the Demand Lab chart (no new colours, so no design-system CR);
+  - filters on every multi-line chart;
+  - Methods & Data first on Roadmap;
+  - the Real-data tab removed, with its evidence kept on Methods & Data.
+- **Built:**
+  - `lib/format.ts` (one place for units and dates), `lib/labels.ts` (plain policy names) and `charts/primitives/seriesFilter.ts` (first click isolates a line, more clicks add, "Show all" resets);
+  - axis titles with units and "how to read" notes on every chart;
+  - phone layouts for the waterfall, surge planner and bar charts;
+  - label-collision handling on the flat route map;
+  - Sourcing control groups; the Roadmap re-ordered.
+- **Sanity pass:**
+  - removed the unused `PagePlaceholder`, `fmt1` and label constants;
+  - one `daysBetween` (was in two places) and one e2e `watchConsole` (was in three);
+  - `tsc --noUnusedLocals` clean; ruff F/B007/RUF059 clean on the pipeline.
+  - `knip` could not be run (downloading and running a third-party tool through npx was not allowed), so I used a small script of my own to find unused exports instead.
+- **Process:** the Real-data tab removal and the Roadmap order differ from the plan (§6.1), so CR-004 is raised in its own PR (#12). The implementation (PR #13) should merge only after the lead approves it.
+- **Checks:** 139 pytest, 135 Vitest, 43 Playwright e2e (including the 375/768/1440 QA sweep and axe), 52/52 data files valid; a text-overlap and clipping check of every SVG chart found none at 375 or 1440 px. Initial JS is 222–257 KB gzip (KI-21).

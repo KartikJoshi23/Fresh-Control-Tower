@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, type Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { watchConsole } from "./helpers";
 
 /**
  * P9-03 QA sweep: every route at 375, 768 and 1440 px renders its main content, has no horizontal scroll and
@@ -13,16 +14,10 @@ const ROUTES = [
   { path: "/live/", heading: "Live Ops", ready: "shelf-grid" },
   { path: "/sourcing/", heading: "Sourcing", ready: "rank-race" },
   { path: "/impact/", heading: "Impact", ready: "frontier" },
-  { path: "/roadmap/", heading: "Roadmap", ready: "risk-register" },
+  { path: "/roadmap/", heading: "Roadmap", ready: "sources" },
 ] as const;
 const WIDTHS = [375, 768, 1440] as const;
 
-function watchConsole(page: Page): string[] {
-  const errors: string[] = [];
-  page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
-  page.on("pageerror", (e) => errors.push(e.message));
-  return errors;
-}
 
 for (const width of WIDTHS) {
   test.describe(`${width} px`, () => {

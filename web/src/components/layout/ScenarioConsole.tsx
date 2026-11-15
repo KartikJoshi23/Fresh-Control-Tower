@@ -17,12 +17,13 @@ import { NumberField, Select, Slider, Toggle } from "@/components/ui/controls";
 import { useArtefact } from "@/lib/data/hooks";
 import { matchingPreset, PRESETS, WINDOW_LABELS, WINDOWS } from "@/lib/state/scenario";
 import { useScenario, useScenarioStore } from "@/lib/state/scenarioStore";
+import { POLICY_NAME } from "@/lib/labels";
 
 const POLICIES = [
-  { value: "P0", label: "P0 Baseline (legacy rule)" },
-  { value: "P1", label: "P1 AI-Daily" },
-  { value: "P2", label: "P2 AI-Intraday" },
-  { value: "P3", label: "P3 AI-Intraday + Smart Sourcing" },
+  { value: "P0", label: POLICY_NAME.P0 },
+  { value: "P1", label: POLICY_NAME.P1 },
+  { value: "P2", label: POLICY_NAME.P2 },
+  { value: "P3", label: POLICY_NAME.P3 },
 ] as const;
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
@@ -48,7 +49,7 @@ function SeriesPicker() {
     label: `${stores.get(h.storeId)?.replace(" (fictional)", "") ?? h.storeId} · ${skus.get(h.skuId) ?? h.skuId}`,
   }));
   return (
-    <Select label="Store and SKU" value={`${scenario.selection.storeId}__${scenario.selection.skuId}`} options={options}
+    <Select label="Store and item" value={`${scenario.selection.storeId}__${scenario.selection.skuId}`} options={options}
       onChange={(v) => {
         const [storeId, skuId] = v.split("__");
         set("selection.storeId", storeId);
@@ -135,65 +136,65 @@ function ConsolePanel({ closing, onExited }: { closing: boolean; onExited: () =>
       <div className="console-grid">
         <Group title="Selection">
           <SeriesPicker />
-          <Select label="Date window" value={scenario.selection.window}
+          <Select label="Period" value={scenario.selection.window}
             options={WINDOWS.map((w) => ({ value: w, label: WINDOW_LABELS[w] }))}
             onChange={(v) => set("selection.window", v)} />
         </Group>
         <Group title="Demand">
-          <Slider label="Demand multiplier" value={demand.demandMultiplier} min={0.5} max={3} step={0.1}
+          <Slider label="Demand level (× normal)" value={demand.demandMultiplier} min={0.5} max={3} step={0.1}
             format={(v) => `${v.toFixed(1)}×`} onChange={(v) => set("demand.demandMultiplier", v)} />
-          <NumberField label="Orders per day (blank = forecast median)" value={demand.ordersPerDay} min={0} max={5000}
+          <NumberField label="Fixed demand, units per day (blank = use the forecast)" value={demand.ordersPerDay} min={0} max={5000}
             placeholder="forecast" onChange={(v) => set("demand.ordersPerDay", v)} />
         </Group>
         <Group title="Spike">
-          <Toggle label="Inject a spike" checked={spike.enabled} onChange={(v) => set("spike.enabled", v)} />
-          <Slider label="Size" value={spike.magnitude} min={1.2} max={5} step={0.1} disabled={!spike.enabled}
+          <Toggle label="Add a sudden spike" checked={spike.enabled} onChange={(v) => set("spike.enabled", v)} />
+          <Slider label="Size (× normal demand)" value={spike.magnitude} min={1.2} max={5} step={0.1} disabled={!spike.enabled}
             format={(v) => `${v.toFixed(1)}×`} onChange={(v) => set("spike.magnitude", v)} />
-          <Slider label="Duration" value={spike.durationDays} min={1} max={14} step={1} disabled={!spike.enabled}
-            format={(v) => `${v} d`} onChange={(v) => set("spike.durationDays", v)} />
-          <Slider label="Warning (0 = unannounced)" value={spike.warningDays} min={0} max={21} step={1}
-            disabled={!spike.enabled} format={(v) => `${v} d`} onChange={(v) => set("spike.warningDays", v)} />
+          <Slider label="How long" value={spike.durationDays} min={1} max={14} step={1} disabled={!spike.enabled}
+            format={(v) => `${v} ${v === 1 ? "day" : "days"}`} onChange={(v) => set("spike.durationDays", v)} />
+          <Slider label="Days of warning (0 = none)" value={spike.warningDays} min={0} max={21} step={1}
+            disabled={!spike.enabled} format={(v) => `${v} ${v === 1 ? "day" : "days"}`} onChange={(v) => set("spike.warningDays", v)} />
         </Group>
         <Group title="Calendar">
-          <Slider label="Ramadan intensity" value={calendar.ramadanIntensity} min={0} max={150} step={5} format={pct}
+          <Slider label="Ramadan effect on demand" value={calendar.ramadanIntensity} min={0} max={150} step={5} format={pct}
             onChange={(v) => set("calendar.ramadanIntensity", v)} />
-          <Slider label="Eid intensity" value={calendar.eidIntensity} min={0} max={150} step={5} format={pct}
+          <Slider label="Eid effect on demand" value={calendar.eidIntensity} min={0} max={150} step={5} format={pct}
             onChange={(v) => set("calendar.eidIntensity", v)} />
           <Toggle label="National Day" checked={calendar.nationalDay} onChange={(v) => set("calendar.nationalDay", v)} />
           <Toggle label="Summer season" checked={calendar.summerSeason} onChange={(v) => set("calendar.summerSeason", v)} />
         </Group>
         <Group title="Weather">
           <Toggle label="Heatwave" checked={weather.heatwave} onChange={(v) => set("weather.heatwave", v)} />
-          <Slider label="Heatwave anomaly" value={weather.heatwaveDeltaC} min={1} max={8} step={0.5}
+          <Slider label="Degrees above normal" value={weather.heatwaveDeltaC} min={1} max={8} step={0.5}
             disabled={!weather.heatwave} format={(v) => `+${v} °C`} onChange={(v) => set("weather.heatwaveDeltaC", v)} />
         </Group>
         <Group title="Supply">
-          <Select label="Disruption" value={supply.disruptionPreset}
+          <Select label="Supply disruption" value={supply.disruptionPreset}
             options={[{ value: "none", label: "None" }, { value: "hormuz2026", label: "Hormuz 2026" }] as const}
             onChange={(v) => set("supply.disruptionPreset", v)} />
-          <Slider label="Sea lead time" value={supply.seaLeadTimeMultiplier} min={1} max={3} step={0.1}
+          <Slider label="Sea delivery time (× normal)" value={supply.seaLeadTimeMultiplier} min={1} max={3} step={0.1}
             format={(v) => `${v.toFixed(1)}×`} onChange={(v) => set("supply.seaLeadTimeMultiplier", v)} />
-          <Slider label="Reliability drop" value={supply.reliabilityDrop} min={0} max={50} step={5}
-            format={(v) => `−${v} pts`} onChange={(v) => set("supply.reliabilityDrop", v)} />
-          <Slider label="Freight increase" value={supply.freightIncrease} min={0} max={100} step={5}
+          <Slider label="On-time deliveries drop by" value={supply.reliabilityDrop} min={0} max={50} step={5}
+            format={(v) => `${v} points`} onChange={(v) => set("supply.reliabilityDrop", v)} />
+          <Slider label="Freight cost increase" value={supply.freightIncrease} min={0} max={100} step={5}
             format={(v) => `+${v}%`} onChange={(v) => set("supply.freightIncrease", v)} />
         </Group>
-        <Group title="Policy">
-          <Select label="Policy" value={policy.policy} options={POLICIES} onChange={(v) => set("policy.policy", v)} />
-          <Toggle label="Service target: auto" description="Each SKU's optimised service quantile τ"
+        <Group title="Ordering">
+          <Select label="Ordering method" value={policy.policy} options={POLICIES} onChange={(v) => set("policy.policy", v)} />
+          <Toggle label="Stock-level setting: automatic" description="Each item uses the setting tuned on past data"
             checked={policy.serviceTarget === null} onChange={(auto) => set("policy.serviceTarget", auto ? null : 0.85)} />
           {policy.serviceTarget !== null ? (
-            <Slider label="Service quantile τ" value={policy.serviceTarget} min={0.5} max={0.99} step={0.01}
-              format={(v) => v.toFixed(2)} onChange={(v) => set("policy.serviceTarget", v)} />
+            <Slider label="Stock-level setting" value={policy.serviceTarget} min={0.5} max={0.99} step={0.01}
+              format={(v) => `${Math.round(v * 100)}%`} onChange={(v) => set("policy.serviceTarget", v)} />
           ) : null}
-          <Toggle label="Use demand recovery" checked={policy.useDemandRecovery}
+          <Toggle label="Learn from recovered demand (not only till sales)" checked={policy.useDemandRecovery}
             onChange={(v) => set("policy.useDemandRecovery", v)} />
-          <Toggle label="Food rescue" checked={policy.foodRescue} onChange={(v) => set("policy.foodRescue", v)} />
+          <Toggle label="Send expiring food to food rescue" checked={policy.foodRescue} onChange={(v) => set("policy.foodRescue", v)} />
         </Group>
         <Group title="Sourcing">
-          <Select label="Weights" value={sourcing.weightMode}
-            options={[{ value: "ahp", label: "AHP (board preference)" }, { value: "entropy", label: "Entropy (data-driven)" },
-              { value: "custom", label: "Custom" }] as const}
+          <Select label="How to weigh supplier criteria" value={sourcing.weightMode}
+            options={[{ value: "ahp", label: "Board preference" }, { value: "entropy", label: "Data-driven" },
+              { value: "custom", label: "Your own weights" }] as const}
             onChange={(v) => set("sourcing.weightMode", v)} />
         </Group>
       </div>

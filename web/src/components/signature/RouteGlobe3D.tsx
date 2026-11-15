@@ -12,7 +12,7 @@ import { BackSide, Vector3 } from "three";
 
 import { useReducedMotion } from "@/components/motion/reducedMotion";
 
-import { arc, DASH, type RouteView, toVec } from "./routeGeometry";
+import { arc, DASH, originLabels, type RouteView, toVec } from "./routeGeometry";
 
 // three.js needs literal colours; these mirror tokens.css (CR-003 rev. 2).
 const ARC = "#5fd5ee"; // --seq-300: the single arc hue (cyan)
@@ -76,21 +76,9 @@ export default function RouteGlobe3D({ routes, chokepoints }: { routes: RouteVie
     io.observe(el);
     return () => io.disconnect();
   }, []);
-  const labels = useMemo<Label[]>(() => {
-    const origins = new Map<string, Label>();
-    for (const r of routes) {
-      const o = r.points[0];
-      const text = o.name.split(",")[0].replace(/ \(.*\)/, "");
-      if (text.startsWith("UAE") || origins.has(text)) continue;
-      // Neighbouring origins (Rotterdam and Amsterdam) share one label.
-      const near = [...origins.values()].find((l) => Math.abs(l.lat - o.lat) < 2 && Math.abs(l.lon - o.lon) < 2);
-      if (near) near.text = `${near.text} · ${text}`;
-      else origins.set(text, { text, lat: o.lat, lon: o.lon, kind: "origin" });
-    }
-    return [{ text: "UAE stores", lat: 25.1, lon: 55.2, kind: "hub" },
-      ...chokepoints.map((c) => ({ text: c.name, lat: c.lat, lon: c.lon, kind: "chokepoint" as const, disrupted: c.disrupted })),
-      ...origins.values()];
-  }, [routes, chokepoints]);
+  const labels = useMemo<Label[]>(() => [{ text: "UAE stores", lat: 25.1, lon: 55.2, kind: "hub" },
+    ...chokepoints.map((c) => ({ text: c.name, lat: c.lat, lon: c.lon, kind: "chokepoint" as const, disrupted: c.disrupted })),
+    ...originLabels(routes).map((o) => ({ ...o, kind: "origin" as const }))], [routes, chokepoints]);
   return (
     <div className="globe-wrap" ref={wrap}>
       <Canvas camera={{ position: cam, fov: 40 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }} aria-hidden="true"

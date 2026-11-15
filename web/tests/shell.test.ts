@@ -80,10 +80,10 @@ describe("presets and chips", () => {
 
   it("describes the active scenario as chips", () => {
     expect(activeChips(DEFAULT_SCENARIO)).toEqual([]);
-    expect(activeChips(PRESETS[2].apply(DEFAULT_SCENARIO))).toEqual(["Window: Stockpiling spike", "200/day", "Spike 2.5×"]);
+    expect(activeChips(PRESETS[2].apply(DEFAULT_SCENARIO))).toEqual(["Window: Stockpiling spike", "200 units/day", "Spike 2.5×"]);
     expect(activeChips(PRESETS[3].apply(DEFAULT_SCENARIO))).toEqual(["Window: Hormuz 2026", "Hormuz disruption"]);
     const announced = setPath(setPath(DEFAULT_SCENARIO, "spike.enabled", true), "spike.warningDays", 7);
-    expect(activeChips(announced)).toEqual(["Spike 2.5×, 7 d warning"]);
+    expect(activeChips(announced)).toEqual(["Spike 2.5×, 7 days' warning"]);
   });
 });
 

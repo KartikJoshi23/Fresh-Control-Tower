@@ -10,10 +10,10 @@ import { TriangleAlert } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-import { useWidth } from "@/components/charts/svg/charts";
+import { textWidth, useWidth } from "@/components/charts/svg/charts";
 import { CHART } from "@/components/charts/primitives/theme";
 
-import { DASH, type RouteView } from "./routeGeometry";
+import { DASH, originLabels, type RouteView } from "./routeGeometry";
 
 const Globe3D = dynamic(() => import("./RouteGlobe3D"), {
   ssr: false,
@@ -27,6 +27,26 @@ function webglAvailable(): boolean {
   } catch {
     return false;
   }
+}
+
+type MapLabel = { text: string; x: number; y: number; anchor: "start" | "middle" | "end"; ink: boolean };
+
+/**
+ * Greedy label placement for the flat map: labels are kept inside the chart and placed in priority order (the
+ * UAE, then chokepoints, then origins); one that would overlap a placed label is left out. Every route and
+ * place is still named in the table view and in the route tooltips.
+ */
+export function placeLabels(labels: MapLabel[], width: number): MapLabel[] {
+  const placed: { box: [number, number, number, number]; label: MapLabel }[] = [];
+  for (const l of labels) {
+    const w = textWidth(l.text);
+    let left = l.anchor === "end" ? l.x - w : l.anchor === "middle" ? l.x - w / 2 : l.x;
+    left = Math.min(Math.max(2, left), width - w - 2);
+    const box: [number, number, number, number] = [left, l.y - 11, left + w, l.y + 2];
+    if (placed.some((p) => box[0] < p.box[2] && box[2] > p.box[0] && box[1] < p.box[3] && box[3] > p.box[1])) continue;
+    placed.push({ box, label: { ...l, x: left, anchor: "start" } });
+  }
+  return placed.map((p) => p.label);
 }
 
 export function FlatRouteMap({ routes, chokepoints }: { routes: RouteView[]; chokepoints: { name: string; lat: number; lon: number; disrupted: boolean }[] }) {
@@ -47,19 +67,17 @@ export function FlatRouteMap({ routes, chokepoints }: { routes: RouteView[]; cho
           </polyline>
         ))}
         {chokepoints.map((c) => (
-          <g key={c.name} transform={`translate(${x(c.lon)} ${y(c.lat)})`}>
-            <circle r={4} fill={c.disrupted ? "var(--status-critical)" : "var(--ink-secondary)"} />
-            <text x={7} y={4} fontSize={11} fill={CHART.ink}>{c.disrupted ? "⚠ " : ""}{c.name}</text>
-          </g>
+          <circle key={c.name} cx={x(c.lon)} cy={y(c.lat)} r={4} fill={c.disrupted ? "var(--status-critical)" : "var(--ink-secondary)"} />
         ))}
-        {[...new Map(routes.map((r) => [r.points[0].name, r.points[0]])).values()].filter((o) => !o.name.startsWith("UAE")).map((o) => (
-          <text key={o.name} x={x(o.lon)} y={y(o.lat) - 8} fontSize={11} textAnchor="middle" fill={CHART.inkMuted}>
-            {o.name.split(",")[0].replace(/ \(.*\)/, "")}</text>
+        <circle cx={x(55.1)} cy={y(25)} r={5} fill="var(--accent)" />
+        {placeLabels([
+          { text: "UAE stores", x: x(55.1) - 8, y: y(25) + 18, anchor: "end" as const, ink: true },
+          ...chokepoints.map((c) => ({ text: `${c.disrupted ? "⚠ " : ""}${c.name}`, x: x(c.lon) - 7, y: y(c.lat) + 4, anchor: "end" as const, ink: true })),
+          ...originLabels(routes).map((o) => ({ text: o.text, x: x(o.lon), y: y(o.lat) - 8, anchor: "middle" as const, ink: false })),
+        ], width).map((l) => (
+          <text key={l.text} x={l.x} y={l.y} fontSize={11} textAnchor={l.anchor} fill={l.ink ? CHART.ink : CHART.inkMuted}
+            stroke="var(--surface)" strokeWidth={4} paintOrder="stroke">{l.text}</text>
         ))}
-        <g transform={`translate(${x(55.1)} ${y(25)})`}>
-          <circle r={5} fill="var(--accent)" />
-          <text x={-8} y={18} fontSize={11} textAnchor="end" fill={CHART.ink}>UAE stores</text>
-        </g>
       </svg>
     </div>
   );
@@ -101,7 +119,7 @@ export function RouteGlobe({ routes, chokepoints }: { routes: RouteView[]; choke
       <p className="text-ink-muted text-sm" aria-live="polite">
         {disrupted.length
           ? `${disrupted.length} of ${routes.length} routes are disrupted: ${disrupted.map((r) => r.supplierName).join("; ")}.`
-          : `All ${routes.length} routes running normally.`} Routes are schematic (straight legs between the named places).
+          : `All ${routes.length} routes running normally.`}
       </p>
     </div>
   );

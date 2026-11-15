@@ -1,4 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
+import { watchConsole } from "./helpers";
 
 /**
  * Part 5 (web foundation) end-to-end checks against the static export:
@@ -7,14 +8,6 @@ import { expect, type Page, test } from "@playwright/test";
  * artefact fails its contract. Every test fails on any console error.
  */
 
-function watchConsole(page: Page): string[] {
-  const errors: string[] = [];
-  page.on("console", (m) => {
-    if (m.type() === "error") errors.push(m.text());
-  });
-  page.on("pageerror", (e) => errors.push(e.message));
-  return errors;
-}
 
 async function noHorizontalScroll(page: Page): Promise<void> {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -69,7 +62,7 @@ test.describe("desktop (1440 px)", () => {
     await page.goto("/?dm=1.5&pol=P1&sp=1&spm=3");
     await expect(page.getByRole("list", { name: "Active scenario" })).toContainText("Demand 1.5×");
     await page.getByTestId("scenario-button").click();
-    await expect(page.getByLabel("Policy", { exact: true })).toHaveValue("P1");
+    await expect(page.getByLabel("Ordering method", { exact: true })).toHaveValue("P1");
     expect(errors).toEqual([]);
   });
 

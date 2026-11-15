@@ -8,7 +8,7 @@
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { ChartFrame, ENTITY_COLOR, otherSeriesColor, TableView } from "@/components/charts/primitives";
+import { ChartFrame, ENTITY_COLOR, otherSeriesColor, TableView, useSeriesFilter } from "@/components/charts/primitives";
 import { TimeChart } from "@/components/charts/svg/charts";
 import { Select, Toggle } from "@/components/ui/controls";
 import { DataState } from "@/components/ui/DataState";
@@ -17,9 +17,10 @@ import { GlassPanel } from "@/components/ui/GlassPanel";
 import { KpiTile } from "@/components/ui/KpiTile";
 import { ProvenanceChip } from "@/components/ui/ProvenanceChip";
 import { SHELF_STATUS, StatusBadge } from "@/components/ui/StatusBadge";
-import type { BacktestFile, CatalogFile, LiveFeedFile } from "@/lib/contracts";
+import type { BacktestFile, CatalogFile, LiveFeedFile, McdmFile } from "@/lib/contracts";
 import { useArtefact } from "@/lib/data/hooks";
-import { change, fmtInt, fmtSignedPct } from "@/lib/format";
+import { change, fmtDate, fmtDayMonth, fmtInt, fmtWeekdayDate } from "@/lib/format";
+import { policyName } from "@/lib/labels";
 import { useScenario, useScenarioStore } from "@/lib/state/scenarioStore";
 
 type Tick = LiveFeedFile["ticks"][number];
@@ -36,14 +37,29 @@ const EVENT_LABEL: Record<LiveFeedFile["events"][number]["kind"], string> = {
   po_created: "Order placed", po_received: "Order received", disruption: "Disruption",
 };
 
-/** Hours of cover → sequential tint (darker = less cover). Bins are labelled in the legend. */
+/** Hours until the shelf runs empty → sequential tint (darker = sooner). Bins are labelled in the legend. */
 const COVER_BINS = [
-  { max: 6, label: "< 6 h", color: "var(--seq-700)" },
-  { max: 12, label: "6–12 h", color: "var(--seq-600)" },
-  { max: 24, label: "12–24 h", color: "var(--seq-500)" },
-  { max: 48, label: "24–48 h", color: "var(--seq-400)" },
-  { max: Infinity, label: "≥ 48 h", color: "var(--seq-300)" },
+  { max: 6, label: "Under 6 hours", color: "var(--seq-700)" },
+  { max: 12, label: "6 to 12 hours", color: "var(--seq-600)" },
+  { max: 24, label: "12 to 24 hours", color: "var(--seq-500)" },
+  { max: 48, label: "1 to 2 days", color: "var(--seq-400)" },
+  { max: Infinity, label: "2 days or more", color: "var(--seq-300)" },
 ];
+
+/** "10/03 06:00" for an hourly timestamp. */
+const dayHour = (t: string) => `${fmtDayMonth(t)} ${t.slice(11, 16)}`;
+
+/** Alert messages from the feed, with the planning shorthand spelled out. */
+export const plainMessage = (m: string) => m.replace(/(\d+(?:\.\d+)?) h of cover left at the forecast rate/, "$1 hours of stock left at the expected sales rate")
+  .replace(/\(auto\)/, "(approved automatically)").replace(/\(needs approval\)/, "(waiting for approval)");
+
+/** The order reasons in the feed, in plain words. */
+export function plainReason(reason: string): string {
+  const tau = /τ = ([\d.]+)/.exec(reason);
+  if (reason.startsWith("Order-up-to") && tau) return `Daily order: refills the shelf to the AI's target level (stock-level setting ${Math.round(Number(tau[1]) * 100)}%).`;
+  if (reason.startsWith("Noon top-up")) return "Midday top-up: the morning's sales show the shelf will run out before tomorrow's delivery.";
+  return reason;
+}
 const coverBin = (h: number | null) => COVER_BINS.find((b) => (h ?? 0) < b.max) ?? COVER_BINS[4];
 
 export function useFeedIndex(feed: LiveFeedFile) {
@@ -93,7 +109,7 @@ function useClock(n: number, speed: number) {
   return { hour, setHour, playing, setPlaying };
 }
 
-function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: CatalogFile; backtest: BacktestFile }) {
+function Live({ feed, catalog, backtest, mcdm }: { feed: LiveFeedFile; catalog: CatalogFile; backtest: BacktestFile; mcdm: McdmFile }) {
   const scenario = useScenario();
   const set = useScenarioStore((s) => s.set);
   const { hours, at, events, pos } = useFeedIndex(feed);
@@ -103,6 +119,8 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
   const [approvalMode, setApprovalMode] = useState<ApprovalMode>("exceptions");
   const [decisions, setDecisions] = useState<Record<string, "approved" | "rejected">>({});
   const [focus, setFocus] = useState<{ storeId: string; skuId: string }>({ storeId: feed.storeIds[0], skuId: feed.skuIds[0] });
+  const flowFilter = useSeriesFilter();
+  const supplier = (id: string) => (mcdm.suppliers.find((s) => s.id === id)?.name ?? id).replace(" (fictional)", "");
   const now = hours[hour];
   const store = (id: string) => catalog.stores.find((s) => s.id === id)?.name ?? id;
   const sku = (id: string) => catalog.skus.find((s) => s.id === id)?.name ?? id;
@@ -133,12 +151,12 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
             <SkipForward aria-hidden="true" size={16} /></button>
         </div>
         <p className="text-ink text-lg tabular-nums" aria-live="polite" data-testid="sim-time">
-          {new Date(now).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })} · {now.slice(11)} Gulf time
+          {fmtWeekdayDate(now)} · {now.slice(11, 16)} Gulf time
         </p>
         <label className="flex items-center gap-2 grow min-w-[200px] text-sm text-ink-secondary">
           <span className="sr-only">Simulated time</span>
           <input type="range" className="range grow" min={0} max={hours.length - 1} value={hour} aria-label="Simulated time"
-            aria-valuetext={now} onChange={(e) => setHour(Number(e.target.value))}
+            aria-valuetext={`${fmtDate(now)} ${now.slice(11, 16)}`} onChange={(e) => setHour(Number(e.target.value))}
             style={{ "--fill": `${(hour / Math.max(1, hours.length - 1)) * 100}%` } as React.CSSProperties} />
         </label>
         <div className="w-[200px]">
@@ -156,21 +174,24 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
       </div>
 
       <div className="col-span-12 xl:col-span-8">
-        <ChartFrame title="Live Shelf Grid" subtitle="Two stores × ten hero SKUs at the simulated hour. Select a shelf to follow it below."
+        <ChartFrame title="Shelves right now" subtitle="Two stores × ten items at the replay time. Click a shelf to follow it in the chart below."
           provenance="SIMULATED_FEED"
           legend={mode === "cover" ? COVER_BINS.map((b) => ({ label: b.label, color: b.color, style: "bar" as const })) : undefined}
-          table={<TableView caption="Shelf status now" rows={cells} columns={[{ key: "s", label: "Store", value: (c) => store(c.storeId) },
-            { key: "k", label: "SKU", value: (c) => sku(c.skuId) }, { key: "st", label: "Status", value: (c) => c.status.replace("_", " ") },
-            { key: "o", label: "On hand", value: (c) => c.onHand, numeric: true }, { key: "c", label: "Cover (h)", value: (c) => c.coverHours ?? "–", numeric: true }]} />}>
+          note={mode === "status"
+            ? <>Each shelf shows whether it is in stock, at risk of running out, close to its expiry date, or empty, and how many units are on it.</>
+            : <>Each shelf shows roughly how long its stock will last at the current rate of sales. Darker means it runs out sooner.</>}
+          table={<TableView caption="Shelves right now" rows={cells} columns={[{ key: "s", label: "Store", value: (c) => store(c.storeId) },
+            { key: "k", label: "Item", value: (c) => sku(c.skuId) }, { key: "st", label: "Status", value: (c) => c.status.replace("_", " ") },
+            { key: "o", label: "Units on the shelf", value: (c) => c.onHand, numeric: true }, { key: "c", label: "Hours until empty", value: (c) => c.coverHours ?? "–", numeric: true }]} />}>
           <div className="flex gap-2 mb-3" role="radiogroup" aria-label="Grid mode">
             {(["status", "cover"] as const).map((m) => (
               <button key={m} type="button" role="radio" aria-checked={mode === m} className="preset" onClick={() => setMode(m)}>
-                {m === "status" ? "Status" : "Hours of cover"}</button>
+                {m === "status" ? "Status" : "Hours until empty"}</button>
             ))}
           </div>
           <div className="table-scroll" tabIndex={0} role="region" aria-label="Table (scrolls if wide)">
             <table className="shelf-grid" data-testid="shelf-grid">
-              <thead><tr><th scope="col">SKU</th>{feed.storeIds.map((s) => <th key={s} scope="col">{store(s)}</th>)}</tr></thead>
+              <thead><tr><th scope="col">Item</th>{feed.storeIds.map((s) => <th key={s} scope="col">{store(s)}</th>)}</tr></thead>
               <tbody>{feed.skuIds.map((sk) => (
                 <tr key={sk}><th scope="row">{sku(sk)}</th>
                   {feed.storeIds.map((st) => {
@@ -184,8 +205,8 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
                           style={mode === "cover" ? { background: bin.color } : undefined}
                           onClick={() => setFocus({ storeId: st, skuId: sk })}>
                           {mode === "status" ? <StatusBadge status={SHELF_STATUS[c.status]} /> : <span className="text-ink">{bin.label}</span>}
-                          {" "}<span className="text-ink-muted tabular-nums">{fmtInt(c.onHand)} on hand</span>
-                          <span className="sr-only">: {sku(sk)} at {store(st)}, {c.coverHours ?? "no"} hours of cover</span>
+                          {" "}<span className="text-ink-muted tabular-nums">{fmtInt(c.onHand)} on shelf</span>
+                          <span className="sr-only">: {sku(sk)} at {store(st)}, about {c.coverHours ?? "no"} hours until empty</span>
                         </button>
                       </td>
                     );
@@ -207,8 +228,8 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
           {past.slice(-12).reverse().map((e, i) => (
             <li key={`${e.t}-${i}`}>
               <StatusBadge status={e.severity} label={EVENT_LABEL[e.kind]} />
-              <span className="text-ink-muted text-xs tabular-nums">{e.t.slice(5).replace("T", " ")}</span>
-              <p className="text-ink-secondary text-sm">{e.storeId ? `${store(e.storeId)}: ` : ""}{e.skuId ? e.message.replaceAll(e.skuId, sku(e.skuId)) : e.message}</p>
+              <span className="text-ink-muted text-xs tabular-nums">{dayHour(e.t)}</span>
+              <p className="text-ink-secondary text-sm">{e.storeId ? `${store(e.storeId)}: ` : ""}{plainMessage(e.skuId ? e.message.replaceAll(e.skuId, sku(e.skuId)) : e.message)}</p>
             </li>
           ))}
           {past.length === 0 ? <li className="text-ink-muted text-sm">No alerts yet.</li> : null}
@@ -216,73 +237,78 @@ function Live({ feed, catalog, backtest }: { feed: LiveFeedFile; catalog: Catalo
       </GlassPanel>
 
       <div className="col-span-12 xl:col-span-7">
-        <ChartFrame title={`${sku(focus.skuId)} at ${store(focus.storeId)}`} subtitle="Hour by hour up to the simulated time" provenance="SIMULATED_FEED"
-          legend={[{ label: "On hand", color: otherSeriesColor(0) }, { label: "Sales", color: ENTITY_COLOR.ai }, { label: "Receipts", color: otherSeriesColor(1), style: "dashed" }]}
-          table={<TableView caption="Hourly flow" rows={focusTicks.filter((t): t is Tick => !!t).slice(-48)} columns={[{ key: "t", label: "Hour", value: (t) => t.t },
-            { key: "o", label: "On hand", value: (t) => t.onHand, numeric: true }, { key: "s", label: "Sales", value: (t) => t.sales, numeric: true },
-            { key: "r", label: "Receipts", value: (t) => t.receipts, numeric: true }, { key: "w", label: "Waste", value: (t) => t.waste, numeric: true }]} />}>
+        <ChartFrame title={`${sku(focus.skuId)} at ${store(focus.storeId)}, hour by hour`} subtitle="From the start of the replay up to the replay time"
+          provenance="SIMULATED_FEED" filter={flowFilter}
+          legend={[{ id: "oh", label: "Units on the shelf", color: otherSeriesColor(0) }, { id: "s", label: "Units sold in the hour", color: ENTITY_COLOR.ai },
+            { id: "r", label: "Units delivered", color: otherSeriesColor(1), style: "dashed" }]}
+          note={<>Stock on the shelf jumps up when a delivery arrives and falls as it sells. If it reaches zero, sales stop until the next delivery.</>}
+          table={<TableView caption="Units per hour" rows={focusTicks.filter((t): t is Tick => !!t).slice(-48)} columns={[{ key: "t", label: "Date and hour", value: (t) => `${fmtDate(t.t)} ${t.t.slice(11, 16)}` },
+            { key: "o", label: "Units on the shelf", value: (t) => t.onHand, numeric: true }, { key: "s", label: "Units sold", value: (t) => t.sales, numeric: true },
+            { key: "r", label: "Units delivered", value: (t) => t.receipts, numeric: true }, { key: "w", label: "Units thrown away", value: (t) => t.waste, numeric: true }]} />}>
           {hist.length > 1 ? (
-            <TimeChart dates={hist} height={240} ariaLabel="Hourly stock on hand, sales and receipts for the selected shelf" series={[
-              { id: "oh", label: "On hand", color: otherSeriesColor(0), values: focusTicks.map((t) => t?.onHand ?? null) },
-              { id: "s", label: "Sales", color: ENTITY_COLOR.ai, values: focusTicks.map((t) => t?.sales ?? null) },
-              { id: "r", label: "Receipts", color: otherSeriesColor(1), values: focusTicks.map((t) => t?.receipts ?? null), dashed: true },
-            ]} />
+            <TimeChart dates={hist} height={260} ariaLabel="Hourly stock on the shelf, sales and deliveries for the selected shelf" yLabel="Units"
+              series={[
+                { id: "oh", label: "Units on the shelf", color: otherSeriesColor(0), values: focusTicks.map((t) => t?.onHand ?? null) },
+                { id: "s", label: "Units sold", color: ENTITY_COLOR.ai, values: focusTicks.map((t) => t?.sales ?? null) },
+                { id: "r", label: "Units delivered", color: otherSeriesColor(1), values: focusTicks.map((t) => t?.receipts ?? null), dashed: true },
+              ].filter((x) => flowFilter.isShown(x.id))} />
           ) : <p className="text-ink-muted">Press play, or drag the time slider, to build the history.</p>}
         </ChartFrame>
       </div>
 
       <GlassPanel variant="deco" className="col-span-12 xl:col-span-5 p-4 flex flex-col gap-3" data-testid="topup-counter">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-ink font-semibold">What the noon top-up adds (P2 vs P1)</h2>
+          <h2 className="text-ink font-semibold">What the midday top-up adds</h2>
           <ProvenanceChip provenance="PRECOMPUTED" />
         </div>
         <p className="text-ink-secondary text-sm">
-          At noon the AI checks the morning&apos;s sales and, if the shelf will not last until tomorrow&apos;s delivery, places a
-          same-day top-up from the UAE wholesale market (arrives about 16:00, 25% price premium).
+          At noon the AI checks the morning&apos;s sales. If the shelf will not last until tomorrow&apos;s delivery, it orders a top-up from
+          the UAE wholesale market that arrives around 16:00 (it costs 25% more per unit).
         </p>
         <p className="text-ink"><span className="stat-value">{fmtInt(topups.length)}</span> top-ups so far in this replay,
-          {" "}{fmtInt(topups.reduce((s, p) => s + p.qty, 0))} units.</p>
+          {" "}{fmtInt(topups.reduce((s, p) => s + p.qty, 0))} units in total.</p>
         {p1 && p2 ? (
           <p className="text-ink-secondary text-sm">
-            In the Hormuz 2026 backtest (median of {backtest.results[0].runs} runs), the top-up changes lost sales by{" "}
-            <strong className="text-ink">{fmtSignedPct(change(p2.lostSalesUnits.p50, p1.lostSalesUnits.p50), 1)}</strong> and total cost by{" "}
-            <strong className="text-ink">{fmtSignedPct(change(p2.totalCostAED.p50, p1.totalCostAED.p50), 1)}</strong> against daily ordering alone.
+            In the simulated Hormuz 2026 disruption (typical result of {backtest.results[0].runs} runs), &ldquo;{policyName("P2")}&rdquo; has{" "}
+            <strong className="text-ink">{Math.abs(change(p2.lostSalesUnits.p50, p1.lostSalesUnits.p50)).toFixed(0)}% {p2.lostSalesUnits.p50 <= p1.lostSalesUnits.p50 ? "fewer" : "more"} missed sales</strong> and a{" "}
+            <strong className="text-ink">{Math.abs(change(p2.totalCostAED.p50, p1.totalCostAED.p50)).toFixed(0)}% {p2.totalCostAED.p50 <= p1.totalCostAED.p50 ? "lower" : "higher"} total cost</strong> than
+            &ldquo;{policyName("P1")}&rdquo; alone.
           </p>
         ) : null}
       </GlassPanel>
 
       <div className="col-span-12">
-        <ChartFrame title="Purchase orders" subtitle="Newest first. Routine orders inside the guardrails go through automatically; the mode decides what happens to the rest."
+        <ChartFrame title="Purchase orders" subtitle="Newest first. Routine orders within the agreed limits go through on their own; the approval setting decides what happens to unusual ones."
           provenance="SIMULATED_FEED"
-          table={<TableView caption="Purchase orders so far" rows={placed.slice(-40).reverse()} columns={[{ key: "t", label: "Created", value: (p) => p.createdAt },
-            { key: "s", label: "Store", value: (p) => store(p.storeId) }, { key: "k", label: "SKU", value: (p) => sku(p.skuId) },
-            { key: "q", label: "Qty", value: (p) => p.qty, numeric: true }, { key: "a", label: "Approval", value: (p) => approvalOf(p, approvalMode, decisions).replace("_", " ") }]} />}>
+          table={<TableView caption="Purchase orders so far" rows={placed.slice(-40).reverse()} columns={[{ key: "t", label: "Placed", value: (p) => `${fmtDate(p.createdAt)} ${p.createdAt.slice(11, 16)}` },
+            { key: "s", label: "Store", value: (p) => store(p.storeId) }, { key: "k", label: "Item", value: (p) => sku(p.skuId) },
+            { key: "q", label: "Units", value: (p) => p.qty, numeric: true }, { key: "a", label: "Approval", value: (p) => approvalOf(p, approvalMode, decisions).replace("_", " ") }]} />}>
           <div className="flex flex-wrap items-end gap-4 mb-3">
             <div className="w-[320px] max-w-full">
-              <Select label="Approval mode" value={approvalMode} onChange={setApprovalMode} options={[
-                { value: "auto", label: "Auto within guardrails (block exceptions)" }, { value: "exceptions", label: "Approve exceptions" },
-                { value: "manual", label: "Manual: a person approves every order" }]} />
+              <Select label="Approval setting" value={approvalMode} onChange={setApprovalMode} options={[
+                { value: "auto", label: "Automatic within limits (unusual orders blocked)" }, { value: "exceptions", label: "A person approves unusual orders" },
+                { value: "manual", label: "A person approves every order" }]} />
             </div>
             <p className="text-ink-muted text-sm">{fmtInt(placed.length)} orders so far · {fmtInt(pending.length)} waiting</p>
           </div>
           <div className="table-scroll" tabIndex={0} role="region" aria-label="Table (scrolls if wide)">
             <table className="data-table" data-testid="po-log">
-              <thead><tr><th scope="col">Created</th><th scope="col">Store</th><th scope="col">SKU</th><th scope="col" className="num">Qty</th>
+              <thead><tr><th scope="col">Placed</th><th scope="col">Store</th><th scope="col">Item</th><th scope="col" className="num">Units</th>
                 <th scope="col">Supplier</th><th scope="col">Arrives</th><th scope="col">Why</th><th scope="col">Approval</th></tr></thead>
               <tbody>{placed.slice(-8).reverse().map((p) => {
                 const a = approvalOf(p, approvalMode, decisions);
                 return (
                   <tr key={p.id}>
-                    <td className="tabular-nums">{p.createdAt.slice(5).replace("T", " ")}</td><td>{store(p.storeId)}</td><td>{sku(p.skuId)}</td>
-                    <td className="num">{fmtInt(p.qty)}</td><td>{p.supplierId.replace("sup-", "")}</td>
-                    <td className="tabular-nums">{p.etaAt.slice(5).replace("T", " ")}</td><td className="text-ink-secondary">{p.reason}</td>
+                    <td className="tabular-nums">{dayHour(p.createdAt)}</td><td>{store(p.storeId)}</td><td>{sku(p.skuId)}</td>
+                    <td className="num">{fmtInt(p.qty)}</td><td>{supplier(p.supplierId)}</td>
+                    <td className="tabular-nums">{dayHour(p.etaAt)}</td><td className="text-ink-secondary">{plainReason(p.reason)}</td>
                     <td>{a === "needs_approval" ? (
                       <span className="flex gap-2">
                         <button type="button" className="preset" onClick={() => decide(p.id, "approved")} aria-label={`Approve order ${p.id}`}>Approve</button>
                         <button type="button" className="preset" onClick={() => decide(p.id, "rejected")} aria-label={`Reject order ${p.id}`}>Reject</button>
                       </span>
                     ) : <StatusBadge status={a === "rejected" || a === "blocked" ? "critical" : "good"}
-                      label={a === "auto" ? "Auto-approved" : a === "approved" ? "Approved" : a === "blocked" ? "Blocked by guardrail" : "Rejected"} />}</td>
+                      label={a === "auto" ? "Approved automatically" : a === "approved" ? "Approved" : a === "blocked" ? "Blocked: outside the limits" : "Rejected"} />}</td>
                   </tr>
                 );
               })}</tbody>
@@ -298,15 +324,18 @@ export function LiveOps() {
   const feed = useArtefact("live/feed.json");
   const catalog = useArtefact("catalog.json");
   const backtest = useArtefact("backtest.json");
+  const mcdm = useArtefact("mcdm.json");
   return (
     <div className="page-grid py-6">
-      <PageHeader accent="lime" eyebrow="Simulated live feed · 10–23 Mar 2026" title="Live Ops"
-        description={<>A replay of a simulated hourly feed for 10–23 March 2026 (two stores, ten hero SKUs, the P3 policy). The clock is
-          simulated; this is how the control tower would look on a live connection.</>} />
+      <PageHeader accent="lime" eyebrow="Simulated live feed · 10/03/2026 to 23/03/2026" title="Live Ops"
+        description={<>A replay of a simulated hourly feed for two stores and ten items, ordered with &ldquo;{policyName("P3")}&rdquo;. The clock
+          is simulated; this is how the control tower would look on a live connection.</>} />
       <DataState result={feed} what="the simulated feed" minHeight={400}>
         {(f) => (
           <DataState result={catalog} what="the catalogue">
-            {(c) => <DataState result={backtest} what="the backtest">{(b) => <Live feed={f} catalog={c} backtest={b} />}</DataState>}
+            {(c) => <DataState result={backtest} what="the backtest">
+              {(b) => <DataState result={mcdm} what="the suppliers">{(m) => <Live feed={f} catalog={c} backtest={b} mcdm={m} />}</DataState>}
+            </DataState>}
           </DataState>
         )}
       </DataState>

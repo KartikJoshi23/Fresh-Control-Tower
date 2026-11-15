@@ -46,3 +46,8 @@ Thumbs.db
 
 # Claude Code local settings (personal; the shared launch.json is committed)
 .claude/settings.local.json
+
+# Report sources and figures stay local; the compiled PDF and the slide deck are committed (lead, 2026-11-15)
+/Fresh_Control_Tower_Report.tex
+/report_figures/
+/report/

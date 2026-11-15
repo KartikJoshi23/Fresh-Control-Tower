@@ -107,7 +107,15 @@ Datasets/
 
 ## Deployment
 
-The site deploys as a static export on **Vercel Hobby** (free), from `main`, with root directory `web`. Every pull request gets a preview URL. Vercel is connected in Part 9.
+The site is a pure static export (no server code, no environment variables) and deploys on **Vercel Hobby** (free) from `main`. Settings are in `web/vercel.json`.
+
+1. In Vercel, choose **Add New → Project** and import `KartikJoshi23/Fresh-Control-Tower`.
+2. **Root Directory:** `web`. **Framework Preset:** Next.js (detected). Leave the build and output settings at their defaults; `vercel.json` sets `npm ci` and `npm run build`.
+3. **Node.js version** (Settings → Build and Deployment): **22.x**, to match `.nvmrc`.
+4. **Production branch:** `main`. Every pull request then gets a preview URL.
+5. Deploy. Check that every page loads (`/`, `/demand/`, `/scenarios/`, `/live/`, `/sourcing/`, `/impact/`, `/roadmap/`) with no "PLACEHOLDER DATA" banner.
+
+Before pushing changes that affect the site, check them locally from `web/` with `npm run data:validate` and `npm run build` (output in `web/out`, about 10 MB).
 
 ## Licences
 

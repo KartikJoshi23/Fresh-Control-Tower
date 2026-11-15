@@ -76,7 +76,7 @@
 | L-01 | Add teammates as GitHub collaborators (write access) | Kartik | ⬜ | Settings → Collaborators |
 | L-02 | Answer open questions Q1–Q3 and Q5–Q7 (§5) | Kartik | ⬜ | Names are needed to assign owners |
 | L-03 | Optional: protect `main` (require pull requests and passing CI) and allow claim commits | Kartik | ⬜ | Only once everyone has the workflow down |
-| L-04 | Connect Vercel to the repository (root `web/`) | Kartik | ⬜ | During Part 9 (P9-04) |
+| L-04 | Connect Vercel to the repository (root `web/`) | Kartik | 🟨 | Repo is deploy-ready (2026-11-15): `web/vercel.json` added; clean `npm ci` + build pass, 52/52 data files valid, 0 fixtures. Steps in README → Deployment. Lead imports the project on Vercel |
 
 ### Phase 5, Part 1: data foundation (Track A)
 
@@ -276,6 +276,8 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-13 · Part 2 gate · branch main · last commit 950917d · "continue" given by the lead; P2-01…P2-03 claimed · next: build Part 2 on feat/P2-synthetic-world
 
 - 2026-11-14 · P2-01…P2-03 · branch feat/P2-synthetic-world · Part 2 code pushed (tests/docs pending). Decisions to log: D-21 P0 coverage = L+R−1 days (22:00 review, 06:00 dawn delivery), weekday-aware 28-day MA; D-22 P0 adds shrink allowance, 1-case presentation minimum (fixes zero-sales trap) and flat +25% promo uplift, buffer stays 20%; D-23 spike bands checked on true demand (recorded sales shown alongside); spoilage band applied to vegetable categories only; added sup-local-bakery (9 suppliers, archetype 'local'). Waste = expiry + quality culls (series.ts comment to update) · next: tests, docs/04, merge
+
+- 2026-11-15 · L-04 · branch main · Vercel-ready: `web/vercel.json` (Next.js preset, `npm ci`, security and data-cache headers), README deployment steps; clean build of all 7 routes verified · next: lead imports the repo on Vercel (root `web`, Node 22.x), then P9-04 and Lighthouse (KI-19)
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->
 

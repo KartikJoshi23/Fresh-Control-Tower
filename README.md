@@ -31,8 +31,8 @@
 | `pipeline/` | Python 3.11: cleaning, calibration, synthetic UAE world, models, optimisation, backtests, exports | A (data/ML) |
 | `web/public/data/` | Precomputed artefacts, the only interface between A and B (contracts in `web/src/lib/contracts/`) | A → B |
 | `data/` | `external/` (real reference data) and `processed/` (calibration). Generated folders are gitignored. | A |
-| `report/` | LaTeX boardroom report, the single source for the NotebookLM deck | Phase 6 |
-| `screenshots/` | Report figures captured from the production build | Phase 6 |
+| `Fresh_Control_Tower_Report.pdf` | The project report (65 pages) | Phase 6 |
+| `Fresh_Grocery_AI_Control_Tower.pptx` | The 9-slide presentation deck (built in NotebookLM) | Phase 7 |
 | `docs/` | Decision records, design system, contracts, change requests, per-person notes | All |
 | `Datasets/` | Raw data (**gitignored**; download it yourself, as below) | A |
 
@@ -74,7 +74,7 @@ python3.11 -m venv .venv && source .venv/bin/activate && pip install -r pipeline
 
 ### Report
 
-See [report/README.md](report/README.md) (Overleaf: pdfLaTeX + Biber).
+The compiled report is [Fresh_Control_Tower_Report.pdf](Fresh_Control_Tower_Report.pdf) and the slides are [Fresh_Grocery_AI_Control_Tower.pptx](Fresh_Grocery_AI_Control_Tower.pptx). The LaTeX source is kept by the lead, outside the repository.
 
 ## Raw datasets (not in Git)
 

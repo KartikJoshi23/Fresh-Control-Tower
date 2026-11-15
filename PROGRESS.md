@@ -15,13 +15,13 @@
 
 | Field | Value |
 |---|---|
-| **Current phase** | Phase 6: report drafted (2026-11-15). Phase 5 is complete and live at https://fresh-control-tower.vercel.app/ (Parts 1–9 PR #8, CR-003 PR #9, verification PR #10, dashboard polish PR #13). |
-| **Gate** | On 2026-11-15 the lead asked for a whole-project audit, then the full LaTeX report and the NotebookLM prompt in one pass, so Phases 6 and 7 are open for that work (§2). The audit fixes wait for the lead's merge (branch `fix/audit-console-levers`). |
-| **Last completed step** | **Audit, report and NotebookLM prompt (2026-11-15).** Audit fixes on `fix/audit-console-levers` (D-25, KI-23): the Scenario Console's Ramadan effect, import-delivery reliability and "learn from recovered demand" now drive the what-if engine (TypeScript and the Python reference, 36 golden cases, the 24 old ones unchanged); Eid, National Day, Summer season and Freight cost are removed; the sea delivery time works without the Hormuz preset; Live Ops describes P2 vs P1 as top-up plus surge response; Impact labels waste and emissions as per year (they are annualised); docs/02 cites Ma, M. (2024). Report (D-26): one self-contained LaTeX file, `Fresh_Control_Tower_Report.tex` (12 chapters and 3 appendices, 65 pages, compiles clean with pdfLaTeX and Biber), plus 22 figures in `report_figures/` (13 app screenshots, 9 data-spread charts), both local only (team names). Checks: 153 pytest, 149 Vitest, 43 Playwright e2e, 52/52 data files valid, JS 222–258 KB gzip. Before it: dashboard polish from the team's walkthrough (2026-11-15) on `feat/dashboard-polish`, [PR #13](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/13) (merge after CR-004, [PR #12](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/12), is approved): uniform units (kg, AED, day-first dates), plain language everywhere (no P0–P3 or P10/P50/P90 on screen), show/hide filters on every multi-line chart, Demand Lab split chart and no Real-data tab, separated Sourcing controls, Roadmap with Methods & Data first and the risk register on top, axis titles with units on every chart, and a codebase sanity pass. The plan conflicts are raised as CR-004. Checks: 139 pytest, 135 Vitest, 43 Playwright e2e, 52/52 data files valid. |
-| **Exact next step** | **Lead:** review and merge the audit pull request from `fix/audit-console-levers` (the live site updates on merge); decide whether `Fresh_Control_Tower_Report.tex` and `report_figures/` go into this public repository (the title page names all seven team members, so both are kept local for now); compile the report on Overleaf; build the 9-slide deck in NotebookLM with the drafted prompt (N-01); set CR-004's status (PRs #12 and #13 are merged, but the CR file still says Proposed); decide CR-001 and CR-002; answer Q1, Q5–Q7. |
-| **Last integrated commit on `main`** | `bc4c6af` (merge of PR #13, dashboard polish); before it `28d6805` (PR #12, CR-004 document), `a93d3dd` (merge of PR #11, alignment docs); `440d3bf` (PR #10, verification fixes), `16d8946` (PR #9, CR-003), `6baad6d` (Vercel config, L-04), `bac07d5` (PR #8, Parts 7–9), `2ba55e6` (PR #3), `3d8725e` (PR #2), `b0f26fe` (PR #1), `ff47bb7` (Part 1) |
+| **Current phase** | Phases 6 and 7 complete (2026-11-15): the report PDF and the NotebookLM slide deck are in the repository root (PR #15). Phase 5 is complete and live at https://fresh-control-tower.vercel.app/ (Parts 1–9 PR #8, CR-003 PR #9, verification PR #10, dashboard polish PR #13, audit fixes PR #14). |
+| **Gate** | On 2026-11-15 the lead asked for the audit, the report and the NotebookLM prompt in one pass, had the audit merged (PR #14, live on Vercel) and asked for the report PDF and the deck to be committed (PR #15). What remains is the presentation. |
+| **Last completed step** | **Deliverables committed (2026-11-15, PR #15):** `Fresh_Control_Tower_Report.pdf` (65 pages) and `Fresh_Grocery_AI_Control_Tower.pptx` (built by the lead in NotebookLM) are in the repository root; the LaTeX source, `report_figures/`, the old `report/` outline, the empty `screenshots/` placeholder and the session prompts stay local (D-27). The audit fixes are merged (PR #14, `b4ad005`) and live: the deployed code carries the new Scenario Console. Before it: **Audit, report and NotebookLM prompt (2026-11-15).** Audit fixes on `fix/audit-console-levers` (D-25, KI-23): the Scenario Console's Ramadan effect, import-delivery reliability and "learn from recovered demand" now drive the what-if engine (TypeScript and the Python reference, 36 golden cases, the 24 old ones unchanged); Eid, National Day, Summer season and Freight cost are removed; the sea delivery time works without the Hormuz preset; Live Ops describes P2 vs P1 as top-up plus surge response; Impact labels waste and emissions as per year (they are annualised); docs/02 cites Ma, M. (2024). Report (D-26): one self-contained LaTeX file, `Fresh_Control_Tower_Report.tex` (12 chapters and 3 appendices, 65 pages, compiles clean with pdfLaTeX and Biber), plus 22 figures in `report_figures/` (13 app screenshots, 9 data-spread charts), both local only (team names). Checks: 153 pytest, 149 Vitest, 43 Playwright e2e, 52/52 data files valid, JS 222–258 KB gzip. Before it: dashboard polish from the team's walkthrough (2026-11-15) on `feat/dashboard-polish`, [PR #13](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/13) (merge after CR-004, [PR #12](https://github.com/KartikJoshi23/Fresh-Control-Tower/pull/12), is approved): uniform units (kg, AED, day-first dates), plain language everywhere (no P0–P3 or P10/P50/P90 on screen), show/hide filters on every multi-line chart, Demand Lab split chart and no Real-data tab, separated Sourcing controls, Roadmap with Methods & Data first and the risk register on top, axis titles with units on every chart, and a codebase sanity pass. The plan conflicts are raised as CR-004. Checks: 139 pytest, 135 Vitest, 43 Playwright e2e, 52/52 data files valid. |
+| **Exact next step** | **Team:** rehearse the presentation with `Fresh_Grocery_AI_Control_Tower.pptx` (one presenter per dashboard tab). **Lead:** set CR-004's status (PRs #12 and #13 are merged, but the CR file still says Proposed); decide CR-001 and CR-002; answer Q1, Q5–Q7 (Q7: whether the course wants AI assistance acknowledged in the report). |
+| **Last integrated commit on `main`** | `607d71d` (merge of PR #15, report PDF and deck); before it `b4ad005` (merge of PR #14, audit fixes), `bc4c6af` (merge of PR #13, dashboard polish), `28d6805` (PR #12, CR-004 document), `a93d3dd` (merge of PR #11, alignment docs); `440d3bf` (PR #10, verification fixes), `16d8946` (PR #9, CR-003), `6baad6d` (Vercel config, L-04), `bac07d5` (PR #8, Parts 7–9), `2ba55e6` (PR #3), `3d8725e` (PR #2), `b0f26fe` (PR #1), `ff47bb7` (Part 1) |
 | **Branch** | `main`. All Phase 5 work happens on `feat/P<part>-<slug>` branches, merged with `--no-ff` via pull requests. Open pull requests with `gh api repos/KartikJoshi23/Fresh-Control-Tower/pulls` (KI-14). |
-| **Updated** | 2026-11-15 by Kartik, via Claude Code: whole-project audit and fixes, the LaTeX report and the NotebookLM prompt (the lead's request). |
+| **Updated** | 2026-11-15 by Kartik, via Claude Code: audit merged and live (PR #14); report PDF and slide deck committed (PR #15); repository trimmed to the important files (D-27). |
 
 ## 2. Phase gates
 
@@ -32,8 +32,8 @@
 | 3 Inspection and plan | ✅ Approved (v1.1 after audit) | "Plan approved, begin setup" (given with the repository link) | 2026-11-13 |
 | 4 Repository setup and kit | ✅ Approved | "Kit approved" | 2026-11-13 |
 | 5 Development (Parts 1–9) | 🟢 Open (Parts 1–9 ✅ merged and live; CR-003 ✅ PR #9; final verification 2026-11-15, fixes merged in PR #10) | "continue" after **each** part | 2026-11-13 |
-| 6 Screenshots and report | 🟢 Open: drafted in one pass at the lead's request; the lead's review is pending | "continue" after **each** section (on 2026-11-15 the lead asked for the whole report at once) | 2026-11-15 |
-| 7 NotebookLM prompt | 🟢 Drafted (9 slides); the lead's review is pending | Lead's review | 2026-11-15 |
+| 6 Screenshots and report | ✅ Complete: the report PDF is committed (PR #15) | The lead asked for the whole report at once (2026-11-15), then for the PDF to be committed | 2026-11-15 |
+| 7 NotebookLM prompt | ✅ Complete: the lead built the 9-slide deck in NotebookLM; committed (PR #15) | Lead's review | 2026-11-15 |
 
 ## 3. Task board
 
@@ -152,15 +152,15 @@
 
 | ID | Task | Depends on | Owner | Status | Notes |
 |---|---|---|---|---|---|
-| R-00 | Screenshots and data figures | P9-03, P4-06 | Kartik (Claude Code) | 🟦 | 22 figures in `report_figures/` (local): 13 app screenshots at 1440 px (the lead asked for the main ones only) and 9 data-spread charts (light palette, validated) |
-| R-01…R-09 | Report chapters | R-00 | Kartik (Claude Code) | 🟦 | One self-contained file, `Fresh_Control_Tower_Report.tex` (local; D-26): 12 chapters covering every tab, chart, term, dataset and method in plain language; title page in the SP Jain format; black border on every page |
-| R-10 | Appendices + executive summary + references check | R-09 | Kartik (Claude Code) | 🟦 | 3 appendices (supply terms, dashboard vs technical names, reproduction); Harvard author-date via biblatex with the .bib embedded; no undefined references or overfull lines |
+| R-00 | Screenshots and data figures | P9-03, P4-06 | Kartik (Claude Code) | ✅ | 22 figures in `report_figures/` (local): 13 app screenshots at 1440 px (the lead asked for the main ones only) and 9 data-spread charts (light palette, validated) |
+| R-01…R-09 | Report chapters | R-00 | Kartik (Claude Code) | ✅ | One self-contained file, `Fresh_Control_Tower_Report.tex` (local; D-26): 12 chapters covering every tab, chart, term, dataset and method in plain language; title page in the SP Jain format; black border on every page |
+| R-10 | Appendices + executive summary + references check | R-09 | Kartik (Claude Code) | ✅ | 3 appendices (supply terms, dashboard vs technical names, reproduction); Harvard author-date via biblatex with the .bib embedded; no undefined references or overfull lines |
 
 ### Phase 7: NotebookLM
 
 | ID | Task | Depends on | Owner | Status | Notes |
 |---|---|---|---|---|---|
-| N-01 | NotebookLM prompt (≤ 500 characters, count stated) + slide-by-slide brief | R-10 | Kartik (Claude Code) | 🟦 | Drafted in the session (2026-11-15): slide 1 title and team, slides 2–8 one per tab, slide 9 Thank You |
+| N-01 | NotebookLM prompt (≤ 500 characters, count stated) + slide-by-slide brief | R-10 | Kartik (Claude Code) | ✅ | Drafted in the session (2026-11-15): slide 1 title and team, slides 2–8 one per tab, slide 9 Thank You |
 
 ## 4. Decisions log (append-only; newest last)
 
@@ -192,6 +192,7 @@
 | D-24 | 2026-11-15 | UI overhaul "Neon Noir" (CR-003, revision 2): true-black plane and neutral graphite glass; colour is a highlight with one job each (brand spectrum cyan → violet → pink, one accent per page, KPI tones, a cyan magnitude ramp, the validated data palette); Space Grotesk display face; CSS-first motion plus Motion's vanilla `inView` and `motion/mini` | The lead found the live UI flat and blue, then found revision 1 too violet; Motion's React layer cost about 49 KB gzip per route and broke the 300 KB limit, so it is not used | docs/decisions/CR-003-ui-overhaul-neon-noir.md, docs/design-system.md |
 | D-25 | 2026-11-15 | Audit fix: every Scenario Console control must change a number. The engine gains three optional inputs with neutral defaults: `dayFactors` (Ramadan effect = (1 + lift × intensity) ÷ (1 + lift), with the item's lift measured on its Ramadan 2025 recovered demand against the 28 days before), `forecastFactor` (0.733 when the AI learns from till sales only = (1 − 0.3102) ÷ (1 − 0.0594) from `ablation.json`) and `lateProbability` (the reliability drop, applied to sea and air importers only, as in the backtest's Hormuz terms). Eid, National Day, Summer season and Freight cost are removed (none falls in the 35-day horizon or enters the engine's cost); the sea delivery-time slider no longer needs the Hormuz preset, and choosing a disruption sets both delivery settings | Controls that do nothing mislead users and examiners; the Python reference changed in step, so the 24 existing golden cases are unchanged and 12 new ones cover the levers | `web/src/lib/engine/{engine,scenario}.ts`, `pipeline/freshpipe/engine_reference.py` (decided by Kartik: "fix if anything is found") |
 | D-26 | 2026-11-15 | The report is one self-contained LaTeX file (the bibliography embedded with `filecontents`) written for readers, not mapped one-to-one to slides; figures sit in `report_figures/`; both stay out of the public repo until the lead decides, because the title page names the team | The lead asked for an in-depth, professional report (not a slide deck) and for the pictures in the root folder for Overleaf | `Fresh_Control_Tower_Report.tex` (local) |
+| D-27 | 2026-11-15 | The repository keeps only what the project needs: code, data contracts, docs, the report PDF and the slide deck. The LaTeX source, the report figures, the old `report/` outline, the empty `screenshots/` placeholder and the session prompts stay local (`.gitignore`) | The lead asked for only the important files to be in the repository, with the slide deck and the report PDF included | `.gitignore`, PR #15 (decided by Kartik) |
 
 ## 5. Open questions and blockers
 
@@ -252,7 +253,7 @@
 | `web/src/app/scenarios/**`, `web/src/lib/engine/**`, `web/src/components/signature/SurgePlanner*` | Part 7 owner | |
 | `web/src/app/{live,sourcing}/**`, `web/src/lib/mcdm/**`, `web/src/components/three/**`, `web/src/components/signature/{RouteGlobe*,routeGeometry.ts}`, `web/tests/mcdm.test.ts`, `web/tests/fixtures/golden/mcdm_cases.json`, `web/src/components/signature/{LiveShelfGrid,RankRace}*` | Part 8 owner | |
 | `web/src/app/{impact,roadmap}/**`, `web/src/components/signature/Frontier*`, `web/e2e/**`, `web/scripts/js-budget.mjs` | Part 9 owner | |
-| `report/**`, `screenshots/**` | Lead (Phase 6) | |
+| `Fresh_Control_Tower_Report.pdf`, `Fresh_Grocery_AI_Control_Tower.pptx` | Lead (Phases 6–7) | The LaTeX source and the figures stay local (D-27) |
 | `PROGRESS.md` | Everyone | Own rows and own §9 subsection only |
 | `docs/progress/<name>.md` | That person | Append-only |
 | `docs/decisions/CR-*.md` | The person who raised it; the lead records the decision | |
@@ -268,7 +269,7 @@ cd web && npm run check                  # before every pull request
 pip install -r pipeline/requirements.txt
 python -m pytest pipeline                # data tests run only if Datasets/ is present
 
-# Report: see report/README.md (Overleaf: pdfLaTeX + Biber)
+# Report: Fresh_Control_Tower_Report.pdf in the repository root (the LaTeX source stays with the lead)
 ```
 
 ## 9. Session log (append-only; one subsection per person; newest entry at the bottom of your own subsection)
@@ -295,6 +296,8 @@ Format: `- YYYY-MM-DD · <task ids> · branch <name> · last commit <hash> · <w
 - 2026-11-15 · CR-003 rev. 2 · branch feat/ui-neon-noir · lead found revision 1 too violet: colour rebuilt by role (neutral graphite structure; brand spectrum; one accent per page via PageHeader `accent`; KPI tones; cyan magnitude ramp, diverging and globe; violet only for focus/selection) · 127 Vitest, 41 e2e, 52/52 valid, routes 221–255 KB · next: merge PR #9 to main (lead asked for the live app to update)
 
 - 2026-11-15 · Audit, R-00…R-10, N-01 · branch fix/audit-console-levers · Whole-project audit at the lead's request: Console levers wired or removed (D-25), labels fixed (KI-23); report written as one LaTeX file with 22 figures, kept local because it names the team (D-26); NotebookLM prompt drafted · next: the lead merges the audit pull request, decides on publishing the report, compiles it on Overleaf
+
+- 2026-11-15 · Deliverables · branch chore/deliverables → PR #15 (`607d71d`) · PR #14 merged (`b4ad005`) and live on Vercel; report PDF and NotebookLM deck committed; LaTeX source, figures, `report/` outline and prompts kept local (D-27) · next: rehearse the presentation
 
 <!-- Teammates: add your own subsection below this line, titled "### <Your first name>", and append only to it. -->
 

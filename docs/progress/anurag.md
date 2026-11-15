@@ -103,3 +103,12 @@ The lead merges PR #3. Then **Part 5** (web foundation) on `feat/P5-web-foundati
 - **Checks:** 139 pytest, 127 Vitest, 41 Playwright, 52/52 data files valid; every route ≤ 248.8 KB gzip initial JS (`node web/scripts/js-budget.mjs`).
 - **Blocked / not done:** P9-04 deploy waits for Vercel (L-04). Lighthouse is not automated (KI-19). R-00 screenshots are unclaimed. KI-16: R3F logs a THREE.Clock deprecation warning (not an error) on `/sourcing`.
 - **Next:** the lead merges PR #8 and connects Vercel; then Lighthouse on the deploy, R-00 screenshots, and Phase 6 when the lead opens it.
+
+## 2026-11-15 · final verification · fix/verify-live
+
+- **State found:** Kartik merged PR #8 (Parts 7–9) and PR #9 (CR-003 Neon Noir UI) and connected Vercel; the site is live at https://fresh-control-tower.vercel.app/. My task rows P7–P9 were still 🟦 and §1 still described PR #9 as waiting.
+- **`main` (`16d8946`):** 139 pytest, 127 Vitest, 41 Playwright e2e, 52/52 data files valid; initial JS 221.5–254.5 KB gzip (KI-21: six routes slightly over the 250 KB target, all under the 300 KB limit).
+- **Live site:** the same 41 e2e tests (pages, QA sweep, axe) pass against the deploy (`web/playwright.live.config.ts`, new). All seven routes: 0 failed requests, 0 console errors (only the known KI-16 warning on `/sourcing`). Data served gzipped with the 1-hour cache from `vercel.json`.
+- **Lighthouse (KI-19):** desktop 99–100 on five routes; mobile 86–92; accessibility 98–100; best practices and SEO 100. Two weak spots: `/demand` desktop CLS 0.52 and `/sourcing` blocking time (the globe kept rendering off screen).
+- **Fixed in PR #10 (KI-22):** charts briefly rendered at a 640 px fallback width and widened the Overview by 178 px (the cause of an intermittent e2e failure); the scrollbar appearing after data loads shifted the page (CLS); the globe now renders only while on screen; chart titles are `h2` (heading order). Re-measured on the local build: CLS 0.008, `/sourcing` blocking 60 ms desktop, accessibility 100.
+- **Next:** the lead merges PR #10; re-run Lighthouse on the live `/demand` and `/sourcing`; R-00 screenshots and Phase 6 when the lead opens it.
